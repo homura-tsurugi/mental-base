@@ -3,7 +3,27 @@
 // バックエンド（FastAPI）と完全同期
 // ============================================================================
 
+// ============================================================================
+// フェーズ2: メンター機能関連型定義（先行定義）
+// ============================================================================
+
+// ユーザーロール（フェーズ2で追加）
+export type UserRole = 'CLIENT' | 'MENTOR' | 'ADMIN';
+
+// メンター専門分野（C-005: 設定）
+export type MentorExpertise =
+  | 'career'
+  | 'mental_health'
+  | 'learning'
+  | 'life_coaching'
+  | 'health_wellness'
+  | 'entrepreneurship'
+  | 'other';
+
+// ============================================================================
 // ユーザー関連
+// ============================================================================
+
 export interface User {
   id: string;
   email: string;
@@ -11,6 +31,11 @@ export interface User {
   emailVerified?: Date;
   createdAt: Date;
   updatedAt: Date;
+  // フェーズ2: メンター機能拡張
+  role: UserRole; // CLIENT/MENTOR/ADMIN
+  isMentor: boolean; // メンターかどうか
+  bio?: string; // 自己紹介
+  expertise: MentorExpertise[]; // 専門分野
 }
 
 // ユーザー表示用（計算プロパティを含む）
@@ -594,9 +619,6 @@ export interface AIAssistantPageData {
 // メンター機能関連型定義（フェーズ2）
 // ============================================================================
 
-// ユーザーロール（フェーズ2で追加）
-export type UserRole = 'CLIENT' | 'MENTOR' | 'ADMIN';
-
 // メンター-クライアント関係のステータス
 export type MentorClientRelationshipStatus = 'pending' | 'active' | 'terminated';
 
@@ -830,16 +852,6 @@ export interface ClientDataViewLog {
   createdAt: Date;
 }
 
-// メンター専門分野（C-005: 設定）
-export type MentorExpertise =
-  | 'career'
-  | 'mental_health'
-  | 'learning'
-  | 'life_coaching'
-  | 'health_wellness'
-  | 'entrepreneurship'
-  | 'other';
-
 // メンター登録フォーム（C-005: 設定）
 export interface MentorRegistrationForm {
   isMentor: boolean;
@@ -854,12 +866,4 @@ export interface DataAccessPermissionForm {
   allowLogs: boolean;
   allowReflections: boolean;
   allowAiReports: boolean;
-}
-
-// User型の拡張（フェーズ2）
-export interface UserExtended extends User {
-  role: UserRole; // CLIENT/MENTOR/ADMIN
-  isMentor: boolean; // メンターかどうか
-  bio?: string; // 自己紹介
-  expertise: MentorExpertise[]; // 専門分野
 }

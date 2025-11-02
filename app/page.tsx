@@ -19,6 +19,9 @@ export default function Home() {
     initials: 'TS',
     createdAt: new Date(),
     updatedAt: new Date(),
+    role: 'CLIENT',
+    isMentor: false,
+    expertise: [],
   };
 
   if (loading) {
@@ -38,7 +41,11 @@ export default function Home() {
     return (
       <MainLayout user={mockUser}>
         <div className="px-6 py-6">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800" data-testid="dashboard-error">
+          <div
+            className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800"
+            data-testid="dashboard-error"
+          >
+            <div data-testid="api-error" style={{ display: 'none' }}></div>
             <p className="font-medium" data-testid="error-message">エラーが発生しました</p>
             <p className="text-sm mt-1" data-testid="error-detail">{error.message}</p>
           </div>

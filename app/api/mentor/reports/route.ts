@@ -1,68 +1,88 @@
 // 進捗レポートAPI
-// POST /api/mentor/reports/generate - レポート生成
+// GET /api/mentor/reports - レポート一覧取得
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyMentor } from '@/lib/dal';
+import { prisma } from '@/lib/prisma';
 
-export async function POST(request: NextRequest) {
+/**
+ * メンターの進捗レポート一覧取得
+ * GET /api/mentor/reports?clientId=xxx
+ */
+export async function GET(request: NextRequest) {
   try {
     // メンター認証確認
     const session = await verifyMentor();
+    const mentorId = session.userId;
 
-    const body = await request.json();
-    const {
-      clientId,
-      reportPeriod,
-      startDate,
-      endDate,
-      mentorComments,
-      mentorRating,
-      areasOfImprovement,
-      strengths,
-      nextSteps,
-      followUpDate,
-      isSharedWithClient,
-    } = body;
+    const { searchParams } = new URL(request.url);
+    const clientId = searchParams.get('clientId');
 
-    if (!clientId || !reportPeriod || !startDate || !endDate) {
-      return NextResponse.json(
-        { error: '必須項目が不足しています' },
-        { status: 400 }
-      );
+    // クエリパラメータでクライアントIDが指定されている場合
+    if (clientId) {
+      // メンター-クライアント関係を確認
+      const relationship = await prisma.mentorClientRelationship.findFirst({
+        where: {
+          mentorId,
+          clientId,
+          status: 'active',
+        },
+      });
+
+      if (!relationship) {
+        return NextResponse.json(
+          { error: 'アクティブなメンター-クライアント関係が見つかりません' },
+          { status: 404 }
+        );
+      }
+
+      // 特定クライアントのレポート一覧を取得
+      const reports = await prisma.clientProgressReport.findMany({
+        where: {
+          mentorId,
+          clientId,
+        },
+        include: {
+          client: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
+      return NextResponse.json({ data: reports });
     }
 
-    // TODO: 実際のデータベースから進捗データ取得・集計（マイグレーション後）
-    // TODO: レポートをDBに保存（マイグレーション後）
+    // clientIdが指定されていない場合は全クライアントのレポート一覧を取得
+    const reports = await prisma.clientProgressReport.findMany({
+      where: {
+        mentorId,
+      },
+      include: {
+        client: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
 
-    const mockReport = {
-      id: `report-${Date.now()}`,
-      clientId,
-      mentorId: session.userId,
-      reportPeriod,
-      startDate,
-      endDate,
-      overallProgress: Math.floor(Math.random() * 100), // 実際は集計する
-      completedGoals: Math.floor(Math.random() * 5),
-      completedTasks: Math.floor(Math.random() * 20),
-      logCount: Math.floor(Math.random() * 30),
-      reflectionCount: Math.floor(Math.random() * 4),
-      mentorComments,
-      mentorRating,
-      areasOfImprovement: areasOfImprovement || [],
-      strengths: strengths || [],
-      nextSteps,
-      followUpDate,
-      isSharedWithClient: isSharedWithClient || false,
-      sharedAt: isSharedWithClient ? new Date().toISOString() : null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
-
-    return NextResponse.json({ report: mockReport }, { status: 201 });
+    return NextResponse.json({ data: reports });
   } catch (error) {
-    console.error('レポート生成エラー:', error);
+    console.error('進捗レポート一覧取得エラー:', error);
     return NextResponse.json(
-      { error: 'レポートの生成に失敗しました' },
+      { error: 'レポートの取得に失敗しました', detail: error },
       { status: 500 }
     );
   }

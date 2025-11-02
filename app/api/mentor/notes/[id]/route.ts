@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyMentor } from '@/lib/dal';
+import { prisma } from '@/lib/prisma';
 
 interface RouteParams {
   params: Promise<{
@@ -12,79 +13,156 @@ interface RouteParams {
   }>;
 }
 
+/**
+ * メンターノート取得
+ * GET /api/mentor/notes/[id]
+ */
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     // メンター認証確認
-    await verifyMentor();
+    const session = await verifyMentor();
+    const mentorId = session.userId;
 
     const { id: noteId } = await params;
 
-    // TODO: 実際のデータベースからノート取得（マイグレーション後）
-    const mockNote = {
-      id: noteId,
-      title: 'サンプルノート',
-      content: 'ノートの内容',
-      noteType: 'general',
-      isPrivate: true,
-      tags: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    // ノートを取得
+    const note = await prisma.mentorNote.findUnique({
+      where: { id: noteId },
+    });
 
-    return NextResponse.json({ note: mockNote });
+    if (!note) {
+      return NextResponse.json(
+        { error: 'ノートが見つかりません' },
+        { status: 404 }
+      );
+    }
+
+    // 本人のノートか確認
+    if (note.mentorId !== mentorId) {
+      return NextResponse.json(
+        { error: 'このノートへのアクセス権限がありません' },
+        { status: 403 }
+      );
+    }
+
+    return NextResponse.json({ data: note });
   } catch (error) {
     console.error('ノート取得エラー:', error);
     return NextResponse.json(
-      { error: 'ノートの取得に失敗しました' },
+      { error: 'ノートの取得に失敗しました', detail: error },
       { status: 500 }
     );
   }
 }
 
+/**
+ * メンターノート更新
+ * PUT /api/mentor/notes/[id]
+ */
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     // メンター認証確認
-    await verifyMentor();
+    const session = await verifyMentor();
+    const mentorId = session.userId;
 
     const { id: noteId } = await params;
     const body = await request.json();
-    const { title, content, noteType, isPrivate, tags } = body;
-
-    // TODO: 実際のデータベースでノート更新（マイグレーション後）
-    const mockNote = {
-      id: noteId,
+    const {
       title,
       content,
       noteType,
-      isPrivate,
+      isSharedWithClient,
       tags,
-      updatedAt: new Date().toISOString(),
-    };
+      linkedDataType,
+      linkedDataId,
+    } = body;
 
-    return NextResponse.json({ note: mockNote });
+    // ノートを取得
+    const note = await prisma.mentorNote.findUnique({
+      where: { id: noteId },
+    });
+
+    if (!note) {
+      return NextResponse.json(
+        { error: 'ノートが見つかりません' },
+        { status: 404 }
+      );
+    }
+
+    // 本人のノートか確認
+    if (note.mentorId !== mentorId) {
+      return NextResponse.json(
+        { error: 'このノートへのアクセス権限がありません' },
+        { status: 403 }
+      );
+    }
+
+    // ノートを更新
+    const updatedNote = await prisma.mentorNote.update({
+      where: { id: noteId },
+      data: {
+        ...(title !== undefined && { title }),
+        ...(content !== undefined && { content }),
+        ...(noteType !== undefined && { noteType }),
+        ...(isSharedWithClient !== undefined && { isSharedWithClient }),
+        ...(tags !== undefined && { tags }),
+        ...(linkedDataType !== undefined && { linkedDataType }),
+        ...(linkedDataId !== undefined && { linkedDataId }),
+      },
+    });
+
+    return NextResponse.json({ data: updatedNote });
   } catch (error) {
     console.error('ノート更新エラー:', error);
     return NextResponse.json(
-      { error: 'ノートの更新に失敗しました' },
+      { error: 'ノートの更新に失敗しました', detail: error },
       { status: 500 }
     );
   }
 }
 
+/**
+ * メンターノート削除
+ * DELETE /api/mentor/notes/[id]
+ */
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     // メンター認証確認
-    await verifyMentor();
+    const session = await verifyMentor();
+    const mentorId = session.userId;
 
     const { id: noteId } = await params;
 
-    // TODO: 実際のデータベースからノート削除（マイグレーション後）
+    // ノートを取得
+    const note = await prisma.mentorNote.findUnique({
+      where: { id: noteId },
+    });
+
+    if (!note) {
+      return NextResponse.json(
+        { error: 'ノートが見つかりません' },
+        { status: 404 }
+      );
+    }
+
+    // 本人のノートか確認
+    if (note.mentorId !== mentorId) {
+      return NextResponse.json(
+        { error: 'このノートへのアクセス権限がありません' },
+        { status: 403 }
+      );
+    }
+
+    // ノートを削除
+    await prisma.mentorNote.delete({
+      where: { id: noteId },
+    });
 
     return NextResponse.json({ message: 'ノートを削除しました' });
   } catch (error) {
     console.error('ノート削除エラー:', error);
     return NextResponse.json(
-      { error: 'ノートの削除に失敗しました' },
+      { error: 'ノートの削除に失敗しました', detail: error },
       { status: 500 }
     );
   }

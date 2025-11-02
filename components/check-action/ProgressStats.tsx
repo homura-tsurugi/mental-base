@@ -13,21 +13,25 @@ export const ProgressStats: React.FC<ProgressStatsProps> = ({ stats }) => {
       value: `${stats.achievementRate}%`,
       label: '達成率',
       color: 'var(--check-color)',
+      testId: 'stat-achievement-rate',
     },
     {
       value: stats.completedTasks,
       label: '完了タスク',
       color: 'var(--do-color)',
+      testId: 'stat-completed-tasks',
     },
     {
       value: stats.logDays,
       label: 'ログ記録日数',
       color: 'var(--primary)',
+      testId: 'stat-log-days',
     },
     {
       value: stats.activeGoals,
       label: '目標進行中',
       color: 'var(--action-color)',
+      testId: 'stat-active-goals',
     },
   ];
 
@@ -36,9 +40,11 @@ export const ProgressStats: React.FC<ProgressStatsProps> = ({ stats }) => {
       {statItems.map((item, index) => (
         <div
           key={index}
+          data-testid="stats-card"
           className="bg-[var(--bg-primary)] rounded-lg p-4 shadow-sm text-center"
         >
           <div
+            data-testid={item.testId}
             className="text-3xl font-bold mb-1"
             style={{ color: item.color }}
           >

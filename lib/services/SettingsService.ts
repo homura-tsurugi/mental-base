@@ -44,7 +44,8 @@ export class SettingsService {
         throw new Error(`プロフィール取得に失敗しました: ${response.status}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      return result.data || result;
     } catch (error) {
       console.error('SettingsService.getProfile error:', error);
       throw error;
@@ -90,7 +91,8 @@ export class SettingsService {
         throw new Error(`プロフィール更新に失敗しました: ${response.status}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      return result.data || result;
     } catch (error) {
       console.error('SettingsService.updateProfile error:', error);
       throw error;
@@ -169,7 +171,8 @@ export class SettingsService {
         throw new Error(`設定取得に失敗しました: ${response.status}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      return result.data || result;
     } catch (error) {
       console.error('SettingsService.getSettings error:', error);
       throw error;
@@ -201,7 +204,8 @@ export class SettingsService {
         throw new Error(`設定更新に失敗しました: ${response.status}`);
       }
 
-      return await response.json();
+      const result = await response.json();
+      return result.data || result;
     } catch (error) {
       console.error('SettingsService.updateNotificationSettings error:', error);
       throw error;

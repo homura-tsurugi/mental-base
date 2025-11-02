@@ -32,11 +32,11 @@ export const LogForm: React.FC<LogFormProps> = ({ emotionOptions, onSubmit }) =>
   };
 
   return (
-    <Card className="p-4 mb-4 shadow-sm">
+    <Card data-testid="log-form" className="p-4 mb-4 shadow-sm">
       {/* Header */}
       <div className="flex items-center gap-2 mb-4">
         <span className="material-icons text-[var(--primary)]">edit_note</span>
-        <h3 className="text-base font-semibold text-[var(--text-primary)]">今日のログを記録</h3>
+        <h3 data-testid="log-form-title" className="text-base font-semibold text-[var(--text-primary)]">今日のログを記録</h3>
       </div>
 
       {/* Textarea */}
@@ -45,6 +45,7 @@ export const LogForm: React.FC<LogFormProps> = ({ emotionOptions, onSubmit }) =>
           今日の振り返り
         </Label>
         <textarea
+          data-testid="log-textarea"
           id="log-content"
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -54,7 +55,7 @@ export const LogForm: React.FC<LogFormProps> = ({ emotionOptions, onSubmit }) =>
       </div>
 
       {/* Emotion Selector */}
-      <div className="mb-4">
+      <div data-testid="emotion-selector" className="mb-4">
         <Label className="text-sm font-medium text-[var(--text-secondary)] mb-2 block">
           今日の気分
         </Label>
@@ -63,6 +64,7 @@ export const LogForm: React.FC<LogFormProps> = ({ emotionOptions, onSubmit }) =>
             <button
               key={option.value}
               type="button"
+              data-testid={`emotion-button-${option.value}`}
               onClick={() => setSelectedEmotion(option.value)}
               className={`p-3 border-2 rounded-lg text-2xl transition-all hover:border-[var(--text-tertiary)] hover:scale-105 ${
                 selectedEmotion === option.value
@@ -79,6 +81,7 @@ export const LogForm: React.FC<LogFormProps> = ({ emotionOptions, onSubmit }) =>
 
       {/* Submit Button */}
       <Button
+        data-testid="log-submit-button"
         onClick={handleSubmit}
         disabled={!content.trim() || isSubmitting}
         className="w-full"

@@ -11,7 +11,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ chartData }) => {
   const maxValue = Math.max(...chartData.dataPoints.map((point) => point.value), 1);
 
   return (
-    <div className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
+    <div data-testid="progress-chart" className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
         <span className="material-icons text-[var(--text-secondary)]">show_chart</span>
         <h3 className="text-base font-semibold text-[var(--text-primary)]">
@@ -28,6 +28,7 @@ export const ProgressChart: React.FC<ProgressChartProps> = ({ chartData }) => {
             </div>
             <div className="flex-1 bg-[var(--bg-tertiary)] rounded-full h-6 relative overflow-hidden">
               <div
+                data-testid="chart-bar"
                 className="h-full bg-gradient-to-r from-[var(--check-color)] to-[var(--do-color)] rounded-full transition-all duration-500 flex items-center justify-end px-2"
                 style={{ width: `${(point.value / maxValue) * 100}%` }}
               >

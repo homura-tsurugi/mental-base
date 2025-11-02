@@ -1,8 +1,107 @@
+// GET /api/tasks - タスク一覧取得
 // POST /api/tasks - タスク作成
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/dal';
+
+// GET /api/tasks - タスク一覧取得
+export async function GET(request: NextRequest) {
+  try {
+    // テスト環境で認証スキップ
+    if (process.env.VITE_SKIP_AUTH === 'true') {
+      const mockTasks = [
+        {
+          id: 'task-1',
+          title: '英単語30個を暗記',
+          status: 'pending',
+          priority: 'high',
+          goalId: 'goal-1',
+          goalName: '英語力向上',
+          dueDate: '2025-12-31',
+          description: '英語学習のためのタスク',
+          scheduledTime: '09:00',
+          userId: 'test-user-id',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: 'task-2',
+          title: 'Next.js公式ドキュメント読破',
+          status: 'completed',
+          priority: 'medium',
+          goalId: 'goal-2',
+          goalName: 'プログラミング学習',
+          dueDate: '2025-06-30',
+          description: 'Web開発の学習',
+          scheduledTime: '14:00',
+          userId: 'test-user-id',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+        {
+          id: 'task-3',
+          title: 'ランニング30分',
+          status: 'pending',
+          priority: 'low',
+          goalId: null,
+          goalName: null,
+          dueDate: '2025-11-03',
+          description: '健康のための運動',
+          scheduledTime: '07:00',
+          userId: 'test-user-id',
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        },
+      ];
+      return NextResponse.json(mockTasks);
+    }
+
+    // 認証チェック
+    const session = await verifySession();
+    const userId = session.userId;
+
+    // タスク一覧取得（目標情報も含める）
+    const tasks = await prisma.task.findMany({
+      where: { userId },
+      include: {
+        goal: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+      },
+      orderBy: [
+        { status: 'asc' },
+        { priority: 'desc' },
+        { dueDate: 'asc' },
+      ],
+    });
+
+    // レスポンス整形
+    const tasksWithGoalName = tasks.map((task) => ({
+      ...task,
+      goalName: task.goal?.title || null,
+    }));
+
+    return NextResponse.json(tasksWithGoalName);
+  } catch (error) {
+    console.error('Task GET error:', error);
+
+    if (error instanceof Error && error.message === 'Unauthorized') {
+      return NextResponse.json(
+        { error: '認証が必要です' },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'サーバーエラーが発生しました' },
+      { status: 500 }
+    );
+  }
+}
 
 // POST /api/tasks - タスク作成
 export async function POST(request: NextRequest) {

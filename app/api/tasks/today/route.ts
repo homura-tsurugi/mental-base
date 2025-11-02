@@ -7,6 +7,59 @@ import { verifySession } from '@/lib/dal';
 // GET /api/tasks/today - 今日のタスク取得（目標名付き）
 export async function GET() {
   try {
+    // E2Eテスト用: 認証スキップモード
+    if (process.env.VITE_SKIP_AUTH === 'true') {
+      console.log('[API] 認証スキップモード: モック今日のタスクデータを返却');
+      const today = new Date();
+      return NextResponse.json([
+        {
+          id: 'task-1',
+          userId: 'test-user-id',
+          goalId: 'goal-1',
+          title: 'TypeScript基礎学習',
+          description: '型定義とジェネリクスについて学習する',
+          status: 'pending',
+          priority: 'high',
+          dueDate: today,
+          scheduledTime: '09:00',
+          estimatedMinutes: 60,
+          createdAt: new Date('2025-01-01'),
+          updatedAt: new Date(),
+          goalName: 'プログラミングスキル向上',
+        },
+        {
+          id: 'task-2',
+          userId: 'test-user-id',
+          goalId: 'goal-2',
+          title: '朝の運動',
+          description: '30分間のジョギング',
+          status: 'completed',
+          priority: 'high',
+          dueDate: today,
+          scheduledTime: '07:00',
+          estimatedMinutes: 30,
+          createdAt: new Date('2025-01-15'),
+          updatedAt: new Date(),
+          goalName: '健康的な生活習慣の確立',
+        },
+        {
+          id: 'task-3',
+          userId: 'test-user-id',
+          goalId: 'goal-1',
+          title: 'React hooksの復習',
+          description: 'useState, useEffect, useContextを復習',
+          status: 'pending',
+          priority: 'medium',
+          dueDate: today,
+          scheduledTime: '14:00',
+          estimatedMinutes: 90,
+          createdAt: new Date('2025-01-02'),
+          updatedAt: new Date(),
+          goalName: 'プログラミングスキル向上',
+        },
+      ], { status: 200 });
+    }
+
     // 認証チェック
     const session = await verifySession();
     const userId = session.userId;

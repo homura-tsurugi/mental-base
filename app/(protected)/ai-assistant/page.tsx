@@ -83,10 +83,23 @@ const AIAssistantPage: React.FC = () => {
     return `${hours}:${minutes}`;
   };
 
+  /**
+   * モードをテストID用の短縮形に変換
+   */
+  const getModeTestId = (mode: AIAssistantMode): string => {
+    const mapping: Record<AIAssistantMode, string> = {
+      [AIAssistantMode.PROBLEM_SOLVING]: 'problem',
+      [AIAssistantMode.LEARNING_SUPPORT]: 'learning',
+      [AIAssistantMode.PLANNING]: 'planning',
+      [AIAssistantMode.MENTORING]: 'companion',
+    };
+    return mapping[mode] || mode;
+  };
+
   if (loading) {
     return (
       <MainLayout>
-        <div className="flex items-center justify-center p-8">
+        <div data-testid="loading-state" className="flex items-center justify-center p-8">
           <div className="text-[var(--text-secondary)]">読み込み中...</div>
         </div>
       </MainLayout>
@@ -97,7 +110,7 @@ const AIAssistantPage: React.FC = () => {
     return (
       <MainLayout>
         <div className="p-4">
-          <div className="bg-red-50 text-red-600 p-4 rounded-lg">
+          <div data-testid="error-message" className="bg-red-50 text-red-600 p-4 rounded-lg">
             エラーが発生しました: {error.message}
           </div>
         </div>
@@ -108,11 +121,14 @@ const AIAssistantPage: React.FC = () => {
   return (
     <MainLayout>
       {/* Mode Selector */}
-      <div className="sticky top-[61px] bg-[var(--bg-primary)] border-b border-[var(--border-color)] px-4 py-4 overflow-x-auto z-[90] scrollbar-hide">
+      <div data-testid="mode-selector" className="sticky top-[61px] bg-[var(--bg-primary)] border-b border-[var(--border-color)] px-4 py-4 overflow-x-auto z-[90] scrollbar-hide">
         <div className="flex gap-2 min-w-min">
           {modeOptions.map((option) => (
             <button
               key={option.mode}
+              data-testid={`mode-tab-${getModeTestId(option.mode)}`}
+              data-active={selectedMode === option.mode}
+              aria-selected={selectedMode === option.mode}
               onClick={() => handleModeChange(option.mode)}
               className={`flex items-center gap-1 px-4 py-2 rounded-full border transition-all whitespace-nowrap flex-shrink-0 text-sm font-medium ${
                 selectedMode === option.mode
@@ -129,12 +145,13 @@ const AIAssistantPage: React.FC = () => {
 
       {/* Chat History Area */}
       <div
+        data-testid="chat-history"
         ref={chatHistoryRef}
         className="flex-1 overflow-y-auto px-4 py-4 flex flex-col gap-4 bg-[var(--bg-secondary)] chat-history"
         style={{ height: 'calc(100vh - 61px - 73px - 80px - 70px)' }}
       >
         {chatHistory.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-[var(--text-tertiary)]">
+          <div data-testid="empty-chat-message" className="flex flex-col items-center justify-center h-full text-[var(--text-tertiary)]">
             <span className="material-icons text-6xl mb-4">chat</span>
             <p>メッセージを送信して会話を始めましょう</p>
           </div>
@@ -142,6 +159,7 @@ const AIAssistantPage: React.FC = () => {
           chatHistory.map((message) => (
             <div
               key={message.id}
+              data-testid={`chat-message-${message.role}`}
               className={`flex flex-col max-w-[75%] animate-fadeIn ${
                 message.role === 'user'
                   ? 'self-end items-end'
@@ -161,7 +179,7 @@ const AIAssistantPage: React.FC = () => {
               >
                 {message.content}
               </div>
-              <div className="text-xs text-[var(--text-tertiary)] mt-1 px-1">
+              <div data-testid={`message-timestamp-${message.role}`} className="text-xs text-[var(--text-tertiary)] mt-1 px-1">
                 {formatTimestamp(new Date(message.createdAt))}
               </div>
             </div>
@@ -170,8 +188,9 @@ const AIAssistantPage: React.FC = () => {
       </div>
 
       {/* Message Input Area */}
-      <div className="fixed bottom-[70px] left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-[var(--bg-primary)] px-4 py-4 border-t border-[var(--border-color)] flex gap-2 items-center shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-[50]">
+      <div data-testid="message-input-area" className="fixed bottom-[70px] left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-[var(--bg-primary)] px-4 py-4 border-t border-[var(--border-color)] flex gap-2 items-center shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-[50]">
         <input
+          data-testid="message-input"
           type="text"
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
@@ -181,12 +200,13 @@ const AIAssistantPage: React.FC = () => {
           className="flex-1 px-4 py-3 border border-[var(--border-color)] rounded-3xl text-[15px] outline-none transition-colors focus:border-[var(--primary)] disabled:bg-[var(--bg-tertiary)] disabled:text-[var(--text-disabled)]"
         />
         <button
+          data-testid="send-button"
           onClick={handleSendMessage}
           disabled={!inputValue.trim() || sending}
           className="w-12 h-12 rounded-full bg-[var(--primary)] text-white flex items-center justify-center transition-all hover:bg-[var(--primary-light)] active:scale-95 disabled:bg-[var(--text-disabled)] disabled:cursor-not-allowed flex-shrink-0"
         >
           {sending ? (
-            <span className="material-icons animate-spin">refresh</span>
+            <span data-testid="sending-spinner" className="material-icons animate-spin">refresh</span>
           ) : (
             <span className="material-icons">send</span>
           )}

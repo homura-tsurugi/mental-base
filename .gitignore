@@ -31,5 +31,9 @@ Thumbs.db
 *.tmp
 *.temp
 
+# Test results
+test-results/
+playwright-report/
+
 /lib/generated/prisma
 

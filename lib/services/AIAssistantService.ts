@@ -147,7 +147,10 @@ export class AIAssistantService {
    */
   async getPageData(mode: AIAssistantMode): Promise<AIAssistantPageData> {
     try {
-      const response = await fetch(`${this.baseUrl}/ai-assistant/page-data?mode=${mode}`, {
+      // E2Eテストモード検出
+      const skipAuth = typeof window !== 'undefined' && localStorage.getItem('VITE_SKIP_AUTH') === 'true';
+
+      const response = await fetch(`${this.baseUrl}/ai-assistant/page-data?mode=${mode}${skipAuth ? '&skipAuth=true' : ''}`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

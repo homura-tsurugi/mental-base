@@ -4,11 +4,17 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { verifyMentor } from '@/lib/dal';
+import { prisma } from '@/lib/prisma';
 
+/**
+ * メンターノート一覧取得
+ * GET /api/mentor/notes?clientId=xxx
+ */
 export async function GET(request: NextRequest) {
   try {
     // メンター認証確認
     const session = await verifyMentor();
+    const mentorId = session.userId;
 
     const { searchParams } = new URL(request.url);
     const clientId = searchParams.get('clientId');
@@ -20,70 +26,111 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // TODO: 実際のデータベースからノート取得（マイグレーション後）
-    const mockNotes = [
-      {
-        id: 'note-001',
-        mentorId: session.userId,
+    // メンター-クライアント関係を確認
+    const relationship = await prisma.mentorClientRelationship.findFirst({
+      where: {
+        mentorId,
         clientId,
-        title: '初回面談の記録',
-        content: 'クライアントとの初回面談。目標設定について話し合いました。',
-        noteType: 'general',
-        isPrivate: true,
-        tags: ['初回', '面談'],
-        linkedDataType: null,
-        linkedDataId: null,
-        createdAt: new Date(2024, 10, 1).toISOString(),
-        updatedAt: new Date(2024, 10, 1).toISOString(),
+        status: 'active',
       },
-    ];
+    });
 
-    return NextResponse.json({ notes: mockNotes });
+    if (!relationship) {
+      return NextResponse.json(
+        { error: 'アクティブなメンター-クライアント関係が見つかりません' },
+        { status: 404 }
+      );
+    }
+
+    // ノート一覧を取得
+    const notes = await prisma.mentorNote.findMany({
+      where: {
+        mentorId,
+        clientId,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return NextResponse.json({ data: notes });
   } catch (error) {
     console.error('ノート一覧取得エラー:', error);
     return NextResponse.json(
-      { error: 'ノートの取得に失敗しました' },
+      { error: 'ノートの取得に失敗しました', detail: error },
       { status: 500 }
     );
   }
 }
 
+/**
+ * メンターノート作成
+ * POST /api/mentor/notes
+ */
 export async function POST(request: NextRequest) {
   try {
     // メンター認証確認
     const session = await verifyMentor();
+    const mentorId = session.userId;
 
     const body = await request.json();
-    const { clientId, title, content, noteType, isPrivate, tags } = body;
+    const {
+      clientId,
+      title,
+      content,
+      noteType,
+      isSharedWithClient,
+      tags,
+      linkedDataType,
+      linkedDataId,
+    } = body;
 
     if (!clientId || !title || !content) {
       return NextResponse.json(
-        { error: '必須項目が不足しています' },
+        {
+          error: '必須項目が不足しています（clientId, title, contentは必須）',
+        },
         { status: 400 }
       );
     }
 
-    // TODO: 実際のデータベースにノート保存（マイグレーション後）
-    const mockNote = {
-      id: `note-${Date.now()}`,
-      mentorId: session.userId,
-      clientId,
-      title,
-      content,
-      noteType: noteType || 'general',
-      isPrivate: isPrivate !== undefined ? isPrivate : true,
-      tags: tags || [],
-      linkedDataType: null,
-      linkedDataId: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    // メンター-クライアント関係を確認
+    const relationship = await prisma.mentorClientRelationship.findFirst({
+      where: {
+        mentorId,
+        clientId,
+        status: 'active',
+      },
+    });
 
-    return NextResponse.json({ note: mockNote }, { status: 201 });
+    if (!relationship) {
+      return NextResponse.json(
+        { error: 'アクティブなメンター-クライアント関係が見つかりません' },
+        { status: 404 }
+      );
+    }
+
+    // ノートを作成
+    const note = await prisma.mentorNote.create({
+      data: {
+        mentorId,
+        clientId,
+        title,
+        content,
+        noteType: noteType || 'general',
+        isSharedWithClient:
+          isSharedWithClient !== undefined ? isSharedWithClient : false,
+        tags: tags || [],
+        linkedDataType: linkedDataType || null,
+        linkedDataId: linkedDataId || null,
+      },
+    });
+
+    return NextResponse.json({ data: note }, { status: 201 });
   } catch (error) {
     console.error('ノート作成エラー:', error);
     return NextResponse.json(
-      { error: 'ノートの作成に失敗しました' },
+      { error: 'ノートの作成に失敗しました', detail: error },
       { status: 500 }
     );
   }

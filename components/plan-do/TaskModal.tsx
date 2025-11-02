@@ -61,7 +61,7 @@ export const TaskModal: React.FC<TaskModalProps> = ({ isOpen, onClose, onSubmit,
       className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[1000]"
       onClick={handleBackdropClick}
     >
-      <div className="bg-[var(--bg-primary)] rounded-xl p-6 max-w-[500px] w-full max-h-[80vh] overflow-y-auto shadow-lg">
+      <div data-testid="task-modal" className="bg-[var(--bg-primary)] rounded-xl p-6 max-w-[500px] w-full max-h-[80vh] overflow-y-auto shadow-lg">
         {/* Header */}
         <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6">新規タスクを作成</h2>
 

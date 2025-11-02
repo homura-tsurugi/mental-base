@@ -19,6 +19,19 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({
   currentPeriod,
   onPeriodChange,
 }) => {
+  // data-testid用のマッピング
+  const getTestId = (value: PeriodType): string => {
+    const mapping: Record<PeriodType, string> = {
+      today: 'period-today',
+      this_week: 'period-thisweek',
+      last_week: 'period-lastweek',
+      this_month: 'period-thismonth',
+      last_month: 'period-lastmonth',
+      custom: 'period-custom',
+    };
+    return mapping[value];
+  };
+
   return (
     <div className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
       <div className="text-sm font-medium text-[var(--text-secondary)] mb-2">
@@ -28,6 +41,8 @@ export const PeriodSelector: React.FC<PeriodSelectorProps> = ({
         {periodOptions.map((option) => (
           <button
             key={option.value}
+            data-testid={getTestId(option.value)}
+            data-active={currentPeriod === option.value}
             onClick={() => onPeriodChange(option.value)}
             className={`
               px-3 py-2 rounded-lg text-sm font-medium transition-all

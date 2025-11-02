@@ -36,7 +36,7 @@ export default defineConfig({
 
   // レポーター設定
   reporter: [
-    ['html', { outputFolder: 'test-results/playwright-report' }],
+    ['html', { outputFolder: 'playwright-report' }],
     ['list'],
   ],
 

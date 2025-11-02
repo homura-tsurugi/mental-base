@@ -142,6 +142,50 @@ export async function GET(request: Request) {
     });
   }
 
+  // Mock: long-title (長いタスクタイトルテスト用)
+  if (mockType === 'long-title') {
+    return NextResponse.json({
+      compassSummary: { planProgress: 75, doProgress: 60, checkProgress: 50, actionProgress: 40 },
+      todayTasks: [
+        {
+          id: 'task-long-1',
+          title: 'これは非常に長いタスクタイトルのテストです。タスクタイトルが長い場合でも適切に表示され、UIが崩れないことを確認するためのテストケースです。',
+          status: 'pending',
+          priority: 'high',
+          goalName: '健康管理',
+          scheduledTime: '09:00',
+          dueDate: new Date(),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          userId: 'user1',
+          goalId: 'goal1',
+        },
+      ],
+      recentActivities: [],
+      notifications: [],
+    });
+  }
+
+  // Mock: zero-progress (進捗率0%テスト用)
+  if (mockType === 'zero-progress') {
+    return NextResponse.json({
+      compassSummary: { planProgress: 0, doProgress: 0, checkProgress: 0, actionProgress: 0 },
+      todayTasks: [],
+      recentActivities: [],
+      notifications: [],
+    });
+  }
+
+  // Mock: full-progress (進捗率100%テスト用)
+  if (mockType === 'full-progress') {
+    return NextResponse.json({
+      compassSummary: { planProgress: 100, doProgress: 100, checkProgress: 100, actionProgress: 100 },
+      todayTasks: [],
+      recentActivities: [],
+      notifications: [],
+    });
+  }
+
   // @E2E_MOCK: E2Eテスト用に一時的にモックデータを返す
   // TODO: データベース接続が完了したら削除
   const mockData: DashboardData = {

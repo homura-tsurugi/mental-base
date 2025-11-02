@@ -23,7 +23,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('E2E-PLDO-002: 初期タブ状態（Plan）', () => {
-  test.only('E2E-PLDO-002: Planタブがアクティブ、Doタブが非アクティブ', async ({ page }) => {
+  test('E2E-PLDO-002: Planタブがアクティブ、Doタブが非アクティブ', async ({ page }) => {
     console.log('[Test Start] E2E-PLDO-002: 初期タブ状態（Plan）テスト開始');
 
     // コンソールログを監視（モック検出用）

@@ -34,8 +34,11 @@ export class CheckActionService {
     try {
       const period = this.getPeriodOption(periodType);
 
+      // E2Eテストモード検出
+      const skipAuth = typeof window !== 'undefined' && localStorage.getItem('VITE_SKIP_AUTH') === 'true';
+
       const response = await fetch(
-        `${this.baseUrl}/check-action?period=${periodType}&startDate=${period.startDate.toISOString()}&endDate=${period.endDate.toISOString()}`,
+        `${this.baseUrl}/check-action?period=${periodType}&startDate=${period.startDate.toISOString()}&endDate=${period.endDate.toISOString()}${skipAuth ? '&skipAuth=true' : ''}`,
         {
           method: 'GET',
           headers: {

@@ -13,13 +13,23 @@ interface MainLayoutProps {
 export const MainLayout: React.FC<MainLayoutProps> = ({ children, user }) => {
   const pathname = usePathname();
 
-  const navigationItems = [
+  // 基本ナビゲーションアイテム
+  const baseNavigationItems = [
     { id: 'home', label: 'ホーム', icon: 'home', href: '/' },
     { id: 'plan-do', label: '計画/実行', icon: 'assignment', href: '/plan-do' },
     { id: 'check-action', label: '確認/改善', icon: 'analytics', href: '/check-action' },
     { id: 'ai-assistant', label: '学習', icon: 'school', href: '/ai-assistant' },
     { id: 'settings', label: '設定', icon: 'settings', href: '/settings' },
   ];
+
+  // メンターロールの場合、メンターダッシュボードを追加
+  const navigationItems = user?.isMentor
+    ? [
+        ...baseNavigationItems.slice(0, 4), // ホーム〜学習まで
+        { id: 'mentor', label: 'メンター', icon: 'groups', href: '/mentor' },
+        baseNavigationItems[4], // 設定
+      ]
+    : baseNavigationItems;
 
   return (
     <div className="min-h-screen bg-[var(--bg-secondary)] max-w-[600px] mx-auto">

@@ -52,7 +52,7 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
   };
 
   return (
-    <div className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
+    <div data-testid="reflection-form" className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
       <div className="flex items-center gap-2 mb-4">
         <span className="material-icons text-[var(--text-secondary)]">edit_note</span>
         <h3 className="text-base font-semibold text-[var(--text-primary)]">
@@ -67,6 +67,7 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
             {period.label}の振り返り内容
           </label>
           <textarea
+            data-testid="reflection-content"
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="今週の活動を振り返って、気づいたことや学びを記録しましょう"
@@ -81,6 +82,7 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
             達成したこと（成功体験）
           </label>
           <textarea
+            data-testid="reflection-achievement"
             value={achievements}
             onChange={(e) => setAchievements(e.target.value)}
             placeholder="うまくいったこと、達成できたことを記録しましょう"
@@ -94,6 +96,7 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
             課題・困難だったこと
           </label>
           <textarea
+            data-testid="reflection-challenge"
             value={challenges}
             onChange={(e) => setChallenges(e.target.value)}
             placeholder="うまくいかなかったこと、難しかったことを記録しましょう"
@@ -103,6 +106,7 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
 
         {/* AI分析ボタン */}
         <button
+          data-testid="btn-ai-analyze"
           type="button"
           onClick={onAIAnalyzeClick}
           disabled={isSubmitting}

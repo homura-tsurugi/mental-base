@@ -35,7 +35,7 @@ const PlanDoPage: React.FC = () => {
   if (loading) {
     return (
       <MainLayout>
-        <div className="flex items-center justify-center py-16">
+        <div data-testid="loading-state" className="flex items-center justify-center py-16">
           <div className="text-center">
             <div className="inline-block w-8 h-8 border-4 border-[var(--primary)] border-t-transparent rounded-full animate-spin mb-3"></div>
             <p className="text-[var(--text-secondary)]">読み込み中...</p>
@@ -50,7 +50,7 @@ const PlanDoPage: React.FC = () => {
     return (
       <MainLayout>
         <div className="p-4">
-          <Card className="p-4 bg-[var(--error-light)] border-[var(--error)]">
+          <Card data-testid="error-message" className="p-4 bg-[var(--error-light)] border-[var(--error)]">
             <p className="text-[var(--error)] font-medium">エラーが発生しました: {error.message}</p>
           </Card>
         </div>
@@ -116,11 +116,13 @@ const PlanDoPage: React.FC = () => {
     <MainLayout>
       <div className="p-4">
         {/* Page Title */}
-        <h1 className="text-2xl font-bold text-[var(--text-primary)] mb-6">計画・実行</h1>
+        <h1 data-testid="page-title" className="text-2xl font-bold text-[var(--text-primary)] mb-6">計画・実行</h1>
 
         {/* Tab Switcher */}
-        <div className="bg-[var(--bg-primary)] rounded-lg p-1 mb-6 shadow-sm flex gap-1">
+        <div data-testid="tab-switcher" className="bg-[var(--bg-primary)] rounded-lg p-1 mb-6 shadow-sm flex gap-1">
           <button
+            data-testid="tab-plan"
+            data-active={activeTab === 'plan'}
             onClick={() => setActiveTab('plan')}
             className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               activeTab === 'plan'
@@ -132,6 +134,8 @@ const PlanDoPage: React.FC = () => {
             Plan(計画)
           </button>
           <button
+            data-testid="tab-do"
+            data-active={activeTab === 'do'}
             onClick={() => setActiveTab('do')}
             className={`flex-1 py-3 px-4 rounded-lg text-sm font-medium transition-all flex items-center justify-center gap-2 ${
               activeTab === 'do'
@@ -146,19 +150,21 @@ const PlanDoPage: React.FC = () => {
 
         {/* Plan Tab Content */}
         {activeTab === 'plan' && (
-          <div>
+          <div data-testid="plan-content">
             {/* Goal List */}
             {data.goals.length > 0 ? (
-              data.goals.map((goal) => (
-                <GoalCard
-                  key={goal.id}
-                  goal={goal}
-                  onEdit={handleEditGoal}
-                  onDelete={handleDeleteGoal}
-                />
-              ))
+              <div data-testid="goal-list">
+                {data.goals.map((goal) => (
+                  <GoalCard
+                    key={goal.id}
+                    goal={goal}
+                    onEdit={handleEditGoal}
+                    onDelete={handleDeleteGoal}
+                  />
+                ))}
+              </div>
             ) : (
-              <Card className="p-8 text-center mb-4">
+              <Card data-testid="empty-goals-message" className="p-8 text-center mb-4">
                 <span className="material-icons text-5xl text-[var(--text-tertiary)] mb-3">flag</span>
                 <p className="text-[var(--text-secondary)] mb-2">まだ目標がありません</p>
                 <p className="text-sm text-[var(--text-tertiary)]">
@@ -168,7 +174,7 @@ const PlanDoPage: React.FC = () => {
             )}
 
             {/* Create Goal Button */}
-            <Button onClick={() => setIsGoalModalOpen(true)} className="w-full">
+            <Button data-testid="btn-create-goal" onClick={() => setIsGoalModalOpen(true)} className="w-full">
               <span className="material-icons mr-2">add</span>
               新規目標を作成
             </Button>
@@ -177,22 +183,22 @@ const PlanDoPage: React.FC = () => {
 
         {/* Do Tab Content */}
         {activeTab === 'do' && (
-          <div>
+          <div data-testid="do-content">
             {/* Today's Tasks */}
-            <Card className="p-4 mb-4 shadow-sm">
+            <Card data-testid="today-tasks-section" className="p-4 mb-4 shadow-sm">
               <div className="flex items-center gap-2 mb-4">
                 <span className="material-icons text-[var(--primary)]">checklist</span>
                 <h3 className="text-base font-semibold text-[var(--text-primary)]">今日のタスク</h3>
               </div>
 
               {data.todayTasks.length > 0 ? (
-                <div>
+                <div data-testid="task-list">
                   {data.todayTasks.map((task) => (
                     <TaskItem key={task.id} task={task} onToggle={handleToggleTask} />
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-8">
+                <div data-testid="empty-tasks-message" className="text-center py-8">
                   <span className="material-icons text-4xl text-[var(--text-tertiary)] mb-2">
                     task_alt
                   </span>
@@ -205,7 +211,7 @@ const PlanDoPage: React.FC = () => {
             <LogForm emotionOptions={data.emotionOptions} onSubmit={handleCreateLog} />
 
             {/* Create Task Button */}
-            <Button onClick={() => setIsTaskModalOpen(true)} className="w-full">
+            <Button data-testid="btn-create-task" onClick={() => setIsTaskModalOpen(true)} className="w-full">
               <span className="material-icons mr-2">add</span>
               新規タスクを作成
             </Button>
@@ -215,6 +221,7 @@ const PlanDoPage: React.FC = () => {
 
       {/* Modals */}
       <GoalModal
+        data-testid="modal-goal"
         isOpen={isGoalModalOpen}
         onClose={handleCloseGoalModal}
         onSubmit={editingGoal ? handleUpdateGoal : handleCreateGoal}
@@ -222,6 +229,7 @@ const PlanDoPage: React.FC = () => {
       />
 
       <TaskModal
+        data-testid="modal-task"
         isOpen={isTaskModalOpen}
         onClose={() => setIsTaskModalOpen(false)}
         onSubmit={handleCreateTask}

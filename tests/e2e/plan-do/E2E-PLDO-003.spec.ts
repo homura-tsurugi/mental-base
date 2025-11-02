@@ -23,7 +23,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('E2E-PLDO-003: ローディング状態表示', () => {
-  test.only('E2E-PLDO-003: データ取得中にスピナーと「読み込み中...」が表示される', async ({ page }) => {
+  test('E2E-PLDO-003: データ取得中にスピナーと「読み込み中...」が表示される', async ({ page }) => {
     console.log('[Test Start] E2E-PLDO-003: ローディング状態表示テスト開始');
 
     // コンソールログを監視（モック検出用）

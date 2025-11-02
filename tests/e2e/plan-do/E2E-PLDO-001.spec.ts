@@ -23,7 +23,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test.describe('E2E-PLDO-001: Plan-Doページ初期アクセス', () => {
-  test.only('E2E-PLDO-001: ページが正しく表示される', async ({ page }) => {
+  test('E2E-PLDO-001: ページが正しく表示される', async ({ page }) => {
     // コンソールログを監視
     page.on('console', (msg) => {
       console.log('[Browser Console]', msg.type(), msg.text());

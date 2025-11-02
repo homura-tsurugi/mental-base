@@ -24,8 +24,8 @@ test.describe('Plan-Do Page Basic Tests', () => {
   test('E2E-PLDO-002: Planタブがアクティブ', async ({ page }) => {
     const planTab = await page.getByRole('button', { name: /Plan/i });
 
-    // Planタブが青色背景でアクティブ
-    await expect(planTab).toHaveClass(/bg-blue/);
+    // Planタブがアクティブ状態であることを確認（data-active属性またはクラス）
+    await expect(planTab).toHaveAttribute('data-active', 'true');
   });
 
   // E2E-PLDO-003: ローディング状態表示
@@ -148,15 +148,12 @@ test.describe('Plan-Do Page Basic Tests', () => {
     const doTab = page.getByRole('button', { name: /Do/i });
     await doTab.click();
 
-    // Doタブが緑色背景でアクティブ
-    await expect(doTab).toHaveClass(/bg-green/);
+    // Doタブがアクティブになる
+    await expect(doTab).toHaveAttribute('data-active', 'true');
 
     // Planタブが非アクティブに
     const planTab = page.getByRole('button', { name: /Plan/i });
-    const hasBlueClass = await planTab.evaluate((el) => {
-      return el.className.includes('bg-blue');
-    });
-    expect(!hasBlueClass).toBeTruthy();
+    await expect(planTab).toHaveAttribute('data-active', 'false');
   });
 
   // E2E-PLDO-022: 今日のタスク一覧表示

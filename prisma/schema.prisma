@@ -291,11 +291,11 @@ model ClientDataAccessPermission {
   id              String   @id @default(uuid())
   relationshipId  String
   clientId        String
-  allowGoals      Boolean  @default(false)
-  allowTasks      Boolean  @default(false)
-  allowLogs       Boolean  @default(false)
-  allowReflections Boolean @default(false)
-  allowAiReports  Boolean  @default(false)
+  allowGoals      Boolean  @default(true)
+  allowTasks      Boolean  @default(true)
+  allowLogs       Boolean  @default(true)
+  allowReflections Boolean @default(true)
+  allowAiReports  Boolean  @default(true)
   isActive        Boolean  @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -338,7 +338,7 @@ model MentorNote {
   title          String   @db.VarChar(200)
   content        String   @db.Text
   noteType       String   @default("general") // 'general' | 'observation' | 'concern' | 'achievement'
-  isPrivate      Boolean  @default(true) // true: メンターのみ閲覧可能、false: クライアントと共有
+  isSharedWithClient Boolean @default(false) // true: クライアントと共有、false: メンターのみ閲覧可能
   tags           String[] @default([])
   linkedDataType String?  // 'goal' | 'task' | 'log' | 'reflection'
   linkedDataId   String?

@@ -23,6 +23,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
   ]);
   const [newActionItem, setNewActionItem] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
 
   const handleAddActionItem = () => {
     if (newActionItem.trim()) {
@@ -58,7 +59,8 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
         reportId,
       });
 
-      alert('改善計画を作成しました');
+      setShowSuccess(true);
+      setTimeout(() => setShowSuccess(false), 3000);
 
       // フォームをリセット（任意）
       // setTitle('');
@@ -74,6 +76,16 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
 
   return (
     <div className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
+      {/* Success Alert */}
+      {showSuccess && (
+        <div data-testid="alert-success" className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
+          <div className="flex items-center gap-2">
+            <span className="material-icons">check_circle</span>
+            <span className="font-medium">改善計画を作成しました</span>
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center gap-2 mb-4">
         <span className="material-icons text-[var(--text-secondary)]">assignment</span>
         <h3 className="text-base font-semibold text-[var(--text-primary)]">
@@ -81,13 +93,14 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
         </h3>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form data-testid="action-plan-form" onSubmit={handleSubmit} className="space-y-4">
         {/* 計画タイトル */}
         <div>
           <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
             計画タイトル
           </label>
           <input
+            data-testid="action-plan-title"
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
@@ -103,6 +116,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
             計画の説明
           </label>
           <textarea
+            data-testid="action-plan-description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="AI提案を参考に、具体的な改善内容を記載しましょう"
@@ -118,19 +132,21 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
           </label>
 
           {/* 既存のアクション項目リスト */}
-          <div className="space-y-2 mb-3">
+          <div data-testid="action-items-list" className="space-y-2 mb-3">
             {actionItems.map((item, index) => (
               <div
                 key={index}
+                data-testid="action-item"
                 className="flex items-center gap-2 p-3 bg-[var(--bg-tertiary)] rounded-lg"
               >
-                <div className="w-6 h-6 rounded-full bg-[var(--action-color)] text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
+                <div data-testid="action-item-number" className="w-6 h-6 rounded-full bg-[var(--action-color)] text-white flex items-center justify-center text-xs font-semibold flex-shrink-0">
                   {index + 1}
                 </div>
                 <div className="flex-1 text-sm text-[var(--text-primary)]">
                   {item}
                 </div>
                 <button
+                  data-testid="btn-delete-action-item"
                   type="button"
                   onClick={() => handleRemoveActionItem(index)}
                   className="text-[var(--text-tertiary)] hover:text-[var(--danger)] transition-colors"
@@ -144,6 +160,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
           {/* 新しいアクション項目追加フォーム */}
           <div className="flex gap-2">
             <input
+              data-testid="action-item-input"
               type="text"
               value={newActionItem}
               onChange={(e) => setNewActionItem(e.target.value)}
@@ -157,6 +174,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
               className="flex-1 px-4 py-2 border border-[var(--border-color)] rounded-lg transition-colors focus:outline-none focus:border-[var(--action-color)] text-[var(--text-primary)] bg-[var(--bg-primary)] text-sm"
             />
             <button
+              data-testid="btn-add-action-item"
               type="button"
               onClick={handleAddActionItem}
               className="px-4 py-2 bg-[var(--bg-tertiary)] text-[var(--text-secondary)] border-2 border-dashed border-[var(--border-color)] rounded-lg hover:bg-[var(--bg-secondary)] hover:border-[var(--action-color)] transition-all flex items-center gap-1"
@@ -169,6 +187,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
 
         {/* 作成ボタン */}
         <button
+          data-testid="btn-create-action-plan"
           type="submit"
           disabled={isSubmitting}
           className="w-full px-4 py-3 bg-[var(--action-color)] text-white rounded-lg font-semibold shadow-md hover:opacity-90 hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"

@@ -66,7 +66,7 @@ export const GoalModal: React.FC<GoalModalProps> = ({ isOpen, onClose, onSubmit,
       className="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[1000]"
       onClick={handleBackdropClick}
     >
-      <div className="bg-[var(--bg-primary)] rounded-xl p-6 max-w-[500px] w-full max-h-[80vh] overflow-y-auto shadow-lg">
+      <div data-testid="goal-modal" className="bg-[var(--bg-primary)] rounded-xl p-6 max-w-[500px] w-full max-h-[80vh] overflow-y-auto shadow-lg">
         {/* Header */}
         <h2 className="text-xl font-bold text-[var(--text-primary)] mb-6">
           {editingGoal ? '目標を編集' : '新規目標を作成'}
