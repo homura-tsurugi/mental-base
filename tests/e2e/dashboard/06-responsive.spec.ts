@@ -142,10 +142,15 @@ test.describe('Dashboard Responsive Design', () => {
 
   // E2E-DASH-035: タッチジェスチャー対応
   test('E2E-DASH-035: タッチジェスチャー対応 - モバイルでのタッチ操作確認', async ({
-    page,
+    browser,
   }) => {
-    // モバイルビューポートを設定
-    await page.setViewportSize({ width: 375, height: 667 });
+    // モバイルタッチサポートを有効にした新しいコンテキストを作成
+    const context = await browser.newContext({
+      hasTouch: true,
+      isMobile: true,
+      viewport: { width: 375, height: 667 },
+    });
+    const page = await context.newPage();
 
     // ダッシュボードにアクセス
     await page.goto('/');

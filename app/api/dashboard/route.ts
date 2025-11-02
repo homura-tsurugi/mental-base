@@ -122,6 +122,26 @@ export async function GET(request: Request) {
     await new Promise((resolve) => setTimeout(resolve, 5000)); // 5 second delay
   }
 
+  // Mock: xss-attack (XSS対策テスト用)
+  if (mockType === 'xss-attack') {
+    return NextResponse.json({
+      compassSummary: { planProgress: 75, doProgress: 60, checkProgress: 50, actionProgress: 40 },
+      todayTasks: [],
+      recentActivities: [
+        {
+          id: 'xss-activity-1',
+          type: 'task_completed',
+          description: '<script>console.log("XSS Attack Executed")</script><strong>XSSテスト:</strong> スクリプトタグを含むアクティビティ',
+          timestamp: new Date(Date.now() - 15 * 60 * 1000),
+          icon: 'check_circle',
+          iconColor: '#059669',
+          backgroundColor: 'rgb(220, 252, 231)',
+        },
+      ],
+      notifications: [],
+    });
+  }
+
   // @E2E_MOCK: E2Eテスト用に一時的にモックデータを返す
   // TODO: データベース接続が完了したら削除
   const mockData: DashboardData = {
