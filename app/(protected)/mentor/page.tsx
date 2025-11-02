@@ -14,12 +14,17 @@ export default async function MentorDashboardPage() {
       {/* ページヘッダー */}
       <header className="mb-8">
         <h1
+          data-testid="page-title"
           className="text-[32px] font-bold mb-2"
           style={{ color: 'var(--text-primary)' }}
         >
           メンターダッシュボード
         </h1>
-        <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
+        <p
+          data-testid="page-header-subtitle"
+          className="text-base"
+          style={{ color: 'var(--text-secondary)' }}
+        >
           担当クライアントの進捗を一目で確認
         </p>
       </header>

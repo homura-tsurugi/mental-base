@@ -117,6 +117,16 @@ export const verifyRole = cache(
  * @returns {Promise<{ userId: string; userEmail: string; userName: string; userRole: UserRole }>}
  */
 export const verifyMentor = cache(async () => {
+  // E2Eテスト用: 認証スキップモードではmentorロールのモックユーザーを返す
+  if (shouldSkipAuth()) {
+    console.warn('[DAL] 認証スキップモード有効: E2Eテスト用mentorモックユーザーを使用');
+    return {
+      userId: 'test-mentor-id',
+      userEmail: 'mentor@mentalbase.local',
+      userName: 'Test Mentor',
+      userRole: 'mentor' as UserRole,
+    };
+  }
   return verifyRole('mentor', '/auth');
 });
 

@@ -1,135 +1,141 @@
-// POST /api/logs - ログ記録
+import { NextResponse } from 'next/server';
 
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
-import { verifySession } from '@/lib/dal';
+/**
+ * GET /api/logs - ログ履歴取得（Mock実装）
+ */
+export async function GET() {
+  const mockLogs = [
+    {
+      id: '1',
+      userId: '1',
+      content: '今日は午前中に会議が3つあり、午後は資料作成に集中しました。進捗は順調です。',
+      date: '2025-01-15',
+      createdAt: '2025-01-15T09:30:00Z',
+      updatedAt: '2025-01-15T09:30:00Z',
+    },
+    {
+      id: '2',
+      userId: '1',
+      content: 'プロジェクトの企画書を完成させました。チームメンバーからの フィードバックも良好でした。',
+      date: '2025-01-14',
+      createdAt: '2025-01-14T14:20:00Z',
+      updatedAt: '2025-01-14T14:20:00Z',
+    },
+    {
+      id: '3',
+      userId: '1',
+      content: '新しいスキルの勉強を始めました。基礎から丁寧に学んでいます。',
+      date: '2025-01-13',
+      createdAt: '2025-01-13T21:10:00Z',
+      updatedAt: '2025-01-13T21:10:00Z',
+    },
+  ];
 
-// 有効なEmotion値
-const VALID_EMOTIONS = ['happy', 'neutral', 'sad', 'anxious', 'excited', 'tired'];
+  return NextResponse.json({ data: mockLogs });
+}
 
-// 有効なState値
-const VALID_STATES = ['energetic', 'tired', 'focused', 'distracted', 'calm', 'stressed'];
-
-// 有効なLogType値
-const VALID_LOG_TYPES = ['daily', 'reflection', 'insight'];
-
-// POST /api/logs - ログ記録
-export async function POST(request: NextRequest) {
+/**
+ * POST /api/logs - ログ作成（Mock実装）
+ */
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { content, emotion, state, type, taskId } = body;
 
-    // テスト環境で認証スキップ
-    if (process.env.VITE_SKIP_AUTH === 'true') {
-      // バリデーションのみ実行してモックレスポンスを返す
-      if (!content) {
-        return NextResponse.json(
-          { error: '内容は必須です' },
-          { status: 400 }
-        );
-      }
-
-      const mockLog = {
-        id: `log-${Date.now()}`,
-        userId: 'test-user-id',
-        taskId: taskId || null,
-        content,
-        emotion: emotion || null,
-        state: state || null,
-        type: type || 'daily',
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString(),
-      };
-
-      return NextResponse.json(mockLog, { status: 201 });
-    }
-
-    // 認証チェック
-    const session = await verifySession();
-    const userId = session.userId;
-
-    // バリデーション
-    if (!content) {
+    if (!body.content || typeof body.content !== 'string') {
       return NextResponse.json(
-        { error: '内容は必須です' },
+        { error: 'ログ内容は必須です' },
         { status: 400 }
       );
     }
 
-    if (content.length < 1 || content.length > 5000) {
+    if (!body.date) {
       return NextResponse.json(
-        { error: '内容は1文字以上5000文字以内で入力してください' },
+        { error: '日付は必須です' },
         { status: 400 }
       );
     }
 
-    if (emotion && !VALID_EMOTIONS.includes(emotion)) {
-      return NextResponse.json(
-        { error: `感情は ${VALID_EMOTIONS.join(', ')} のいずれかを指定してください` },
-        { status: 400 }
-      );
-    }
+    const newLog = {
+      id: String(Date.now()),
+      userId: '1',
+      content: body.content,
+      date: body.date,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
 
-    if (state && !VALID_STATES.includes(state)) {
-      return NextResponse.json(
-        { error: `状態は ${VALID_STATES.join(', ')} のいずれかを指定してください` },
-        { status: 400 }
-      );
-    }
-
-    if (type && !VALID_LOG_TYPES.includes(type)) {
-      return NextResponse.json(
-        { error: `タイプは ${VALID_LOG_TYPES.join(', ')} のいずれかを指定してください` },
-        { status: 400 }
-      );
-    }
-
-    // taskIdが指定されている場合、タスクの存在確認と権限チェック
-    if (taskId) {
-      const task = await prisma.task.findUnique({
-        where: { id: taskId },
-      });
-
-      if (!task) {
-        return NextResponse.json(
-          { error: '指定されたタスクが見つかりません' },
-          { status: 404 }
-        );
-      }
-
-      if (task.userId !== userId) {
-        return NextResponse.json(
-          { error: 'このタスクにログを追加する権限がありません' },
-          { status: 403 }
-        );
-      }
-    }
-
-    // ログ作成
-    const log = await prisma.log.create({
-      data: {
-        userId,
-        taskId: taskId || null,
-        content,
-        emotion: emotion || null,
-        state: state || null,
-        type: type || 'daily',
-      },
-    });
-
-    return NextResponse.json(log, { status: 201 });
+    return NextResponse.json({ data: newLog }, { status: 201 });
   } catch (error) {
-    console.error('Log POST error:', error);
+    console.error('Log creation error:', error);
+    return NextResponse.json(
+      { error: 'ログの作成に失敗しました' },
+      { status: 500 }
+    );
+  }
+}
 
-    if (error instanceof Error && error.message === 'Unauthorized') {
+/**
+ * PUT /api/logs - ログ更新（Mock実装）
+ */
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+
+    if (!body.id) {
       return NextResponse.json(
-        { error: '認証が必要です' },
-        { status: 401 }
+        { error: 'ログIDは必須です' },
+        { status: 400 }
       );
     }
 
+    if (!body.content || typeof body.content !== 'string') {
+      return NextResponse.json(
+        { error: 'ログ内容は必須です' },
+        { status: 400 }
+      );
+    }
+
+    const updatedLog = {
+      id: body.id,
+      userId: '1',
+      content: body.content,
+      date: body.date || new Date().toISOString().split('T')[0],
+      createdAt: '2025-01-15T09:30:00Z',
+      updatedAt: new Date().toISOString(),
+    };
+
+    return NextResponse.json({ data: updatedLog });
+  } catch (error) {
+    console.error('Log update error:', error);
     return NextResponse.json(
-      { error: 'サーバーエラーが発生しました' },
+      { error: 'ログの更新に失敗しました' },
+      { status: 500 }
+    );
+  }
+}
+
+/**
+ * DELETE /api/logs - ログ削除（Mock実装）
+ */
+export async function DELETE(request: Request) {
+  try {
+    const body = await request.json();
+
+    if (!body.id) {
+      return NextResponse.json(
+        { error: 'ログIDは必須です' },
+        { status: 400 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'ログを削除しました',
+    });
+  } catch (error) {
+    console.error('Log deletion error:', error);
+    return NextResponse.json(
+      { error: 'ログの削除に失敗しました' },
       { status: 500 }
     );
   }

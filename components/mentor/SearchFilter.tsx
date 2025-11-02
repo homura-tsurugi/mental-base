@@ -41,6 +41,7 @@ export function SearchFilter({
 
   return (
     <section
+      data-testid="search-filter"
       className="rounded-lg p-6 mb-8"
       style={{
         backgroundColor: 'var(--background)',
@@ -57,11 +58,12 @@ export function SearchFilter({
       >
         <span className="material-icons text-gray-400 mr-2">search</span>
         <input
-          type="text"
+          data-testid="search-input"
+          type="search"
           placeholder="クライアントを検索..."
           value={searchQuery}
           onChange={handleSearchChange}
-          className="flex-1 border-none bg-transparent outline-none text-base"
+          className="flex-1 border-none bg-transparent outline-none text-base focus:ring-2 focus:ring-blue-500"
           style={{ color: 'var(--text-primary)' }}
         />
       </div>
@@ -109,6 +111,7 @@ export function SearchFilter({
 
         {/* ソート */}
         <select
+          data-testid="sort-dropdown"
           value={sortBy}
           onChange={handleSortChange}
           className="ml-auto px-4 py-2 rounded-lg text-sm cursor-pointer outline-none"

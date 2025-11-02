@@ -65,10 +65,11 @@ export function DashboardStats({ mentorId }: DashboardStatsProps) {
 
   if (loading) {
     return (
-      <section className="grid grid-cols-2 gap-4 mb-8">
+      <section data-testid="dashboard-stats" className="grid grid-cols-2 gap-4 mb-8">
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
+            data-testid="stat-skeleton"
             className="rounded-lg p-6 animate-pulse"
             style={{
               backgroundColor: 'var(--background)',
@@ -83,12 +84,23 @@ export function DashboardStats({ mentorId }: DashboardStatsProps) {
     );
   }
 
+  const getStatTestId = (index: number) => {
+    const testIds = ['stat-card-clients', 'stat-card-active', 'stat-card-followup', 'stat-card-progress'];
+    return testIds[index] || 'stat-card';
+  };
+
+  const getBgColor = (index: number) => {
+    const colors = ['bg-blue-50', 'bg-green-50', 'bg-amber-50', 'bg-purple-50'];
+    return colors[index] || '';
+  };
+
   return (
-    <section className="grid grid-cols-2 gap-4 mb-8">
+    <section data-testid="dashboard-stats" className="grid grid-cols-2 gap-4 mb-8">
       {statCards.map((stat, index) => (
         <div
           key={index}
-          className="rounded-lg p-6"
+          data-testid={getStatTestId(index)}
+          className={`rounded-lg p-6 ${getBgColor(index)}`}
           style={{
             backgroundColor: 'var(--background)',
             boxShadow: 'var(--shadow-sm)',
@@ -100,7 +112,11 @@ export function DashboardStats({ mentorId }: DashboardStatsProps) {
           >
             {stat.label}
           </div>
-          <div className="text-[32px] font-bold" style={{ color: 'var(--primary)' }}>
+          <div
+            data-testid="stat-value"
+            className="text-[32px] font-bold"
+            style={{ color: 'var(--primary)' }}
+          >
             {stat.value}
             <span className="text-base ml-1" style={{ color: 'var(--text-secondary)' }}>
               {stat.suffix}

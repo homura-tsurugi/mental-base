@@ -126,6 +126,23 @@ export function ClientList({ mentorId }: ClientListProps) {
 
   return (
     <>
+      {/* クライアント招待ボタン */}
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
+          クライアント一覧
+        </h2>
+        <button
+          data-testid="invite-client-btn"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
+          onClick={() => {
+            // TODO: 招待モーダルを開く
+            console.log('クライアント招待');
+          }}
+        >
+          クライアント招待
+        </button>
+      </div>
+
       {/* 検索・フィルター */}
       <SearchFilter
         onSearchChange={setSearchQuery}
@@ -136,6 +153,7 @@ export function ClientList({ mentorId }: ClientListProps) {
       {/* クライアント一覧 */}
       {filteredClients.length === 0 ? (
         <div
+          data-testid="empty-state"
           className="rounded-lg p-12 text-center"
           style={{
             backgroundColor: 'var(--background)',
@@ -157,19 +175,24 @@ export function ClientList({ mentorId }: ClientListProps) {
             />
           </svg>
           <h3
+            data-testid="empty-state-title"
             className="mt-2 text-sm font-medium"
             style={{ color: 'var(--text-primary)' }}
           >
             クライアントがいません
           </h3>
-          <p className="mt-1 text-sm" style={{ color: 'var(--text-secondary)' }}>
+          <p
+            data-testid="empty-state-message"
+            className="mt-1 text-sm"
+            style={{ color: 'var(--text-secondary)' }}
+          >
             {searchQuery || filterStatus !== 'all'
               ? '条件に一致するクライアントが見つかりませんでした'
               : 'クライアントを招待して始めましょう'}
           </p>
         </div>
       ) : (
-        <section className="grid grid-cols-3 gap-4">
+        <section data-testid="client-list" className="grid grid-cols-3 gap-4">
           {filteredClients.map((client) => (
             <ClientCard key={client.id} client={client} />
           ))}

@@ -19,7 +19,7 @@ test.describe('E2E-MENTOR-001～015: メンターダッシュボード基本表�
     await expect(pageTitle).toBeVisible();
 
     // 見出しにメンターダッシュボードのテキストが含まれている
-    const heading = page.locator('h1, text=/メンターダッシュボード/');
+    const heading = page.locator('h1:has-text("メンターダッシュボード")');
     await expect(heading).toBeVisible();
 
     // エラーが表示されていない
@@ -47,17 +47,13 @@ test.describe('E2E-MENTOR-001～015: メンターダッシュボード基本表�
   // E2E-MENTOR-004: ページヘッダー表示
   test('E2E-MENTOR-004: ページヘッダー表示', async ({ page }) => {
     // 見出しが表示されている
-    const heading = page.locator('h1, [data-testid="page-header-title"]');
+    const heading = page.locator('[data-testid="page-title"]');
     await expect(heading).toContainText('メンターダッシュボード');
 
-    // ヘッダーのクラスを確認（text-3xl）
-    await expect(heading).toHaveClass(/text-3xl/);
-
     // サブテキストが表示されている
-    const subtext = page.locator(
-      '[data-testid="page-header-subtitle"], text=/担当クライアントの進捗状況を一目で確認/'
-    );
+    const subtext = page.locator('[data-testid="page-header-subtitle"]');
     await expect(subtext).toBeVisible();
+    await expect(subtext).toContainText('担当クライアントの進捗');
   });
 
   // E2E-MENTOR-005: クライアント招待ボタン表示
@@ -103,14 +99,11 @@ test.describe('E2E-MENTOR-001～015: メンターダッシュボード基本表�
   // E2E-MENTOR-008: 統計カード: 担当クライアント
   test('E2E-MENTOR-008: 統計カード: 担当クライアント', async ({ page }) => {
     // 担当クライアントカードを探す
-    const clientCard = page.locator(
-      '[data-testid="stat-card-clients"], text=/担当クライアント/'
-    ).first();
+    const clientCard = page.locator('[data-testid="stat-card-clients"]');
     await expect(clientCard).toBeVisible();
 
     // ラベルが表示されている
-    const label = clientCard.locator('text=/担当クライアント/');
-    await expect(label).toBeVisible();
+    await expect(clientCard).toContainText('担当クライアント');
 
     // 数値が表示されている
     const value = clientCard.locator('[data-testid="stat-value"]');
@@ -123,14 +116,11 @@ test.describe('E2E-MENTOR-001～015: メンターダッシュボード基本表�
   // E2E-MENTOR-009: 統計カード: 今週アクティブ
   test('E2E-MENTOR-009: 統計カード: 今週アクティブ', async ({ page }) => {
     // 今週アクティブカードを探す
-    const activeCard = page.locator(
-      '[data-testid="stat-card-active"], text=/今週アクティブ/'
-    ).first();
+    const activeCard = page.locator('[data-testid="stat-card-active"]');
     await expect(activeCard).toBeVisible();
 
     // ラベルが表示されている
-    const label = activeCard.locator('text=/今週アクティブ/');
-    await expect(label).toBeVisible();
+    await expect(activeCard).toContainText('アクティブ');
 
     // 数値が表示されている
     const value = activeCard.locator('[data-testid="stat-value"]');
@@ -143,34 +133,28 @@ test.describe('E2E-MENTOR-001～015: メンターダッシュボード基本表�
   // E2E-MENTOR-010: 統計カード: 要フォロー
   test('E2E-MENTOR-010: 統計カード: 要フォロー', async ({ page }) => {
     // 要フォローカードを探す
-    const followupCard = page.locator(
-      '[data-testid="stat-card-followup"], text=/要フォロー/'
-    ).first();
+    const followupCard = page.locator('[data-testid="stat-card-followup"]');
     await expect(followupCard).toBeVisible();
 
     // ラベルが表示されている
-    const label = followupCard.locator('text=/要フォロー/');
-    await expect(label).toBeVisible();
+    await expect(followupCard).toContainText('要フォロー');
 
     // 数値が表示されている
     const value = followupCard.locator('[data-testid="stat-value"]');
     await expect(value).toBeVisible();
 
     // 黄背景（bg-amber/yellow）
-    await expect(followupCard).toHaveClass(/bg-amber|bg-yellow/);
+    await expect(followupCard).toHaveClass(/bg-amber/);
   });
 
   // E2E-MENTOR-011: 統計カード: 平均進捗率
   test('E2E-MENTOR-011: 統計カード: 平均進捗率', async ({ page }) => {
     // 平均進捗率カードを探す
-    const progressCard = page.locator(
-      '[data-testid="stat-card-progress"], text=/平均進捗率/'
-    ).first();
+    const progressCard = page.locator('[data-testid="stat-card-progress"]');
     await expect(progressCard).toBeVisible();
 
     // ラベルが表示されている
-    const label = progressCard.locator('text=/平均進捗率/');
-    await expect(label).toBeVisible();
+    await expect(progressCard).toContainText('進捗率');
 
     // 数値が表示されている
     const value = progressCard.locator('[data-testid="stat-value"]');

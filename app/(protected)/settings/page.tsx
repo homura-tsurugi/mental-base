@@ -33,6 +33,7 @@ const SettingsPage: React.FC = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [formError, setFormError] = useState('');
   const [profileRefreshKey, setProfileRefreshKey] = useState(0);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // プロフィールデータが読み込まれたらフォームに設定
   useEffect(() => {
@@ -85,13 +86,17 @@ const SettingsPage: React.FC = () => {
     e.preventDefault();
     setFormError('');
     setSuccessMessage('');
+    setIsSubmitting(true);
 
     try {
       await updateProfile(profileForm);
       setSuccessMessage('プロフィールが更新されました');
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
       setFormError((err as Error).message);
+      setTimeout(() => setFormError(''), 5000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -99,14 +104,18 @@ const SettingsPage: React.FC = () => {
     e.preventDefault();
     setFormError('');
     setSuccessMessage('');
+    setIsSubmitting(true);
 
     try {
       await changePassword(passwordForm);
       setSuccessMessage('パスワードが変更されました');
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
       setFormError((err as Error).message);
+      setTimeout(() => setFormError(''), 5000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -117,9 +126,10 @@ const SettingsPage: React.FC = () => {
     try {
       await updateNotificationSettings({ emailNotifications: newValue });
       setSuccessMessage(`メール通知を${newValue ? '有効' : '無効'}にしました`);
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setTimeout(() => setSuccessMessage(''), 5000);
     } catch (err) {
       setFormError((err as Error).message);
+      setTimeout(() => setFormError(''), 5000);
       setEmailNotifications(!newValue); // エラー時は元に戻す
     }
   };
@@ -141,7 +151,7 @@ const SettingsPage: React.FC = () => {
     // メンター登録・更新後にプロフィールを再読み込み
     setProfileRefreshKey((prev) => prev + 1);
     setSuccessMessage('メンター情報が更新されました');
-    setTimeout(() => setSuccessMessage(''), 3000);
+    setTimeout(() => setSuccessMessage(''), 5000);
   };
 
   return (
@@ -161,7 +171,7 @@ const SettingsPage: React.FC = () => {
 
         {/* Error Message */}
         {formError && (
-          <div data-testid="form-error" className="mx-4 mt-4">
+          <div data-testid="error-message" className="mx-4 mt-4">
             <Card className="p-3 bg-red-50 border-red-200">
               <div className="flex items-center gap-2">
                 <span className="material-icons text-red-600 text-lg">error</span>
@@ -207,9 +217,9 @@ const SettingsPage: React.FC = () => {
                 />
               </div>
 
-              <Button data-testid="profile-save-button" type="submit" className="w-full">
+              <Button data-testid="profile-save-button" type="submit" className="w-full" disabled={isSubmitting}>
                 <span className="material-icons text-lg mr-2">save</span>
-                プロフィールを保存
+                {isSubmitting ? '更新中...' : 'プロフィールを保存'}
               </Button>
             </form>
           </Card>
@@ -282,9 +292,9 @@ const SettingsPage: React.FC = () => {
                 />
               </div>
 
-              <Button data-testid="password-change-button" type="submit" className="w-full">
+              <Button data-testid="password-change-button" type="submit" className="w-full" disabled={isSubmitting}>
                 <span className="material-icons text-lg mr-2">lock</span>
-                パスワードを変更
+                {isSubmitting ? '変更中...' : 'パスワードを変更'}
               </Button>
             </form>
           </Card>
@@ -341,7 +351,8 @@ const SettingsPage: React.FC = () => {
               <button
                 data-testid="account-delete-button"
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="w-full px-4 py-3 bg-red-500 text-white rounded-lg text-base font-medium hover:bg-red-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+                disabled={isSubmitting}
+                className="w-full px-4 py-3 bg-red-500 text-white rounded-lg text-base font-medium hover:bg-red-600 active:scale-[0.98] transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <span className="material-icons text-lg">delete_forever</span>
                 アカウントを削除
@@ -354,28 +365,29 @@ const SettingsPage: React.FC = () => {
       {/* Delete Account Modal */}
       {isDeleteModalOpen && (
         <div
-          data-testid="delete-account-modal"
+          data-testid="account-delete-modal-backdrop"
           className="fixed inset-0 bg-black bg-opacity-50 z-[200] flex items-center justify-center"
           onClick={() => setIsDeleteModalOpen(false)}
         >
           <div
+            data-testid="account-delete-modal"
             className="bg-white rounded-lg p-6 max-w-md w-[90%] shadow-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 className="text-xl font-bold text-[var(--text-primary)] mb-4">アカウント削除の確認</h3>
-            <p className="text-sm text-[var(--text-secondary)] mb-6">
+            <h3 data-testid="account-delete-modal-title" className="text-xl font-bold text-[var(--text-primary)] mb-4">アカウント削除の確認</h3>
+            <p data-testid="account-delete-modal-warning" className="text-sm text-[var(--text-secondary)] mb-6">
               本当にアカウントを削除しますか？この操作は取り消せません。すべてのデータが完全に削除されます。
             </p>
             <div className="flex gap-2">
               <button
-                data-testid="btn-cancel-delete"
+                data-testid="account-delete-modal-cancel-button"
                 onClick={() => setIsDeleteModalOpen(false)}
                 className="flex-1 px-4 py-3 bg-[var(--bg-tertiary)] text-[var(--text-primary)] rounded-lg text-base font-medium hover:bg-[var(--border-dark)] transition-colors"
               >
                 キャンセル
               </button>
               <button
-                data-testid="btn-confirm-delete"
+                data-testid="account-delete-modal-confirm-button"
                 onClick={handleDeleteAccount}
                 className="flex-1 px-4 py-3 bg-red-500 text-white rounded-lg text-base font-medium hover:bg-red-600 transition-colors"
               >
