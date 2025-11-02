@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>計画・実行ページ - COM:PASS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS変数（デザインシステム）
+       ======================================== */
+    :root {
+      /* Primary Colors */
+      --primary: #2c5282;
+      --primary-dark: #1e3a5f;
+      --primary-light: #4a90e2;
+
+      /* Status Colors */
+      --success: #48bb78;
+      --warning: #ed8936;
+      --danger: #f56565;
+
+      /* COM:PASS Phase Colors */
+      --plan-color: #2c5282;    /* 青 */
+      --do-color: #48bb78;      /* 緑 */
+      --check-color: #ed8936;   /* オレンジ */
+      --action-color: #9f7aea;  /* 紫 */
+
+      /* Grayscale */
+      --gray-50: #f7fafc;
+      --gray-100: #edf2f7;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e0;
+      --gray-400: #a0aec0;
+      --gray-500: #718096;
+      --gray-600: #4a5568;
+      --gray-700: #2d3748;
+      --gray-800: #1a202c;
+      --gray-900: #171923;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+      /* Typography */
+      --font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+    }
+
+    /* ========================================
+       基本スタイル
+       ======================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.6;
+      padding-bottom: 70px; /* ボトムナビゲーション分 */
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ========================================
+       ヘッダー（Sticky）
+       ======================================== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: white;
+      box-shadow: var(--shadow-sm);
+      padding: var(--spacing-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-600);
+      position: relative;
+    }
+
+    .icon-button .material-icons {
+      font-size: 24px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* ========================================
+       メインコンテンツ
+       ======================================== */
+    .main-content {
+      padding: var(--spacing-md);
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-lg);
+      color: var(--gray-900);
+    }
+
+    /* ========================================
+       タブ切り替え（Plan / Do）
+       ======================================== */
+    .phase-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-xs);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .phase-tab {
+      flex: 1;
+      padding: var(--spacing-md);
+      border: none;
+      background: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--gray-600);
+    }
+
+    .phase-tab.active {
+      background-color: var(--plan-color);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .phase-tab.do-tab.active {
+      background-color: var(--do-color);
+    }
+
+    /* ========================================
+       タブコンテンツ切り替え
+       ======================================== */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
+    /* ========================================
+       目標カード（Planタブ）
+       ======================================== */
+    .goal-card {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .goal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .goal-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--gray-900);
+      flex: 1;
+    }
+
+    .goal-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .goal-description {
+      font-size: 14px;
+      color: var(--gray-600);
+      margin-bottom: var(--spacing-sm);
+      line-height: 1.5;
+    }
+
+    .goal-meta {
+      display: flex;
+      gap: var(--spacing-md);
+      font-size: 12px;
+      color: var(--gray-500);
+      align-items: center;
+    }
+
+    .goal-meta .material-icons {
+      font-size: 16px;
+      vertical-align: middle;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background-color: var(--gray-200);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-top: var(--spacing-sm);
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--plan-color);
+      transition: width 0.3s ease;
+    }
+
+    .progress-text {
+      font-size: 12px;
+      color: var(--gray-600);
+      margin-top: var(--spacing-xs);
+    }
+
+    /* ========================================
+       タスクリスト（Doタブ）
+       ======================================== */
+    .task-list {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .task-list-header {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      padding: var(--spacing-md) 0;
+      border-bottom: 1px solid var(--gray-200);
+      gap: var(--spacing-md);
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      margin-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .task-content {
+      flex: 1;
+    }
+
+    .task-title {
+      font-size: 14px;
+      color: var(--gray-800);
+      margin-bottom: var(--spacing-xs);
+      font-weight: 500;
+    }
+
+    .task-meta {
+      display: flex;
+      gap: var(--spacing-sm);
+      font-size: 12px;
+      color: var(--gray-500);
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .priority-badge {
+      padding: 2px var(--spacing-sm);
+      border-radius: var(--radius-sm);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .priority-high {
+      background-color: rgba(245, 101, 101, 0.1);
+      color: var(--danger);
+    }
+
+    .priority-medium {
+      background-color: rgba(237, 137, 54, 0.1);
+      color: var(--warning);
+    }
+
+    .priority-low {
+      background-color: rgba(72, 187, 120, 0.1);
+      color: var(--success);
+    }
+
+    /* ========================================
+       ログ記録カード（Doタブ）
+       ======================================== */
+    .log-card {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .log-header {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: var(--spacing-md);
+      color: var(--gray-900);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .log-textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: var(--spacing-md);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      font-size: 14px;
+      resize: vertical;
+      margin-bottom: var(--spacing-md);
+      transition: border-color 0.2s;
+    }
+
+    .log-textarea:focus {
+      outline: none;
+      border-color: var(--do-color);
+    }
+
+    .emotion-selector {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .emotion-button {
+      flex: 1;
+      padding: var(--spacing-md);
+      border: 2px solid var(--gray-300);
+      background-color: white;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      font-size: 24px;
+      transition: all 0.2s;
+    }
+
+    .emotion-button:hover {
+      border-color: var(--gray-400);
+      transform: scale(1.05);
+    }
+
+    .emotion-button.selected {
+      border-color: var(--do-color);
+      background-color: rgba(72, 187, 120, 0.1);
+      box-shadow: var(--shadow-sm);
+    }
+
+    /* ========================================
+       フォーム共通スタイル
+       ======================================== */
+    .form-group {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--spacing-md);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-family: var(--font-family);
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    /* ========================================
+       ボタン
+       ======================================== */
+    .button {
+      padding: var(--spacing-md) var(--spacing-lg);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .button-primary {
+      background-color: var(--plan-color);
+      color: white;
+    }
+
+    .button-primary:hover {
+      background-color: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .button-secondary {
+      background-color: white;
+      color: var(--primary);
+      border: 2px solid var(--primary);
+    }
+
+    .button-secondary:hover {
+      background-color: var(--gray-100);
+    }
+
+    .button-full {
+      width: 100%;
+    }
+
+    .button .material-icons {
+      font-size: 20px;
+    }
+
+    /* ========================================
+       FAB（Floating Action Button）
+       ======================================== */
+    .fab {
+      position: fixed;
+      bottom: 85px;
+      right: 16px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--plan-color) 0%, var(--do-color) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      z-index: 50;
+    }
+
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .fab .material-icons {
+      font-size: 28px;
+    }
+
+    /* ========================================
+       モーダル
+       ======================================== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-md);
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: white;
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-header {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-lg);
+      color: var(--gray-900);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-top: var(--spacing-lg);
+      justify-content: flex-end;
+    }
+
+    /* ========================================
+       ボトムナビゲーション
+       ======================================== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      background-color: white;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: var(--spacing-sm) 0;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--gray-500);
+      font-size: 12px;
+      padding: var(--spacing-xs);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--plan-color);
+    }
+
+    .nav-item .material-icons {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+
+    /* ========================================
+       レスポンシブ（600px以上）
+       ======================================== */
+    @media (min-width: 600px) {
+      .bottom-nav {
+        max-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========================================
+       ヘッダー
+       ======================================== -->
+  <header class="header">
+    <div class="logo">
+      <span class="material-icons">hub</span>
+      COM:PASS
+    </div>
+    <div class="header-actions">
+      <button class="icon-button">
+        <span class="material-icons">notifications</span>
+      </button>
+      <div class="avatar">TU</div>
+    </div>
+  </header>
+
+  <!-- ========================================
+       メインコンテンツ
+       ======================================== -->
+  <main class="main-content">
+    <h1 class="page-title">計画・実行</h1>
+
+    <!-- タブ切り替え（Plan / Do） -->
+    <div class="phase-tabs">
+      <button class="phase-tab active" id="plan-tab-button">
+        <span class="material-icons" style="vertical-align: middle; margin-right: 4px;">assignment</span>
+        Plan（計画）
+      </button>
+      <button class="phase-tab do-tab" id="do-tab-button">
+        <span class="material-icons" style="vertical-align: middle; margin-right: 4px;">check_circle</span>
+        Do（実行）
+      </button>
+    </div>
+
+    <!-- ========================================
+         Planタブのコンテンツ
+         ======================================== -->
+    <div class="tab-content active" id="plan-content">
+
+    <!-- 目標カード -->
+    <div class="goal-card">
+      <div class="goal-header">
+        <div class="goal-title">英語力を向上させる</div>
+        <div class="goal-actions">
+          <button class="icon-button" title="編集">
+            <span class="material-icons">edit</span>
+          </button>
+          <button class="icon-button" title="削除">
+            <span class="material-icons">delete</span>
+          </button>
+        </div>
+      </div>
+      <div class="goal-description">
+        TOEICスコア800点を目指し、毎日英語学習を継続する
+      </div>
+      <div class="goal-meta">
+        <span style="display: flex; align-items: center; gap: 4px;">
+          <span class="material-icons">event</span>
+          期限: 2025-12-31
+        </span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 35%;"></div>
+      </div>
+      <div class="progress-text">
+        進捗: 35% (7/20 タスク完了)
+      </div>
+    </div>
+
+    <div class="goal-card">
+      <div class="goal-header">
+        <div class="goal-title">健康的な生活習慣</div>
+        <div class="goal-actions">
+          <button class="icon-button" title="編集">
+            <span class="material-icons">edit</span>
+          </button>
+          <button class="icon-button" title="削除">
+            <span class="material-icons">delete</span>
+          </button>
+        </div>
+      </div>
+      <div class="goal-description">
+        週3回の運動と規則正しい睡眠を習慣化する
+      </div>
+      <div class="goal-meta">
+        <span style="display: flex; align-items: center; gap: 4px;">
+          <span class="material-icons">event</span>
+          期限: 2025-06-30
+        </span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 60%;"></div>
+      </div>
+      <div class="progress-text">
+        進捗: 60% (12/20 タスク完了)
+      </div>
+    </div>
+
+    <button class="button button-primary button-full" onclick="openModal('goal-modal')">
+      <span class="material-icons">add</span>
+      新規目標を作成
+    </button>
+    </div>
+
+    <!-- ========================================
+         Doタブのコンテンツ
+         ======================================== -->
+    <div class="tab-content" id="do-content">
+
+    <!-- 今日のタスクリスト -->
+    <div class="task-list">
+      <div class="task-list-header">
+        <span class="material-icons">checklist</span>
+        今日のタスク
+      </div>
+
+      <div class="task-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="task-content">
+          <div class="task-title">英単語30個を暗記</div>
+          <div class="task-meta">
+            <span class="priority-badge priority-high">高</span>
+            <span>•</span>
+            <span>英語力を向上させる</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item">
+        <input type="checkbox" class="task-checkbox" checked>
+        <div class="task-content">
+          <div class="task-title" style="text-decoration: line-through; opacity: 0.6;">
+            30分ランニング
+          </div>
+          <div class="task-meta">
+            <span class="priority-badge priority-medium">中</span>
+            <span>•</span>
+            <span>健康的な生活習慣</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="task-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="task-content">
+          <div class="task-title">英文記事を読む（15分）</div>
+          <div class="task-meta">
+            <span class="priority-badge priority-medium">中</span>
+            <span>•</span>
+            <span>英語力を向上させる</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 日々のログ記録 -->
+    <div class="log-card">
+      <div class="log-header">
+        <span class="material-icons">edit_note</span>
+        今日のログを記録
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">今日の振り返り</label>
+        <textarea
+          class="log-textarea"
+          placeholder="今日の振り返りや学んだことを記録しましょう..."
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">今日の気分</label>
+        <div class="emotion-selector">
+          <button class="emotion-button" title="嬉しい">😊</button>
+          <button class="emotion-button selected" title="普通">😐</button>
+          <button class="emotion-button" title="悲しい">😢</button>
+          <button class="emotion-button" title="不安">😰</button>
+        </div>
+      </div>
+
+      <button class="button button-primary button-full">
+        <span class="material-icons">save</span>
+        ログを保存
+      </button>
+    </div>
+
+    <button class="button button-primary button-full" onclick="openModal('task-modal')">
+      <span class="material-icons">add</span>
+      新規タスクを作成
+    </button>
+    </div>
+  </main>
+
+  <!-- ========================================
+       ボトムナビゲーション
+       ======================================== -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item">
+      <span class="material-icons">dashboard</span>
+      <span>ホーム</span>
+    </a>
+    <a href="#" class="nav-item active">
+      <span class="material-icons">assignment</span>
+      <span>計画/実行</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">fact_check</span>
+      <span>確認/改善</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">school</span>
+      <span>学習</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">analytics</span>
+      <span>ログ</span>
+    </a>
+  </nav>
+
+  <!-- ========================================
+       FAB（クイックアクション）
+       ======================================== -->
+  <button class="fab" onclick="openModal('task-modal')">
+    <span class="material-icons">add</span>
+  </button>
+
+  <!-- ========================================
+       モーダル: 新規目標作成
+       ======================================== -->
+  <div id="goal-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">新規目標を作成</div>
+
+      <div class="form-group">
+        <label class="form-label">目標タイトル</label>
+        <input type="text" class="form-input" placeholder="例: 英語力を向上させる">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">説明</label>
+        <textarea class="form-input" style="min-height: 80px;" placeholder="目標の詳細を入力..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">期限</label>
+        <input type="date" class="form-input">
+      </div>
+
+      <div class="modal-actions">
+        <button class="button button-secondary" onclick="closeModal('goal-modal')">
+          キャンセル
+        </button>
+        <button class="button button-primary" onclick="closeModal('goal-modal')">
+          作成
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       モーダル: 新規タスク作成
+       ======================================== -->
+  <div id="task-modal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">新規タスクを作成</div>
+
+      <div class="form-group">
+        <label class="form-label">タスク名</label>
+        <input type="text" class="form-input" placeholder="例: 英単語30個を暗記">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">関連する目標</label>
+        <select class="form-input">
+          <option value="">目標を選択...</option>
+          <option value="1">英語力を向上させる</option>
+          <option value="2">健康的な生活習慣</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">期限</label>
+        <input type="date" class="form-input">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">優先度</label>
+        <select class="form-input">
+          <option value="high">高</option>
+          <option value="medium" selected>中</option>
+          <option value="low">低</option>
+        </select>
+      </div>
+
+      <div class="modal-actions">
+        <button class="button button-secondary" onclick="closeModal('task-modal')">
+          キャンセル
+        </button>
+        <button class="button button-primary" onclick="closeModal('task-modal')">
+          作成
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================
+       JavaScript（タブ切り替え・インタラクション）
+       ======================================== -->
+  <script>
+    // タブ切り替え
+    const planTabButton = document.getElementById('plan-tab-button');
+    const doTabButton = document.getElementById('do-tab-button');
+    const planContent = document.getElementById('plan-content');
+    const doContent = document.getElementById('do-content');
+
+    // Planタブをクリック
+    planTabButton.addEventListener('click', () => {
+      planTabButton.classList.add('active');
+      doTabButton.classList.remove('active');
+      planContent.classList.add('active');
+      doContent.classList.remove('active');
+    });
+
+    // Doタブをクリック
+    doTabButton.addEventListener('click', () => {
+      doTabButton.classList.add('active');
+      planTabButton.classList.remove('active');
+      doContent.classList.add('active');
+      planContent.classList.remove('active');
+    });
+
+    // モーダル開く
+    function openModal(modalId) {
+      document.getElementById(modalId).classList.add('active');
+    }
+
+    // モーダル閉じる
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.remove('active');
+    }
+
+    // モーダル背景クリックで閉じる
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+          modal.classList.remove('active');
+        }
+      });
+    });
+
+    // 感情ボタンの選択
+    document.querySelectorAll('.emotion-button').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.emotion-button').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+      });
+    });
+  </script>
+
+</body>
+</html>

@@ -447,3 +447,298 @@ gcloud run deploy          # Cloud Runにデプロイ（バックエンド）
 ---
 
 **このファイルは定期的に更新してください。プロジェクトの進行に応じて作業ログと次のアクションを更新します。**
+
+---
+
+## 🆕 フェーズ2: メンター機能（2025-11-02追加）
+
+### 概要
+メンター機能は既存のクライアント向けMVPを拡張し、メンターが複数のクライアントを効率的に管理・支援できる機能です。
+
+### 主要な追加機能
+```yaml
+ロール管理:
+  - CLIENT: 既存の一般ユーザー（COM:PASS利用者）
+  - MENTOR: クライアントの成長を支援する役割
+  - 1人のユーザーが両方のロールを持つことが可能
+
+メンター-クライアント関係:
+  - 1対多の関係（1メンター：複数クライアント）
+  - 招待・承認フロー（pending → active）
+  - データアクセス権限の細かい制御
+
+新規ページ:
+  - M-001: メンターダッシュボード（/mentor）
+  - M-002: クライアント詳細（/mentor/client/[id]）
+  - C-005拡張: 設定ページにメンター登録機能追加
+
+新規データモデル:
+  - MentorClientRelationship: メンター-クライアント関係
+  - ClientDataAccessPermission: データアクセス権限
+  - ClientDataViewLog: データ閲覧監査ログ
+  - MentorNote: メンターノート
+  - ClientProgressReport: 進捗レポート
+```
+
+### ロールベース認証実装
+
+#### Auth.js設定拡張
+```typescript
+// lib/auth.ts - jwtコールバック、sessionコールバックにrole追加済み
+
+callbacks: {
+  async jwt({ token, user }) {
+    if (user) {
+      token.id = user.id;
+      token.role = user.role;  // ロール追加
+    }
+    return token;
+  },
+  async session({ session, token }) {
+    if (session.user) {
+      session.user.id = token.id as string;
+      session.user.role = token.role as UserRole;  // ロール追加
+    }
+    return session;
+  },
+}
+```
+
+#### DAL拡張（ロール検証）
+```typescript
+// lib/dal.ts - メンター専用検証関数
+
+export const verifyMentor = cache(async () => {
+  return verifyRole('MENTOR');
+});
+
+export const verifyClient = cache(async () => {
+  return verifyRole('CLIENT');
+});
+
+export const verifyRole = cache(async (
+  allowedRoles: UserRole | UserRole[],
+  redirectTo: string = '/unauthorized'
+) => {
+  const session = await verifySession();
+  const rolesArray = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+  
+  if (!rolesArray.includes(session.userRole)) {
+    redirect(redirectTo);
+  }
+  
+  return session;
+});
+```
+
+#### ページでのロール検証
+```typescript
+// app/(protected)/mentor/page.tsx - メンターダッシュボード
+
+import { verifyMentor } from '@/lib/dal';
+
+export default async function MentorDashboardPage() {
+  const session = await verifyMentor();  // MENTORロール必須
+  
+  // メンター専用コンテンツ
+  return <div>...</div>;
+}
+```
+
+#### API Routeでのロール検証
+```typescript
+// app/api/mentor/dashboard/route.ts
+
+import { verifyMentor } from '@/lib/dal';
+
+export async function GET() {
+  const session = await verifyMentor();  // 認証 + 認可
+  
+  // メンター専用の処理
+  const clients = await prisma.mentorClientRelationship.findMany({
+    where: { mentorId: session.userId }
+  });
+  
+  return NextResponse.json({ data: clients });
+}
+```
+
+### データアクセス制御パターン
+
+#### クライアントデータへのアクセス
+```typescript
+// lib/mentor-access.ts - ヘルパー関数
+
+async function getMentorClientGoals(mentorId: string, clientId: string) {
+  // 1. 関係確認
+  const relationship = await prisma.mentorClientRelationship.findFirst({
+    where: {
+      mentorId,
+      clientId,
+      status: 'active',
+    },
+    include: {
+      accessPermissions: {
+        where: {
+          isActive: true,
+          allowGoals: true,
+        },
+      },
+    },
+  });
+
+  if (!relationship || !relationship.accessPermissions.length) {
+    throw new Error('Access denied');
+  }
+
+  // 2. データ取得
+  const goals = await prisma.goal.findMany({
+    where: { userId: clientId },
+  });
+
+  // 3. 閲覧ログ記録
+  await prisma.clientDataViewLog.createMany({
+    data: goals.map(goal => ({
+      mentorId,
+      clientId,
+      dataType: 'goal',
+      dataId: goal.id,
+      action: 'view',
+    })),
+  });
+
+  return goals;
+}
+```
+
+### 新規APIエンドポイント
+
+```yaml
+メンター管理:
+  - GET /api/mentor/dashboard: メンターダッシュボードデータ取得
+  - GET /api/mentor/relationships: 担当クライアント一覧
+  - POST /api/mentor/invite: クライアント招待
+  - POST /api/mentor/relationships/{id}/accept: 招待承認
+  - DELETE /api/mentor/relationships/{id}/terminate: 関係終了
+
+クライアントデータアクセス:
+  - GET /api/mentor/client/{id}: クライアント基本情報
+  - GET /api/mentor/client/{id}/goals: 目標一覧（許可必要）
+  - GET /api/mentor/client/{id}/tasks: タスク一覧（許可必要）
+  - GET /api/mentor/client/{id}/logs: ログ履歴（許可必要）
+  - GET /api/mentor/client/{id}/reflections: 振り返り（許可必要）
+  - GET /api/mentor/client/{id}/ai-reports: AI分析レポート（許可必要）
+
+データアクセス制御:
+  - GET /api/client/data-access: アクセス許可設定取得
+  - PUT /api/client/data-access: アクセス許可設定更新
+
+メンターノート:
+  - GET /api/mentor/notes: ノート一覧
+  - POST /api/mentor/notes: ノート作成
+  - PUT /api/mentor/notes/{id}: ノート編集
+  - DELETE /api/mentor/notes/{id}: ノート削除
+
+進捗レポート:
+  - GET /api/mentor/reports: レポート一覧
+  - POST /api/mentor/reports/generate: レポート生成
+  - PUT /api/mentor/reports/{id}: レポート編集
+  - POST /api/mentor/reports/{id}/share: クライアントと共有
+```
+
+### Prismaスキーマ拡張
+
+```prisma
+// User モデルに追加されたフィールド
+model User {
+  // ... 既存フィールド
+  
+  role          String    @default("client") // 'client' | 'mentor' | 'admin'
+  isMentor      Boolean   @default(false)
+  bio           String?   @db.Text
+  expertise     String[]  @default([])
+  
+  // 新規リレーション
+  mentorRelationshipsAsMentor  MentorClientRelationship[] @relation("MentorRelations")
+  mentorRelationshipsAsClient  MentorClientRelationship[] @relation("ClientRelations")
+  clientViewLogs               ClientDataViewLog[]        @relation("MentorViews")
+  accessPermissionsGiven       ClientDataAccessPermission[] @relation("ClientPermissions")
+  mentorNotes                  MentorNote[]               @relation("MentorCreatedNotes")
+  clientProgressReports        ClientProgressReport[]     @relation("ClientReports")
+  mentorProgressReports        ClientProgressReport[]     @relation("MentorReports")
+}
+
+// 新規モデル
+model MentorClientRelationship {
+  id               String   @id @default(uuid())
+  mentorId         String
+  clientId         String
+  status           String   @default("pending")
+  invitedBy        String
+  invitedAt        DateTime @default(now())
+  acceptedAt       DateTime?
+  
+  mentor           User     @relation("MentorRelations", fields: [mentorId], references: [id])
+  client           User     @relation("ClientRelations", fields: [clientId], references: [id])
+  
+  @@unique([mentorId, clientId])
+  @@map("mentor_client_relationships")
+}
+
+// 他の新規モデル: ClientDataAccessPermission, ClientDataViewLog, 
+// MentorNote, ClientProgressReport
+```
+
+### セキュリティ要件
+
+```yaml
+認証・認可:
+  - Data Access Layer (DAL)パターンによるロール検証
+  - Middlewareは使用しない（CVE-2025-29927対応）
+  - Server Component/API Routeで直接認証チェック
+
+データアクセス制御:
+  - クライアントデータは本人のみアクセス可能（デフォルト）
+  - メンターは明示的な許可がある場合のみアクセス可能
+  - データタイプごとに許可を細かく制御
+  - すべてのメンターアクセスは監査ログに記録
+
+プライバシー保護:
+  - ClientDataViewLog による閲覧履歴の記録
+  - クライアントはいつでもアクセス権を取り消し可能
+  - GDPR対応
+```
+
+### 開発スケジュール
+
+```yaml
+Week 1: ロール管理基盤、メンター-クライアント関係
+  - Prismaスキーマ拡張
+  - Auth.js + DAL拡張
+  - MentorClientRelationship実装
+
+Week 2: データアクセス制御、メンターダッシュボード、クライアント詳細
+  - ClientDataAccessPermission実装
+  - メンターダッシュボードAPI
+  - クライアント詳細API
+
+Week 3: メンターノート、進捗レポート
+  - MentorNote機能実装
+  - ClientProgressReport機能実装
+
+Week 4: フロントエンド、テスト、デプロイ
+  - M-001、M-002ページ実装
+  - E2Eテスト作成
+  - 本番デプロイ
+```
+
+### 参考ドキュメント
+
+- 要件定義書: `docs/requirements_mentor.md`
+- 進捗管理: `docs/SCOPE_PROGRESS.md`（フェーズ2セクション）
+- API仕様書: `docs/api-specs/mentor-api.md`（今後作成予定）
+- Prismaスキーマ: `prisma/schema.prisma`
+
+---
+
+**最終更新**: 2025-11-02 - メンター機能の要件定義完了

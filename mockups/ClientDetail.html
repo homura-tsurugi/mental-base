@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>クライアント詳細 - COM:PASS</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    /* CSS Variables - Design System */
+    :root {
+      /* カラー */
+      --primary: #2c5282;
+      --primary-light: #4a69a7;
+      --primary-dark: #1e3a5f;
+      --secondary: #4299e1;
+      --secondary-light: #63b3ed;
+      --background: #ffffff;
+      --surface: #f7fafc;
+      --page-background: #f5f7fa;
+      --text: #2d3748;
+      --text-secondary: #718096;
+      --success: #48bb78;
+      --warning: #ecc94b;
+      --error: #e53e3e;
+      --info: #63b3ed;
+      --ai: #9f7aea;
+
+      /* シャドウ */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
+      --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+
+      /* スペーシング */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+
+      /* ボーダー */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      /* タイポグラフィ */
+      --font-xs: 12px;
+      --font-sm: 14px;
+      --font-md: 16px;
+      --font-lg: 18px;
+      --font-xl: 24px;
+      --font-xxl: 32px;
+    }
+
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      background-color: var(--page-background);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 240px;
+      height: 100vh;
+      background-color: var(--primary-dark);
+      color: white;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sidebar-header {
+      padding: var(--spacing-lg);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .sidebar-logo {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .sidebar-nav {
+      padding: var(--spacing-md);
+    }
+
+    .nav-section {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .nav-section-title {
+      font-size: var(--font-xs);
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.6);
+      text-transform: uppercase;
+      margin-bottom: var(--spacing-sm);
+      padding: 0 var(--spacing-sm);
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      border-radius: var(--radius-md);
+      transition: all 0.3s;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .nav-link:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      color: white;
+    }
+
+    .nav-link.active {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .nav-link .material-icons {
+      font-size: 20px;
+    }
+
+    /* Main Content */
+    .main-content {
+      margin-left: 240px;
+      padding: var(--spacing-xl);
+      min-height: 100vh;
+    }
+
+    /* Back Navigation */
+    .back-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: var(--font-sm);
+      margin-bottom: var(--spacing-md);
+      transition: color 0.3s;
+    }
+
+    .back-nav:hover {
+      color: var(--primary);
+    }
+
+    .back-nav .material-icons {
+      font-size: 18px;
+    }
+
+    /* Client Header */
+    .client-header {
+      background-color: var(--background);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .client-header-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .client-basic-info {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .client-avatar-large {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-color: var(--secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 700;
+      font-size: var(--font-xl);
+    }
+
+    .client-info-text {
+      flex: 1;
+    }
+
+    .client-name-large {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .client-email-large {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .client-dates {
+      font-size: var(--font-xs);
+      color: var(--text-secondary);
+      display: flex;
+      gap: var(--spacing-md);
+    }
+
+    .generate-report-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-lg);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      transition: background-color 0.3s;
+    }
+
+    .generate-report-btn:hover {
+      background-color: var(--primary-light);
+    }
+
+    .generate-report-btn .material-icons {
+      font-size: 18px;
+    }
+
+    .client-progress-section {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-lg);
+    }
+
+    .progress-circle {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: conic-gradient(var(--success) 0% 85%, var(--surface) 85% 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .progress-circle-inner {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background-color: var(--background);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .progress-percentage {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .progress-label-small {
+      font-size: var(--font-xs);
+      color: var(--text-secondary);
+    }
+
+    .client-status-large {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: 6px var(--spacing-md);
+      border-radius: var(--radius-full);
+      font-size: var(--font-sm);
+      font-weight: 500;
+    }
+
+    .client-status-large.on-track {
+      background-color: rgba(72, 187, 120, 0.1);
+      color: var(--success);
+    }
+
+    .client-status-large.stagnant {
+      background-color: rgba(236, 201, 75, 0.1);
+      color: var(--warning);
+    }
+
+    .client-status-large.needs-followup {
+      background-color: rgba(229, 62, 62, 0.1);
+      color: var(--error);
+    }
+
+    .client-status-large .material-icons {
+      font-size: 18px;
+    }
+
+    /* Tab Navigation */
+    .tabs-nav {
+      background-color: var(--background);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: var(--spacing-md);
+      overflow-x: auto;
+    }
+
+    .tabs-list {
+      display: flex;
+      list-style: none;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .tab-button {
+      flex: 1;
+      padding: var(--spacing-md) var(--spacing-lg);
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      color: var(--text-secondary);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      white-space: nowrap;
+    }
+
+    .tab-button:hover {
+      color: var(--primary);
+      background-color: var(--surface);
+    }
+
+    .tab-button.active {
+      color: var(--primary);
+      border-bottom-color: var(--primary);
+    }
+
+    /* Tab Content */
+    .tab-content {
+      background-color: var(--background);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+      min-height: 400px;
+    }
+
+    .tab-pane {
+      display: none;
+    }
+
+    .tab-pane.active {
+      display: block;
+    }
+
+    /* Access Denied */
+    .access-denied {
+      text-align: center;
+      padding: var(--spacing-xl);
+      color: var(--text-secondary);
+    }
+
+    .access-denied .material-icons {
+      font-size: 64px;
+      color: var(--warning);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .access-denied-title {
+      font-size: var(--font-lg);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .access-denied-text {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Goal Card */
+    .goal-card {
+      background-color: var(--surface);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+      border-left: 4px solid var(--primary);
+    }
+
+    .goal-title {
+      font-size: var(--font-md);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .goal-description {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .goal-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--font-xs);
+      color: var(--text-secondary);
+    }
+
+    .goal-deadline {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .goal-status {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      font-size: var(--font-xs);
+      font-weight: 500;
+    }
+
+    .goal-status.active {
+      background-color: rgba(66, 153, 225, 0.1);
+      color: var(--info);
+    }
+
+    .goal-status.completed {
+      background-color: rgba(72, 187, 120, 0.1);
+      color: var(--success);
+    }
+
+    /* Task List */
+    .task-list {
+      list-style: none;
+    }
+
+    .task-item {
+      background-color: var(--surface);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .task-priority {
+      width: 6px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+    }
+
+    .task-priority.high {
+      background-color: var(--error);
+    }
+
+    .task-priority.medium {
+      background-color: var(--warning);
+    }
+
+    .task-priority.low {
+      background-color: var(--info);
+    }
+
+    .task-content {
+      flex: 1;
+    }
+
+    .task-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .task-title {
+      font-size: var(--font-md);
+      color: var(--text);
+    }
+
+    .task-status {
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      font-size: var(--font-xs);
+      font-weight: 500;
+    }
+
+    .task-status.todo {
+      background-color: rgba(113, 128, 150, 0.1);
+      color: var(--text-secondary);
+    }
+
+    .task-status.in-progress {
+      background-color: rgba(66, 153, 225, 0.1);
+      color: var(--info);
+    }
+
+    .task-status.done {
+      background-color: rgba(72, 187, 120, 0.1);
+      color: var(--success);
+    }
+
+    .task-meta {
+      font-size: var(--font-xs);
+      color: var(--text-secondary);
+    }
+
+    /* Log Entry */
+    .log-entry {
+      background-color: var(--surface);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .log-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .log-date {
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .log-emotion {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      font-size: var(--font-xs);
+      color: var(--text-secondary);
+    }
+
+    .log-content {
+      font-size: var(--font-sm);
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .log-state {
+      font-size: var(--font-xs);
+      color: var(--text-secondary);
+    }
+
+    /* Reflection Card */
+    .reflection-card {
+      background-color: var(--surface);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .reflection-period {
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--primary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .reflection-section-title {
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .reflection-section-content {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* AI Report */
+    .ai-report {
+      background: linear-gradient(135deg, rgba(159, 122, 234, 0.05) 0%, rgba(66, 153, 225, 0.05) 100%);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      border: 1px solid rgba(159, 122, 234, 0.2);
+    }
+
+    .ai-report-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .ai-report-header .material-icons {
+      color: var(--ai);
+      font-size: 24px;
+    }
+
+    .ai-report-title {
+      font-size: var(--font-lg);
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .ai-report-section {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .ai-report-section-title {
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .ai-report-section-content {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+    }
+
+    /* Mentor Note */
+    .note-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .create-note-btn {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      transition: background-color 0.3s;
+    }
+
+    .create-note-btn:hover {
+      background-color: var(--primary-light);
+    }
+
+    .create-note-btn .material-icons {
+      font-size: 18px;
+    }
+
+    .note-card {
+      background-color: var(--surface);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .note-card-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .note-title {
+      font-size: var(--font-md);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .note-type-badge {
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+      font-size: var(--font-xs);
+      font-weight: 500;
+    }
+
+    .note-type-badge.observation {
+      background-color: rgba(66, 153, 225, 0.1);
+      color: var(--info);
+    }
+
+    .note-type-badge.concern {
+      background-color: rgba(236, 201, 75, 0.1);
+      color: var(--warning);
+    }
+
+    .note-type-badge.achievement {
+      background-color: rgba(72, 187, 120, 0.1);
+      color: var(--success);
+    }
+
+    .note-type-badge.general {
+      background-color: rgba(113, 128, 150, 0.1);
+      color: var(--text-secondary);
+    }
+
+    .note-content {
+      font-size: var(--font-sm);
+      color: var(--text);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .note-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--font-xs);
+      color: var(--text-secondary);
+    }
+
+    .note-visibility {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .note-visibility .material-icons {
+      font-size: 14px;
+    }
+
+    /* Note Form (Modal-like) */
+    .note-form {
+      background-color: var(--surface);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-lg);
+      margin-bottom: var(--spacing-md);
+      border: 2px solid var(--primary);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-label {
+      display: block;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--spacing-sm);
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      font-size: var(--font-sm);
+      color: var(--text);
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+    }
+
+    .form-textarea {
+      width: 100%;
+      padding: var(--spacing-sm);
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      font-size: var(--font-sm);
+      color: var(--text);
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .form-select {
+      width: 100%;
+      padding: var(--spacing-sm);
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      font-size: var(--font-sm);
+      color: var(--text);
+      background-color: white;
+      cursor: pointer;
+    }
+
+    .form-checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .form-checkbox {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+      justify-content: flex-end;
+    }
+
+    .btn-secondary {
+      background-color: var(--surface);
+      color: var(--text);
+      border: 1px solid #e2e8f0;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background-color: #e2e8f0;
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 200px;
+      }
+
+      .main-content {
+        margin-left: 200px;
+      }
+
+      .client-header-top {
+        flex-direction: column;
+        gap: var(--spacing-md);
+      }
+
+      .client-progress-section {
+        flex-direction: column;
+      }
+
+      .tabs-list {
+        overflow-x: auto;
+      }
+
+      .tab-button {
+        flex: none;
+        min-width: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <span class="material-icons">explore</span>
+        COM:PASS
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <!-- クライアント機能 -->
+      <div class="nav-section">
+        <div class="nav-section-title">クライアント</div>
+        <a href="/" class="nav-link">
+          <span class="material-icons">home</span>
+          <span>ホーム</span>
+        </a>
+        <a href="/plan-do" class="nav-link">
+          <span class="material-icons">flag</span>
+          <span>目標・実行</span>
+        </a>
+        <a href="/check-action" class="nav-link">
+          <span class="material-icons">assessment</span>
+          <span>振り返り・改善</span>
+        </a>
+        <a href="/ai-assistant" class="nav-link">
+          <span class="material-icons">psychology</span>
+          <span>AIアシスタント</span>
+        </a>
+      </div>
+
+      <!-- メンター機能 -->
+      <div class="nav-section">
+        <div class="nav-section-title">メンター</div>
+        <a href="/mentor" class="nav-link active">
+          <span class="material-icons">dashboard</span>
+          <span>ダッシュボード</span>
+        </a>
+      </div>
+
+      <!-- 設定 -->
+      <div class="nav-section">
+        <div class="nav-section-title">その他</div>
+        <a href="/settings" class="nav-link">
+          <span class="material-icons">settings</span>
+          <span>設定</span>
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Back Navigation -->
+    <a href="/mentor" class="back-nav">
+      <span class="material-icons">arrow_back</span>
+      <span>メンターダッシュボードに戻る</span>
+    </a>
+
+    <!-- Client Header -->
+    <section class="client-header">
+      <div class="client-header-top">
+        <div class="client-basic-info">
+          <div class="client-avatar-large">田</div>
+          <div class="client-info-text">
+            <div class="client-name-large">田中太郎</div>
+            <div class="client-email-large">tanaka@example.com</div>
+            <div class="client-dates">
+              <span>登録日: 2025-01-15</span>
+              <span>メンター関係開始: 2025-01-20</span>
+            </div>
+          </div>
+        </div>
+
+        <button class="generate-report-btn">
+          <span class="material-icons">description</span>
+          進捗レポート生成
+        </button>
+      </div>
+
+      <div class="client-progress-section">
+        <div class="progress-circle">
+          <div class="progress-circle-inner">
+            <div class="progress-percentage">85%</div>
+            <div class="progress-label-small">総合進捗率</div>
+          </div>
+        </div>
+
+        <div class="client-status-large on-track">
+          <span class="material-icons">check_circle</span>
+          順調
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <nav class="tabs-nav">
+      <ul class="tabs-list">
+        <li>
+          <button class="tab-button active" data-tab="goals">目標一覧</button>
+        </li>
+        <li>
+          <button class="tab-button" data-tab="tasks">タスク一覧</button>
+        </li>
+        <li>
+          <button class="tab-button" data-tab="logs">ログ履歴</button>
+        </li>
+        <li>
+          <button class="tab-button" data-tab="reflections">振り返り</button>
+        </li>
+        <li>
+          <button class="tab-button" data-tab="ai-reports">AI分析レポート</button>
+        </li>
+        <li>
+          <button class="tab-button" data-tab="notes">メンターノート</button>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+      <!-- Tab 1: Goals -->
+      <div id="tab-goals" class="tab-pane active">
+        <div class="goal-card">
+          <div class="goal-title">健康的な生活習慣を身につける</div>
+          <div class="goal-description">毎日7時間以上の睡眠と週3回の運動を習慣化する</div>
+          <div class="goal-meta">
+            <div class="goal-deadline">
+              <span class="material-icons" style="font-size: 14px;">event</span>
+              <span>期限: 2025-03-31</span>
+            </div>
+            <div>
+              <span style="margin-right: 12px;">進捗率: 72%</span>
+              <span class="goal-status active">進行中</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="goal-card">
+          <div class="goal-title">英語のスピーキング力向上</div>
+          <div class="goal-description">オンライン英会話で週2回レッスンを受ける</div>
+          <div class="goal-meta">
+            <div class="goal-deadline">
+              <span class="material-icons" style="font-size: 14px;">event</span>
+              <span>期限: 2025-06-30</span>
+            </div>
+            <div>
+              <span style="margin-right: 12px;">進捗率: 45%</span>
+              <span class="goal-status active">進行中</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="goal-card">
+          <div class="goal-title">プログラミングスキル習得</div>
+          <div class="goal-description">JavaScriptとReactを学習し、簡単なWebアプリを作成する</div>
+          <div class="goal-meta">
+            <div class="goal-deadline">
+              <span class="material-icons" style="font-size: 14px;">event</span>
+              <span>期限: 2025-05-31</span>
+            </div>
+            <div>
+              <span style="margin-right: 12px;">進捗率: 90%</span>
+              <span class="goal-status completed">完了</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 2: Tasks -->
+      <div id="tab-tasks" class="tab-pane">
+        <ul class="task-list">
+          <li class="task-item">
+            <div class="task-priority high"></div>
+            <div class="task-content">
+              <div class="task-title-row">
+                <div class="task-title">今週の運動計画を立てる</div>
+                <span class="task-status in-progress">進行中</span>
+              </div>
+              <div class="task-meta">期限: 2025-11-05 | 優先度: 高 | 目標: 健康的な生活習慣</div>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <div class="task-priority medium"></div>
+            <div class="task-content">
+              <div class="task-title-row">
+                <div class="task-title">英会話レッスンを予約する</div>
+                <span class="task-status todo">未着手</span>
+              </div>
+              <div class="task-meta">期限: 2025-11-08 | 優先度: 中 | 目標: 英語のスピーキング力向上</div>
+            </div>
+          </li>
+
+          <li class="task-item">
+            <div class="task-priority low"></div>
+            <div class="task-content">
+              <div class="task-title-row">
+                <div class="task-title">睡眠時間を記録する</div>
+                <span class="task-status done">完了</span>
+              </div>
+              <div class="task-meta">期限: 2025-11-03 | 優先度: 低 | 目標: 健康的な生活習慣</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Tab 3: Logs -->
+      <div id="tab-logs" class="tab-pane">
+        <div class="log-entry">
+          <div class="log-header">
+            <div class="log-date">2025-11-02 09:30</div>
+            <div class="log-emotion">
+              <span class="material-icons" style="font-size: 16px;">sentiment_satisfied</span>
+              満足
+            </div>
+          </div>
+          <div class="log-content">
+            今朝は6時に起床し、30分のジョギングを完了。朝食もしっかり食べて気持ち良い一日のスタートを切れた。運動後のリフレッシュ感が心地よい。
+          </div>
+          <div class="log-state">状態: エネルギッシュ、集中力高い</div>
+        </div>
+
+        <div class="log-entry">
+          <div class="log-header">
+            <div class="log-date">2025-11-01 20:15</div>
+            <div class="log-emotion">
+              <span class="material-icons" style="font-size: 16px;">sentiment_neutral</span>
+              普通
+            </div>
+          </div>
+          <div class="log-content">
+            英会話レッスンを受講。まだまだスムーズに話せないが、少しずつ慣れてきている実感がある。継続が大切だと感じる。
+          </div>
+          <div class="log-state">状態: やや疲労、意欲あり</div>
+        </div>
+
+        <div class="log-entry">
+          <div class="log-header">
+            <div class="log-date">2025-10-31 22:00</div>
+            <div class="log-emotion">
+              <span class="material-icons" style="font-size: 16px;">sentiment_dissatisfied</span>
+              やや不満
+            </div>
+          </div>
+          <div class="log-content">
+            仕事が忙しくて運動する時間が取れなかった。睡眠時間も6時間と少なめ。明日は早めに仕事を切り上げて運動したい。
+          </div>
+          <div class="log-state">状態: 疲労、ストレス高め</div>
+        </div>
+      </div>
+
+      <!-- Tab 4: Reflections -->
+      <div id="tab-reflections" class="tab-pane">
+        <div class="reflection-card">
+          <div class="reflection-period">2025年10月 週次振り返り（10/25 - 10/31）</div>
+
+          <div class="reflection-section-title">達成したこと</div>
+          <div class="reflection-section-content">
+            ・週3回の運動を達成（ジョギング2回、筋トレ1回）<br>
+            ・毎日7時間以上の睡眠を6日間達成<br>
+            ・英会話レッスンを2回受講
+          </div>
+
+          <div class="reflection-section-title">課題と気づき</div>
+          <div class="reflection-section-content">
+            ・仕事が忙しいと運動の時間を確保しづらい<br>
+            ・朝型生活にシフトすることで時間を確保しやすいと気づいた<br>
+            ・英会話は継続が必要だが、少しずつ上達を実感
+          </div>
+        </div>
+
+        <div class="reflection-card">
+          <div class="reflection-period">2025年9月 月次振り返り（9/1 - 9/30）</div>
+
+          <div class="reflection-section-title">達成したこと</div>
+          <div class="reflection-section-content">
+            ・プログラミング学習を30日間継続<br>
+            ・Reactの基礎を習得し、簡単なTodoアプリを作成<br>
+            ・健康習慣の基盤を構築（睡眠・運動の重要性を認識）
+          </div>
+
+          <div class="reflection-section-title">課題と気づき</div>
+          <div class="reflection-section-content">
+            ・複数の目標を同時進行すると優先順位が曖昧になる<br>
+            ・習慣化には最低21日間かかるという実感<br>
+            ・自己管理には定期的な振り返りが不可欠
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 5: AI Reports -->
+      <div id="tab-ai-reports" class="tab-pane">
+        <div class="ai-report">
+          <div class="ai-report-header">
+            <span class="material-icons">psychology</span>
+            <div class="ai-report-title">AI分析レポート（2025年10月）</div>
+          </div>
+
+          <div class="ai-report-section">
+            <div class="ai-report-section-title">主な洞察</div>
+            <div class="ai-report-section-content">
+              田中さんは健康習慣の構築において着実な進歩を見せています。特に運動と睡眠の習慣化において、週ごとの達成率が向上しています。仕事の繁忙期でも習慣を維持しようとする姿勢が見られ、強い意志が感じられます。英語学習も継続的に取り組んでおり、多面的な成長を遂げています。
+            </div>
+          </div>
+
+          <div class="ai-report-section">
+            <div class="ai-report-section-title">推奨事項</div>
+            <div class="ai-report-section-content">
+              1. 朝型生活へのシフトを検討: ログから朝の運動後に生産性が高いことが読み取れます<br>
+              2. 英会話の実践機会を増やす: オンラインコミュニティへの参加も有効です<br>
+              3. 仕事のピーク時の対処法: 短時間でも運動できるHIITトレーニングの導入を推奨<br>
+              4. 振り返りの習慣をさらに強化: 週次振り返りが効果的に機能しています
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab 6: Mentor Notes -->
+      <div id="tab-notes" class="tab-pane">
+        <div class="note-header">
+          <h3 style="font-size: var(--font-lg); font-weight: 500;">メンターノート</h3>
+          <button class="create-note-btn">
+            <span class="material-icons">add</span>
+            新規ノート作成
+          </button>
+        </div>
+
+        <!-- Note Creation Form (initially hidden, shown when button clicked) -->
+        <div class="note-form" style="display: none;">
+          <div class="form-group">
+            <label class="form-label">タイトル *</label>
+            <input type="text" class="form-input" placeholder="ノートのタイトルを入力">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">内容 *</label>
+            <textarea class="form-textarea" placeholder="観察内容やメモを入力"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">ノートタイプ</label>
+            <select class="form-select">
+              <option value="general">一般</option>
+              <option value="observation">観察</option>
+              <option value="concern">懸念事項</option>
+              <option value="achievement">成果</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">タグ（カンマ区切り）</label>
+            <input type="text" class="form-input" placeholder="例: 健康, 目標設定, モチベーション">
+          </div>
+
+          <div class="form-group">
+            <div class="form-checkbox-group">
+              <input type="checkbox" class="form-checkbox" id="note-private">
+              <label for="note-private" style="font-size: var(--font-sm); cursor: pointer;">このノートを非公開にする（クライアントには共有しない）</label>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button class="btn-secondary">キャンセル</button>
+            <button class="btn-primary">保存</button>
+          </div>
+        </div>
+
+        <!-- Existing Notes -->
+        <div class="note-card">
+          <div class="note-card-header">
+            <div>
+              <div class="note-title">健康習慣への取り組みが素晴らしい</div>
+              <span class="note-type-badge achievement">成果</span>
+            </div>
+          </div>
+          <div class="note-content">
+            田中さんは先月から運動と睡眠の習慣化に真剣に取り組んでおり、着実に成果を上げています。特に朝型生活へのシフトを自ら発見し、実践しようとする姿勢は高く評価できます。今後もこの調子で継続できるようサポートしていきます。
+          </div>
+          <div class="note-footer">
+            <div>
+              <span>作成日: 2025-11-01</span>
+              <span style="margin-left: 12px;">タグ: 健康, 成果, モチベーション</span>
+            </div>
+            <div class="note-visibility">
+              <span class="material-icons">public</span>
+              公開
+            </div>
+          </div>
+        </div>
+
+        <div class="note-card">
+          <div class="note-card-header">
+            <div>
+              <div class="note-title">英語学習のペースに注意</div>
+              <span class="note-type-badge observation">観察</span>
+            </div>
+          </div>
+          <div class="note-content">
+            英会話レッスンの頻度が週2回と設定されているが、実際には週1回程度になっているようです。仕事の繁忙期が影響している可能性があります。次回のミーティングで、無理のないペース設定について話し合う必要がありそうです。
+          </div>
+          <div class="note-footer">
+            <div>
+              <span>作成日: 2025-10-28</span>
+              <span style="margin-left: 12px;">タグ: 英語学習, ペース調整</span>
+            </div>
+            <div class="note-visibility">
+              <span class="material-icons">lock</span>
+              非公開
+            </div>
+          </div>
+        </div>
+
+        <div class="note-card">
+          <div class="note-card-header">
+            <div>
+              <div class="note-title">初回ミーティング実施</div>
+              <span class="note-type-badge general">一般</span>
+            </div>
+          </div>
+          <div class="note-content">
+            田中さんとの初回ミーティングを実施しました。健康習慣の改善と英語学習、そしてプログラミングスキル習得という3つの目標を持っており、それぞれに明確な理由があります。非常に意欲的で、自己管理能力も高いと感じました。COM:PASSを活用して着実に成長できるようサポートしていきます。
+          </div>
+          <div class="note-footer">
+            <div>
+              <span>作成日: 2025-01-20</span>
+              <span style="margin-left: 12px;">タグ: 初回ミーティング, 目標設定</span>
+            </div>
+            <div class="note-visibility">
+              <span class="material-icons">lock</span>
+              非公開
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Access Denied Example (for tabs without permission) -->
+      <!-- This would replace tab content when access is denied -->
+      <!--
+      <div class="access-denied">
+        <span class="material-icons">lock</span>
+        <div class="access-denied-title">アクセス権限がありません</div>
+        <div class="access-denied-text">
+          このクライアントはこのデータの閲覧を許可していません。<br>
+          クライアントに許可をリクエストしてください。
+        </div>
+      </div>
+      -->
+    </div>
+
+  </main>
+
+  <!-- Simple Tab Switching Script -->
+  <script>
+    // Tab switching functionality
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabPanes = document.querySelectorAll('.tab-pane');
+
+    tabButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const targetTab = button.getAttribute('data-tab');
+
+        // Remove active class from all buttons and panes
+        tabButtons.forEach(btn => btn.classList.remove('active'));
+        tabPanes.forEach(pane => pane.classList.remove('active'));
+
+        // Add active class to clicked button and corresponding pane
+        button.classList.add('active');
+        document.getElementById('tab-' + targetTab).classList.add('active');
+      });
+    });
+
+    // Note form toggle
+    const createNoteBtn = document.querySelector('.create-note-btn');
+    const noteForm = document.querySelector('.note-form');
+
+    createNoteBtn.addEventListener('click', () => {
+      if (noteForm.style.display === 'none' || noteForm.style.display === '') {
+        noteForm.style.display = 'block';
+      } else {
+        noteForm.style.display = 'none';
+      }
+    });
+
+    // Note form cancel button
+    const cancelBtn = document.querySelector('.btn-secondary');
+    if (cancelBtn) {
+      cancelBtn.addEventListener('click', () => {
+        noteForm.style.display = 'none';
+      });
+    }
+  </script>
+
+</body>
+</html>

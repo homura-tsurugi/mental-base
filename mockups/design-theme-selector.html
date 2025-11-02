@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mental-Base Design Theme Selector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            // Theme 1: Professional & Clean
+            professional: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+            },
+            // Theme 2: Warm & Motivational
+            warm: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              200: '#fed7aa',
+              300: '#fdba74',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+              800: '#9a3412',
+              900: '#7c2d12',
+            },
+            // Theme 3: Modern & Vibrant
+            vibrant: {
+              50: '#faf5ff',
+              100: '#f3e8ff',
+              200: '#e9d5ff',
+              300: '#d8b4fe',
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+              800: '#6b21a8',
+              900: '#581c87',
+            },
+            // Theme 4: Calm & Focused
+            calm: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              200: '#bbf7d0',
+              300: '#86efac',
+              400: '#4ade80',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    .theme-card {
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .theme-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .theme-card.selected {
+      ring-width: 4px;
+    }
+
+    .preview-section {
+      min-height: 400px;
+    }
+
+    .gradient-bg-1 {
+      background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+    }
+
+    .gradient-bg-2 {
+      background: linear-gradient(135deg, #fb923c 0%, #ea580c 100%);
+    }
+
+    .gradient-bg-3 {
+      background: linear-gradient(135deg, #c084fc 0%, #9333ea 100%);
+    }
+
+    .gradient-bg-4 {
+      background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+    }
+
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gray-50 min-h-screen p-4 md:p-8">
+  <div class="max-w-7xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4">Mental-Base</h1>
+      <p class="text-xl text-gray-600 mb-2">デザインテーマを選択してください</p>
+      <p class="text-sm text-gray-500">あなたの目標達成を支援する最適なデザインを見つけましょう</p>
+    </div>
+
+    <!-- Theme Selection Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      <!-- Theme 1: Professional & Clean -->
+      <div class="theme-card rounded-2xl shadow-lg overflow-hidden bg-white ring-professional-500"
+           onclick="selectTheme(1)"
+           id="theme-1">
+        <div class="gradient-bg-1 h-32 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Professional & Clean</h3>
+          <p class="text-sm text-gray-600 mb-4">洗練されたビジネス向けデザイン</p>
+          <div class="flex gap-2 flex-wrap">
+            <div class="w-10 h-10 rounded-lg bg-professional-500"></div>
+            <div class="w-10 h-10 rounded-lg bg-professional-600"></div>
+            <div class="w-10 h-10 rounded-lg bg-professional-700"></div>
+            <div class="w-10 h-10 rounded-lg bg-gray-100"></div>
+          </div>
+          <div class="mt-4 text-xs text-gray-500">
+            <span class="font-semibold">特徴:</span> 信頼感、明確性、効率性
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme 2: Warm & Motivational -->
+      <div class="theme-card rounded-2xl shadow-lg overflow-hidden bg-white ring-warm-500"
+           onclick="selectTheme(2)"
+           id="theme-2">
+        <div class="gradient-bg-2 h-32 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+          </svg>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Warm & Motivational</h3>
+          <p class="text-sm text-gray-600 mb-4">温かみのあるモチベーション重視</p>
+          <div class="flex gap-2 flex-wrap">
+            <div class="w-10 h-10 rounded-lg bg-warm-500"></div>
+            <div class="w-10 h-10 rounded-lg bg-warm-600"></div>
+            <div class="w-10 h-10 rounded-lg bg-warm-700"></div>
+            <div class="w-10 h-10 rounded-lg bg-amber-50"></div>
+          </div>
+          <div class="mt-4 text-xs text-gray-500">
+            <span class="font-semibold">特徴:</span> エネルギー、情熱、励まし
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme 3: Modern & Vibrant -->
+      <div class="theme-card rounded-2xl shadow-lg overflow-hidden bg-white ring-vibrant-500"
+           onclick="selectTheme(3)"
+           id="theme-3">
+        <div class="gradient-bg-3 h-32 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+          </svg>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Modern & Vibrant</h3>
+          <p class="text-sm text-gray-600 mb-4">活気あるモダンなデザイン</p>
+          <div class="flex gap-2 flex-wrap">
+            <div class="w-10 h-10 rounded-lg bg-vibrant-500"></div>
+            <div class="w-10 h-10 rounded-lg bg-vibrant-600"></div>
+            <div class="w-10 h-10 rounded-lg bg-vibrant-700"></div>
+            <div class="w-10 h-10 rounded-lg bg-purple-50"></div>
+          </div>
+          <div class="mt-4 text-xs text-gray-500">
+            <span class="font-semibold">特徴:</span> 創造性、革新性、活力
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme 4: Calm & Focused -->
+      <div class="theme-card rounded-2xl shadow-lg overflow-hidden bg-white ring-calm-500"
+           onclick="selectTheme(4)"
+           id="theme-4">
+        <div class="gradient-bg-4 h-32 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+        <div class="p-6">
+          <h3 class="text-xl font-bold text-gray-900 mb-2">Calm & Focused</h3>
+          <p class="text-sm text-gray-600 mb-4">集中力を高める落ち着いたデザイン</p>
+          <div class="flex gap-2 flex-wrap">
+            <div class="w-10 h-10 rounded-lg bg-calm-500"></div>
+            <div class="w-10 h-10 rounded-lg bg-calm-600"></div>
+            <div class="w-10 h-10 rounded-lg bg-calm-700"></div>
+            <div class="w-10 h-10 rounded-lg bg-green-50"></div>
+          </div>
+          <div class="mt-4 text-xs text-gray-500">
+            <span class="font-semibold">特徴:</span> 成長、調和、集中
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Theme Display -->
+    <div class="text-center mb-8">
+      <p class="text-lg font-semibold text-gray-700">選択中のテーマ: <span id="selected-theme-name" class="text-2xl font-bold text-gray-900">テーマ1</span></p>
+      <p class="text-sm text-gray-500 mt-2">下のプレビューで実際のUIイメージを確認できます</p>
+    </div>
+
+    <!-- Preview Section -->
+    <div class="preview-section bg-white rounded-2xl shadow-xl overflow-hidden">
+      <!-- Theme 1 Preview -->
+      <div id="preview-1" class="preview-content fade-in">
+        <div class="gradient-bg-1 p-8 text-white">
+          <h2 class="text-3xl font-bold mb-2">COM:PASS ダッシュボード</h2>
+          <p class="text-blue-100">あなたの成長を可視化します</p>
+        </div>
+
+        <div class="p-8">
+          <!-- Progress Overview -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-professional-50 rounded-xl p-6 border border-professional-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-professional-900">PLAN</h3>
+                <span class="text-2xl font-bold text-professional-600">85%</span>
+              </div>
+              <div class="w-full bg-professional-200 rounded-full h-2">
+                <div class="bg-professional-600 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="bg-professional-50 rounded-xl p-6 border border-professional-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-professional-900">DO</h3>
+                <span class="text-2xl font-bold text-professional-600">72%</span>
+              </div>
+              <div class="w-full bg-professional-200 rounded-full h-2">
+                <div class="bg-professional-600 h-2 rounded-full" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="bg-professional-50 rounded-xl p-6 border border-professional-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-professional-900">CHECK</h3>
+                <span class="text-2xl font-bold text-professional-600">60%</span>
+              </div>
+              <div class="w-full bg-professional-200 rounded-full h-2">
+                <div class="bg-professional-600 h-2 rounded-full" style="width: 60%"></div>
+              </div>
+            </div>
+            <div class="bg-professional-50 rounded-xl p-6 border border-professional-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-professional-900">ACTION</h3>
+                <span class="text-2xl font-bold text-professional-600">45%</span>
+              </div>
+              <div class="w-full bg-professional-200 rounded-full h-2">
+                <div class="bg-professional-600 h-2 rounded-full" style="width: 45%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Tasks -->
+          <div class="mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">今日のタスク</h3>
+            <div class="space-y-3">
+              <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-professional-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-professional-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">朝のストレッチ（10分間）</span>
+                <span class="text-xs px-3 py-1 bg-professional-100 text-professional-700 rounded-full font-medium">高</span>
+              </div>
+              <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-professional-300 transition-colors">
+                <input type="checkbox" checked class="w-5 h-5 text-professional-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-400 line-through">週次振り返りを記録する</span>
+                <span class="text-xs px-3 py-1 bg-gray-200 text-gray-600 rounded-full font-medium">中</span>
+              </div>
+              <div class="flex items-center p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-professional-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-professional-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">プロジェクト資料を読む（30分）</span>
+                <span class="text-xs px-3 py-1 bg-professional-100 text-professional-700 rounded-full font-medium">中</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-4">
+            <button class="px-6 py-3 bg-professional-600 text-white rounded-lg font-semibold hover:bg-professional-700 transition-colors shadow-md">
+              新しい目標を作成
+            </button>
+            <button class="px-6 py-3 bg-white text-professional-600 border-2 border-professional-600 rounded-lg font-semibold hover:bg-professional-50 transition-colors">
+              AIアシスタントに相談
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme 2 Preview -->
+      <div id="preview-2" class="preview-content hidden">
+        <div class="gradient-bg-2 p-8 text-white">
+          <h2 class="text-3xl font-bold mb-2">COM:PASS ダッシュボード</h2>
+          <p class="text-orange-100">あなたの成長を可視化します</p>
+        </div>
+
+        <div class="p-8">
+          <!-- Progress Overview -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-warm-50 rounded-xl p-6 border border-warm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-warm-900">PLAN</h3>
+                <span class="text-2xl font-bold text-warm-600">85%</span>
+              </div>
+              <div class="w-full bg-warm-200 rounded-full h-2">
+                <div class="bg-warm-600 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="bg-warm-50 rounded-xl p-6 border border-warm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-warm-900">DO</h3>
+                <span class="text-2xl font-bold text-warm-600">72%</span>
+              </div>
+              <div class="w-full bg-warm-200 rounded-full h-2">
+                <div class="bg-warm-600 h-2 rounded-full" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="bg-warm-50 rounded-xl p-6 border border-warm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-warm-900">CHECK</h3>
+                <span class="text-2xl font-bold text-warm-600">60%</span>
+              </div>
+              <div class="w-full bg-warm-200 rounded-full h-2">
+                <div class="bg-warm-600 h-2 rounded-full" style="width: 60%"></div>
+              </div>
+            </div>
+            <div class="bg-warm-50 rounded-xl p-6 border border-warm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-warm-900">ACTION</h3>
+                <span class="text-2xl font-bold text-warm-600">45%</span>
+              </div>
+              <div class="w-full bg-warm-200 rounded-full h-2">
+                <div class="bg-warm-600 h-2 rounded-full" style="width: 45%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Tasks -->
+          <div class="mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">今日のタスク</h3>
+            <div class="space-y-3">
+              <div class="flex items-center p-4 bg-amber-50 rounded-lg border border-warm-200 hover:border-warm-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-warm-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">朝のストレッチ（10分間）</span>
+                <span class="text-xs px-3 py-1 bg-warm-100 text-warm-700 rounded-full font-medium">高</span>
+              </div>
+              <div class="flex items-center p-4 bg-amber-50 rounded-lg border border-warm-200 hover:border-warm-300 transition-colors">
+                <input type="checkbox" checked class="w-5 h-5 text-warm-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-400 line-through">週次振り返りを記録する</span>
+                <span class="text-xs px-3 py-1 bg-gray-200 text-gray-600 rounded-full font-medium">中</span>
+              </div>
+              <div class="flex items-center p-4 bg-amber-50 rounded-lg border border-warm-200 hover:border-warm-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-warm-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">プロジェクト資料を読む（30分）</span>
+                <span class="text-xs px-3 py-1 bg-warm-100 text-warm-700 rounded-full font-medium">中</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-4">
+            <button class="px-6 py-3 bg-warm-600 text-white rounded-lg font-semibold hover:bg-warm-700 transition-colors shadow-md">
+              新しい目標を作成
+            </button>
+            <button class="px-6 py-3 bg-white text-warm-600 border-2 border-warm-600 rounded-lg font-semibold hover:bg-warm-50 transition-colors">
+              AIアシスタントに相談
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme 3 Preview -->
+      <div id="preview-3" class="preview-content hidden">
+        <div class="gradient-bg-3 p-8 text-white">
+          <h2 class="text-3xl font-bold mb-2">COM:PASS ダッシュボード</h2>
+          <p class="text-purple-100">あなたの成長を可視化します</p>
+        </div>
+
+        <div class="p-8">
+          <!-- Progress Overview -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-vibrant-50 rounded-xl p-6 border border-vibrant-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-vibrant-900">PLAN</h3>
+                <span class="text-2xl font-bold text-vibrant-600">85%</span>
+              </div>
+              <div class="w-full bg-vibrant-200 rounded-full h-2">
+                <div class="bg-vibrant-600 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="bg-vibrant-50 rounded-xl p-6 border border-vibrant-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-vibrant-900">DO</h3>
+                <span class="text-2xl font-bold text-vibrant-600">72%</span>
+              </div>
+              <div class="w-full bg-vibrant-200 rounded-full h-2">
+                <div class="bg-vibrant-600 h-2 rounded-full" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="bg-vibrant-50 rounded-xl p-6 border border-vibrant-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-vibrant-900">CHECK</h3>
+                <span class="text-2xl font-bold text-vibrant-600">60%</span>
+              </div>
+              <div class="w-full bg-vibrant-200 rounded-full h-2">
+                <div class="bg-vibrant-600 h-2 rounded-full" style="width: 60%"></div>
+              </div>
+            </div>
+            <div class="bg-vibrant-50 rounded-xl p-6 border border-vibrant-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-vibrant-900">ACTION</h3>
+                <span class="text-2xl font-bold text-vibrant-600">45%</span>
+              </div>
+              <div class="w-full bg-vibrant-200 rounded-full h-2">
+                <div class="bg-vibrant-600 h-2 rounded-full" style="width: 45%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Tasks -->
+          <div class="mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">今日のタスク</h3>
+            <div class="space-y-3">
+              <div class="flex items-center p-4 bg-purple-50 rounded-lg border border-vibrant-200 hover:border-vibrant-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-vibrant-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">朝のストレッチ（10分間）</span>
+                <span class="text-xs px-3 py-1 bg-vibrant-100 text-vibrant-700 rounded-full font-medium">高</span>
+              </div>
+              <div class="flex items-center p-4 bg-purple-50 rounded-lg border border-vibrant-200 hover:border-vibrant-300 transition-colors">
+                <input type="checkbox" checked class="w-5 h-5 text-vibrant-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-400 line-through">週次振り返りを記録する</span>
+                <span class="text-xs px-3 py-1 bg-gray-200 text-gray-600 rounded-full font-medium">中</span>
+              </div>
+              <div class="flex items-center p-4 bg-purple-50 rounded-lg border border-vibrant-200 hover:border-vibrant-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-vibrant-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">プロジェクト資料を読む（30分）</span>
+                <span class="text-xs px-3 py-1 bg-vibrant-100 text-vibrant-700 rounded-full font-medium">中</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-4">
+            <button class="px-6 py-3 bg-vibrant-600 text-white rounded-lg font-semibold hover:bg-vibrant-700 transition-colors shadow-md">
+              新しい目標を作成
+            </button>
+            <button class="px-6 py-3 bg-white text-vibrant-600 border-2 border-vibrant-600 rounded-lg font-semibold hover:bg-vibrant-50 transition-colors">
+              AIアシスタントに相談
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Theme 4 Preview -->
+      <div id="preview-4" class="preview-content hidden">
+        <div class="gradient-bg-4 p-8 text-white">
+          <h2 class="text-3xl font-bold mb-2">COM:PASS ダッシュボード</h2>
+          <p class="text-green-100">あなたの成長を可視化します</p>
+        </div>
+
+        <div class="p-8">
+          <!-- Progress Overview -->
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-calm-50 rounded-xl p-6 border border-calm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-calm-900">PLAN</h3>
+                <span class="text-2xl font-bold text-calm-600">85%</span>
+              </div>
+              <div class="w-full bg-calm-200 rounded-full h-2">
+                <div class="bg-calm-600 h-2 rounded-full" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="bg-calm-50 rounded-xl p-6 border border-calm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-calm-900">DO</h3>
+                <span class="text-2xl font-bold text-calm-600">72%</span>
+              </div>
+              <div class="w-full bg-calm-200 rounded-full h-2">
+                <div class="bg-calm-600 h-2 rounded-full" style="width: 72%"></div>
+              </div>
+            </div>
+            <div class="bg-calm-50 rounded-xl p-6 border border-calm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-calm-900">CHECK</h3>
+                <span class="text-2xl font-bold text-calm-600">60%</span>
+              </div>
+              <div class="w-full bg-calm-200 rounded-full h-2">
+                <div class="bg-calm-600 h-2 rounded-full" style="width: 60%"></div>
+              </div>
+            </div>
+            <div class="bg-calm-50 rounded-xl p-6 border border-calm-200">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-sm font-semibold text-calm-900">ACTION</h3>
+                <span class="text-2xl font-bold text-calm-600">45%</span>
+              </div>
+              <div class="w-full bg-calm-200 rounded-full h-2">
+                <div class="bg-calm-600 h-2 rounded-full" style="width: 45%"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Tasks -->
+          <div class="mb-8">
+            <h3 class="text-xl font-bold text-gray-900 mb-4">今日のタスク</h3>
+            <div class="space-y-3">
+              <div class="flex items-center p-4 bg-green-50 rounded-lg border border-calm-200 hover:border-calm-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-calm-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">朝のストレッチ（10分間）</span>
+                <span class="text-xs px-3 py-1 bg-calm-100 text-calm-700 rounded-full font-medium">高</span>
+              </div>
+              <div class="flex items-center p-4 bg-green-50 rounded-lg border border-calm-200 hover:border-calm-300 transition-colors">
+                <input type="checkbox" checked class="w-5 h-5 text-calm-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-400 line-through">週次振り返りを記録する</span>
+                <span class="text-xs px-3 py-1 bg-gray-200 text-gray-600 rounded-full font-medium">中</span>
+              </div>
+              <div class="flex items-center p-4 bg-green-50 rounded-lg border border-calm-200 hover:border-calm-300 transition-colors">
+                <input type="checkbox" class="w-5 h-5 text-calm-600 rounded border-gray-300 mr-4">
+                <span class="flex-1 text-gray-900">プロジェクト資料を読む（30分）</span>
+                <span class="text-xs px-3 py-1 bg-calm-100 text-calm-700 rounded-full font-medium">中</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-wrap gap-4">
+            <button class="px-6 py-3 bg-calm-600 text-white rounded-lg font-semibold hover:bg-calm-700 transition-colors shadow-md">
+              新しい目標を作成
+            </button>
+            <button class="px-6 py-3 bg-white text-calm-600 border-2 border-calm-600 rounded-lg font-semibold hover:bg-calm-50 transition-colors">
+              AIアシスタントに相談
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer Info -->
+    <div class="mt-12 text-center text-sm text-gray-500">
+      <p class="mb-2">Mental-Base MVP - ライフ・ワークガバナンスプラットフォーム</p>
+      <p>技術スタック: Next.js 15 + TailwindCSS + shadcn/ui</p>
+    </div>
+  </div>
+
+  <script>
+    let currentTheme = 1;
+
+    const themeNames = {
+      1: 'テーマ1: Professional & Clean',
+      2: 'テーマ2: Warm & Motivational',
+      3: 'テーマ3: Modern & Vibrant',
+      4: 'テーマ4: Calm & Focused'
+    };
+
+    function selectTheme(themeNumber) {
+      // Remove selected class from all theme cards
+      for (let i = 1; i <= 4; i++) {
+        const card = document.getElementById(`theme-${i}`);
+        card.classList.remove('selected');
+      }
+
+      // Hide all previews
+      for (let i = 1; i <= 4; i++) {
+        const preview = document.getElementById(`preview-${i}`);
+        preview.classList.add('hidden');
+        preview.classList.remove('fade-in');
+      }
+
+      // Add selected class to clicked theme card
+      const selectedCard = document.getElementById(`theme-${themeNumber}`);
+      selectedCard.classList.add('selected');
+
+      // Show selected preview with animation
+      const selectedPreview = document.getElementById(`preview-${themeNumber}`);
+      selectedPreview.classList.remove('hidden');
+      // Trigger reflow to restart animation
+      void selectedPreview.offsetWidth;
+      selectedPreview.classList.add('fade-in');
+
+      // Update selected theme name
+      document.getElementById('selected-theme-name').textContent = themeNames[themeNumber];
+
+      currentTheme = themeNumber;
+
+      console.log(`Selected Theme: ${themeNumber} - ${themeNames[themeNumber]}`);
+    }
+
+    // Initialize with theme 1 selected
+    window.addEventListener('DOMContentLoaded', () => {
+      selectTheme(1);
+    });
+  </script>
+</body>
+</html>

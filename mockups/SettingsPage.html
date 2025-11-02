@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>設定 - COM:PASS</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    /* CSS Variables - Design System */
+    :root {
+      /* Colors */
+      --primary: #2c5282;
+      --primary-light: #3182ce;
+      --primary-dark: #1a365d;
+      --secondary: #4299e1;
+      --secondary-light: #63b3ed;
+      --secondary-dark: #2b6cb0;
+
+      --success: #48bb78;
+      --success-light: #68d391;
+      --success-dark: #2f855a;
+
+      --warning: #ed8936;
+      --warning-light: #f6ad55;
+      --warning-dark: #c05621;
+
+      --danger: #f56565;
+      --danger-light: #fc8181;
+      --danger-dark: #c53030;
+
+      --info: #4299e1;
+      --info-light: #63b3ed;
+      --info-dark: #2b6cb0;
+
+      /* COMPASS Colors */
+      --plan-color: #2c5282;
+      --do-color: #48bb78;
+      --check-color: #ed8936;
+      --action-color: #9f7aea;
+
+      /* Neutral Colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7fafc;
+      --bg-tertiary: #edf2f7;
+
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --text-disabled: #a0aec0;
+
+      --border-color: #e2e8f0;
+      --border-dark: #cbd5e0;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+      /* Font Sizes */
+      --font-xs: 12px;
+      --font-sm: 14px;
+      --font-md: 16px;
+      --font-lg: 18px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+
+      /* Transitions */
+      --transition-fast: 150ms ease-in-out;
+      --transition-normal: 250ms ease-in-out;
+      --transition-slow: 350ms ease-in-out;
+    }
+
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logo {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+      color: var(--text-secondary);
+    }
+
+    .icon-button:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 500;
+      font-size: var(--font-sm);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding-bottom: 80px;
+    }
+
+    .section {
+      padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .section-title {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      color: var(--text-primary);
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* Form Elements */
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-label {
+      display: block;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--spacing-md);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      font-size: var(--font-md);
+      color: var(--text-primary);
+      transition: border-color var(--transition-fast);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+
+    .form-input:disabled {
+      background-color: var(--bg-tertiary);
+      color: var(--text-disabled);
+      cursor: not-allowed;
+    }
+
+    /* Toggle Switch */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--spacing-md) 0;
+    }
+
+    .toggle-label {
+      font-size: var(--font-md);
+      color: var(--text-primary);
+      font-weight: 500;
+    }
+
+    .toggle-description {
+      font-size: var(--font-sm);
+      color: var(--text-tertiary);
+      margin-top: var(--spacing-xs);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 48px;
+      height: 26px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: var(--border-dark);
+      transition: var(--transition-normal);
+      border-radius: var(--radius-full);
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: var(--transition-normal);
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--success);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(22px);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      padding: var(--spacing-md);
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: var(--font-md);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-danger {
+      background-color: var(--danger);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger-light);
+    }
+
+    .btn-danger:active {
+      transform: scale(0.98);
+    }
+
+    /* Danger Zone */
+    .danger-zone {
+      border: 1px solid var(--danger);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-md);
+    }
+
+    .danger-zone-title {
+      font-size: var(--font-md);
+      font-weight: 700;
+      color: var(--danger);
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .danger-zone-description {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--bg-primary);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-around;
+      padding: var(--spacing-sm) 0;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: var(--spacing-xs);
+      color: var(--text-tertiary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+      min-width: 60px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item:hover {
+      color: var(--primary-light);
+    }
+
+    .nav-label {
+      font-size: var(--font-xs);
+      font-weight: 500;
+    }
+
+    /* Utility Classes */
+    .text-primary { color: var(--primary); }
+    .text-success { color: var(--success); }
+    .text-warning { color: var(--warning); }
+    .text-danger { color: var(--danger); }
+
+    .material-icons {
+      font-size: 24px;
+    }
+
+    .material-icons.md-18 { font-size: 18px; }
+    .material-icons.md-24 { font-size: 24px; }
+    .material-icons.md-36 { font-size: 36px; }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      padding: var(--spacing-lg);
+      max-width: 400px;
+      width: 90%;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .modal-title {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      color: var(--text-primary);
+    }
+
+    .modal-description {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-tertiary);
+      color: var(--text-primary);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--border-dark);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="material-icons">hub</span>
+        COM:PASS
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="icon-button">
+        <span class="material-icons">notifications</span>
+      </button>
+      <div class="avatar">TS</div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- Profile Section -->
+    <section class="section">
+      <h2 class="section-title">プロフィール</h2>
+
+      <div class="card">
+        <form id="profileForm">
+          <div class="form-group">
+            <label class="form-label" for="name">名前</label>
+            <input
+              type="text"
+              id="name"
+              class="form-input"
+              value="田中 太郎"
+              placeholder="名前を入力してください">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="email">メールアドレス</label>
+            <input
+              type="email"
+              id="email"
+              class="form-input"
+              value="test@mentalbase.local"
+              placeholder="メールアドレスを入力してください">
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <span class="material-icons md-18">save</span>
+            プロフィールを保存
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Password Change Section -->
+    <section class="section">
+      <h2 class="section-title">パスワード変更</h2>
+
+      <div class="card">
+        <form id="passwordForm">
+          <div class="form-group">
+            <label class="form-label" for="currentPassword">現在のパスワード</label>
+            <input
+              type="password"
+              id="currentPassword"
+              class="form-input"
+              placeholder="現在のパスワードを入力してください">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="newPassword">新しいパスワード</label>
+            <input
+              type="password"
+              id="newPassword"
+              class="form-input"
+              placeholder="8文字以上で入力してください">
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="confirmPassword">新しいパスワード（確認）</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              class="form-input"
+              placeholder="新しいパスワードを再入力してください">
+          </div>
+
+          <button type="submit" class="btn btn-primary">
+            <span class="material-icons md-18">lock</span>
+            パスワードを変更
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Notification Settings Section -->
+    <section class="section">
+      <h2 class="section-title">通知設定</h2>
+
+      <div class="card">
+        <div class="toggle-container">
+          <div>
+            <div class="toggle-label">メール通知</div>
+            <div class="toggle-description">重要なお知らせやリマインダーをメールで受け取る</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" id="emailNotifications" checked>
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+    </section>
+
+    <!-- Danger Zone Section -->
+    <section class="section">
+      <h2 class="section-title">アカウント管理</h2>
+
+      <div class="card">
+        <div class="danger-zone">
+          <div class="danger-zone-title">
+            <span class="material-icons md-18">warning</span>
+            危険な操作
+          </div>
+          <div class="danger-zone-description">
+            アカウントを削除すると、すべてのデータが完全に削除されます。この操作は取り消せません。
+          </div>
+          <button id="deleteAccountBtn" class="btn btn-danger">
+            <span class="material-icons md-18">delete_forever</span>
+            アカウントを削除
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      <span class="nav-label">ホーム</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">assignment</span>
+      <span class="nav-label">計画/実行</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">analytics</span>
+      <span class="nav-label">確認/改善</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">school</span>
+      <span class="nav-label">学習</span>
+    </a>
+    <a href="#" class="nav-item active">
+      <span class="material-icons">settings</span>
+      <span class="nav-label">設定</span>
+    </a>
+  </nav>
+
+  <!-- Delete Account Modal -->
+  <div id="deleteModal" class="modal-overlay">
+    <div class="modal">
+      <h3 class="modal-title">アカウント削除の確認</h3>
+      <p class="modal-description">
+        本当にアカウントを削除しますか？この操作は取り消せません。すべてのデータが完全に削除されます。
+      </p>
+      <div class="modal-actions">
+        <button id="cancelDeleteBtn" class="btn btn-secondary" style="flex: 1;">
+          キャンセル
+        </button>
+        <button id="confirmDeleteBtn" class="btn btn-danger" style="flex: 1;">
+          削除する
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Bottom navigation active state
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Profile form submission
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      if (!name || !email) {
+        alert('名前とメールアドレスを入力してください');
+        return;
+      }
+
+      // メール形式チェック
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(email)) {
+        alert('有効なメールアドレスを入力してください');
+        return;
+      }
+
+      alert('プロフィールが更新されました');
+      console.log('Profile updated:', { name, email });
+    });
+
+    // Password form submission
+    document.getElementById('passwordForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('すべてのフィールドを入力してください');
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        alert('新しいパスワードは8文字以上で入力してください');
+        return;
+      }
+
+      if (newPassword !== confirmPassword) {
+        alert('新しいパスワードが一致しません');
+        return;
+      }
+
+      alert('パスワードが変更されました');
+      console.log('Password changed');
+
+      // フォームをリセット
+      this.reset();
+    });
+
+    // Email notifications toggle
+    document.getElementById('emailNotifications').addEventListener('change', function() {
+      const isEnabled = this.checked;
+      alert(`メール通知を${isEnabled ? '有効' : '無効'}にしました`);
+      console.log('Email notifications:', isEnabled);
+    });
+
+    // Delete account modal
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteAccountBtn = document.getElementById('deleteAccountBtn');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    deleteAccountBtn.addEventListener('click', function() {
+      deleteModal.classList.add('active');
+    });
+
+    cancelDeleteBtn.addEventListener('click', function() {
+      deleteModal.classList.remove('active');
+    });
+
+    confirmDeleteBtn.addEventListener('click', function() {
+      alert('アカウント削除機能は実装時に追加されます');
+      console.log('Account deletion confirmed');
+      deleteModal.classList.remove('active');
+    });
+
+    // Close modal when clicking outside
+    deleteModal.addEventListener('click', function(e) {
+      if (e.target === deleteModal) {
+        deleteModal.classList.remove('active');
+      }
+    });
+  </script>
+
+</body>
+</html>

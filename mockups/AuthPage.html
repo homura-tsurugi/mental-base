@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>認証ページ - COM:PASS</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    /* CSS Variables - Design System */
+    :root {
+      /* Colors */
+      --primary: #2c5282;
+      --primary-light: #3182ce;
+      --primary-dark: #1a365d;
+      --secondary: #4299e1;
+      --secondary-light: #63b3ed;
+      --secondary-dark: #2b6cb0;
+
+      --success: #48bb78;
+      --success-light: #68d391;
+      --success-dark: #2f855a;
+
+      --warning: #ed8936;
+      --warning-light: #f6ad55;
+      --warning-dark: #c05621;
+
+      --danger: #f56565;
+      --danger-light: #fc8181;
+      --danger-dark: #c53030;
+
+      --info: #4299e1;
+      --info-light: #63b3ed;
+      --info-dark: #2b6cb0;
+
+      /* COMPASS Colors */
+      --plan-color: #2c5282;
+      --do-color: #48bb78;
+      --check-color: #ed8936;
+      --action-color: #9f7aea;
+
+      /* Neutral Colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7fafc;
+      --bg-tertiary: #edf2f7;
+
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --text-disabled: #a0aec0;
+
+      --border-color: #e2e8f0;
+      --border-dark: #cbd5e0;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+      /* Font Sizes */
+      --font-xs: 12px;
+      --font-sm: 14px;
+      --font-md: 16px;
+      --font-lg: 18px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+
+      /* Transitions */
+      --transition-fast: 150ms ease-in-out;
+      --transition-normal: 250ms ease-in-out;
+      --transition-slow: 350ms ease-in-out;
+    }
+
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-lg);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Auth Container */
+    .auth-container {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      max-width: 400px;
+      width: 100%;
+      padding: var(--spacing-2xl) var(--spacing-xl);
+    }
+
+    /* Logo */
+    .logo {
+      text-align: center;
+      margin-bottom: var(--spacing-2xl);
+    }
+
+    .logo-header {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .logo-header .material-icons {
+      font-size: 32px;
+      color: var(--primary);
+    }
+
+    .logo h1 {
+      font-size: var(--font-2xl);
+      font-weight: 700;
+      color: var(--primary);
+      margin: 0;
+    }
+
+    .logo p {
+      font-size: var(--font-sm);
+      color: var(--text-tertiary);
+      margin-top: var(--spacing-xs);
+    }
+
+    /* View Management */
+    .view {
+      display: none;
+    }
+
+    .view.active {
+      display: block;
+    }
+
+    /* Form Title */
+    .form-title {
+      font-size: var(--font-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+    }
+
+    /* Form Group */
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-label {
+      display: block;
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 12px var(--spacing-md);
+      font-size: var(--font-md);
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      border: 2px solid var(--border-color);
+      border-radius: var(--radius-md);
+      transition: all var(--transition-fast);
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(44, 82, 130, 0.1);
+    }
+
+    .form-input::placeholder {
+      color: var(--text-disabled);
+    }
+
+    /* Button */
+    .btn {
+      width: 100%;
+      padding: 14px var(--spacing-md);
+      font-size: var(--font-md);
+      font-weight: 600;
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      border: none;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      margin-top: var(--spacing-sm);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-light);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    /* Form Footer */
+    .form-footer {
+      margin-top: var(--spacing-lg);
+      text-align: center;
+    }
+
+    .link-text {
+      font-size: var(--font-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .link {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+    }
+
+    .link:hover {
+      color: var(--primary-light);
+      text-decoration: underline;
+    }
+
+    /* Divider */
+    .divider {
+      margin: var(--spacing-lg) 0;
+      text-align: center;
+      position: relative;
+    }
+
+    .divider::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    .divider span {
+      position: relative;
+      background: var(--bg-primary);
+      padding: 0 var(--spacing-md);
+      font-size: var(--font-sm);
+      color: var(--text-tertiary);
+    }
+
+    /* Success Message */
+    .success-message {
+      background: var(--success-light);
+      border: 2px solid var(--success);
+      color: var(--success-dark);
+      padding: var(--spacing-md);
+      border-radius: var(--radius-md);
+      font-size: var(--font-sm);
+      margin-bottom: var(--spacing-lg);
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+    }
+
+    .success-message .material-icons {
+      font-size: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .auth-container {
+        padding: var(--spacing-xl) var(--spacing-lg);
+      }
+
+      .logo h1 {
+        font-size: var(--font-xl);
+      }
+
+      .form-title {
+        font-size: var(--font-lg);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-container">
+    <!-- Logo -->
+    <div class="logo">
+      <div class="logo-header">
+        <span class="material-icons">hub</span>
+        <h1>COM:PASS</h1>
+      </div>
+      <p>ライフ・ワークガバナンス プラットフォーム</p>
+    </div>
+
+    <!-- ログイン画面 -->
+    <div id="login-view" class="view active">
+      <h2 class="form-title">ログイン</h2>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label class="form-label" for="login-email">メールアドレス</label>
+          <input
+            type="email"
+            id="login-email"
+            class="form-input"
+            placeholder="example@email.com"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="login-password">パスワード</label>
+          <input
+            type="password"
+            id="login-password"
+            class="form-input"
+            placeholder="8文字以上"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary">ログイン</button>
+      </form>
+
+      <div class="form-footer">
+        <p class="link-text">
+          <a class="link" onclick="showView('password-reset')">パスワードを忘れた場合</a>
+        </p>
+        <div class="divider"><span>または</span></div>
+        <p class="link-text">
+          アカウントをお持ちでない方は<br>
+          <a class="link" onclick="showView('register')">新規登録</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- 新規登録画面 -->
+    <div id="register-view" class="view">
+      <h2 class="form-title">新規登録</h2>
+
+      <form id="register-form">
+        <div class="form-group">
+          <label class="form-label" for="register-name">お名前</label>
+          <input
+            type="text"
+            id="register-name"
+            class="form-input"
+            placeholder="山田 太郎"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-email">メールアドレス</label>
+          <input
+            type="email"
+            id="register-email"
+            class="form-input"
+            placeholder="example@email.com"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="register-password">パスワード</label>
+          <input
+            type="password"
+            id="register-password"
+            class="form-input"
+            placeholder="8文字以上、英数字混在推奨"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary">登録してはじめる</button>
+      </form>
+
+      <div class="form-footer">
+        <p class="link-text">
+          すでにアカウントをお持ちの方は<br>
+          <a class="link" onclick="showView('login')">ログイン</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- パスワードリセット画面 -->
+    <div id="password-reset-view" class="view">
+      <h2 class="form-title">パスワードリセット</h2>
+
+      <form id="password-reset-form">
+        <div class="form-group">
+          <label class="form-label" for="reset-email">メールアドレス</label>
+          <input
+            type="email"
+            id="reset-email"
+            class="form-input"
+            placeholder="example@email.com"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary">リセットリンクを送信</button>
+      </form>
+
+      <div class="form-footer">
+        <p class="link-text">
+          <a class="link" onclick="showView('login')">ログイン画面に戻る</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- パスワードリセット成功画面 -->
+    <div id="password-reset-success-view" class="view">
+      <h2 class="form-title">メール送信完了</h2>
+
+      <div class="success-message">
+        <span class="material-icons">check_circle</span>
+        <span>パスワードリセット用のリンクをメールで送信しました。<br>メールをご確認ください。</span>
+      </div>
+
+      <div class="form-footer">
+        <p class="link-text">
+          <a class="link" onclick="showView('login')">ログイン画面に戻る</a>
+        </p>
+      </div>
+    </div>
+
+    <!-- 新しいパスワード設定画面 -->
+    <div id="new-password-view" class="view">
+      <h2 class="form-title">新しいパスワード設定</h2>
+
+      <form id="new-password-form">
+        <div class="form-group">
+          <label class="form-label" for="new-password">新しいパスワード</label>
+          <input
+            type="password"
+            id="new-password"
+            class="form-input"
+            placeholder="8文字以上、英数字混在推奨"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="confirm-password">パスワード確認</label>
+          <input
+            type="password"
+            id="confirm-password"
+            class="form-input"
+            placeholder="もう一度入力してください"
+            required
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary">パスワードを変更</button>
+      </form>
+
+      <div class="form-footer">
+        <p class="link-text">
+          <a class="link" onclick="showView('login')">ログイン画面に戻る</a>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ビュー切り替え関数
+    function showView(viewName) {
+      const views = document.querySelectorAll('.view');
+      views.forEach(view => view.classList.remove('active'));
+
+      const targetView = document.getElementById(viewName + '-view');
+      if (targetView) {
+        targetView.classList.add('active');
+      }
+    }
+
+    // ログインフォーム送信
+    document.getElementById('login-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('ログイン処理を実行します（実装時はAPI呼び出し）');
+    });
+
+    // 登録フォーム送信
+    document.getElementById('register-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      alert('新規登録処理を実行します（実装時はAPI呼び出し）');
+    });
+
+    // パスワードリセットフォーム送信
+    document.getElementById('password-reset-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      showView('password-reset-success');
+    });
+
+    // 新しいパスワード設定フォーム送信
+    document.getElementById('new-password-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const newPassword = document.getElementById('new-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+
+      if (newPassword !== confirmPassword) {
+        alert('パスワードが一致しません');
+        return;
+      }
+
+      if (newPassword.length < 8) {
+        alert('パスワードは8文字以上で入力してください');
+        return;
+      }
+
+      alert('パスワードを変更しました（実装時はAPI呼び出し）');
+      showView('login');
+    });
+
+    // URLパラメータでビュー切り替え
+    const urlParams = new URLSearchParams(window.location.search);
+    const viewParam = urlParams.get('view');
+    if (viewParam) {
+      showView(viewParam);
+    }
+  </script>
+
+</body>
+</html>

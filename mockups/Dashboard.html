@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ホーム（ダッシュボード） - COM:PASS</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    /* CSS Variables - Design System */
+    :root {
+      /* Colors */
+      --primary: #2c5282;
+      --primary-light: #3182ce;
+      --primary-dark: #1a365d;
+      --secondary: #4299e1;
+      --secondary-light: #63b3ed;
+      --secondary-dark: #2b6cb0;
+
+      --success: #48bb78;
+      --success-light: #68d391;
+      --success-dark: #2f855a;
+
+      --warning: #ed8936;
+      --warning-light: #f6ad55;
+      --warning-dark: #c05621;
+
+      --danger: #f56565;
+      --danger-light: #fc8181;
+      --danger-dark: #c53030;
+
+      --info: #4299e1;
+      --info-light: #63b3ed;
+      --info-dark: #2b6cb0;
+
+      /* COMPASS Colors */
+      --plan-color: #2c5282;
+      --do-color: #48bb78;
+      --check-color: #ed8936;
+      --action-color: #9f7aea;
+
+      /* Neutral Colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7fafc;
+      --bg-tertiary: #edf2f7;
+
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --text-disabled: #a0aec0;
+
+      --border-color: #e2e8f0;
+      --border-dark: #cbd5e0;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+      /* Font Sizes */
+      --font-xs: 12px;
+      --font-sm: 14px;
+      --font-md: 16px;
+      --font-lg: 18px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+
+      /* Transitions */
+      --transition-fast: 150ms ease-in-out;
+      --transition-normal: 250ms ease-in-out;
+      --transition-slow: 350ms ease-in-out;
+    }
+
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logo {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+      color: var(--text-secondary);
+    }
+
+    .icon-button:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 500;
+      font-size: var(--font-sm);
+    }
+
+    /* Main Content */
+    .main-content {
+      padding-bottom: 80px;
+    }
+
+    .section {
+      padding: var(--spacing-lg) var(--spacing-md);
+    }
+
+    .section-title {
+      font-size: var(--font-lg);
+      font-weight: 700;
+      margin-bottom: var(--spacing-md);
+      color: var(--text-primary);
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-md);
+    }
+
+    /* COM:PASS Progress Grid */
+    .compass-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+    }
+
+    .compass-card {
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      padding: var(--spacing-md);
+      text-align: center;
+      transition: transform var(--transition-fast);
+    }
+
+    .compass-card:active {
+      transform: scale(0.98);
+    }
+
+    .progress-circle {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto var(--spacing-sm);
+      position: relative;
+    }
+
+    .progress-circle svg {
+      transform: rotate(-90deg);
+    }
+
+    .progress-circle-bg {
+      fill: none;
+      stroke: var(--bg-tertiary);
+      stroke-width: 8;
+    }
+
+    .progress-circle-fill {
+      fill: none;
+      stroke-width: 8;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .progress-text {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: var(--font-lg);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .compass-label {
+      font-size: var(--font-md);
+      font-weight: 700;
+      margin-bottom: var(--spacing-xs);
+      color: var(--text-primary);
+    }
+
+    .compass-sublabel {
+      font-size: var(--font-xs);
+      color: var(--text-tertiary);
+    }
+
+    /* Task List */
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-sm);
+      box-shadow: var(--shadow-sm);
+      transition: all var(--transition-fast);
+      cursor: pointer;
+    }
+
+    .task-item:hover {
+      box-shadow: var(--shadow-md);
+      transform: translateY(-2px);
+    }
+
+    .task-checkbox {
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--border-dark);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .task-checkbox:checked {
+      background-color: var(--success);
+      border-color: var(--success);
+      position: relative;
+    }
+
+    .task-content {
+      flex: 1;
+    }
+
+    .task-title {
+      font-size: var(--font-md);
+      font-weight: 500;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      flex-wrap: wrap;
+    }
+
+    .task-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px var(--spacing-sm);
+      border-radius: var(--radius-full);
+      font-size: var(--font-xs);
+      font-weight: 500;
+    }
+
+    .badge-goal {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+
+    .badge-deadline {
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+    }
+
+    .task-actions {
+      display: flex;
+      gap: var(--spacing-xs);
+      flex-shrink: 0;
+    }
+
+    .btn-icon-sm {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      border: none;
+      background-color: var(--bg-tertiary);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-icon-sm:hover {
+      background-color: var(--primary);
+      color: white;
+    }
+
+    /* Activity List */
+    .activity-item {
+      display: flex;
+      gap: var(--spacing-md);
+      padding: var(--spacing-md);
+      background-color: var(--bg-primary);
+      border-radius: var(--radius-md);
+      margin-bottom: var(--spacing-sm);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .activity-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .activity-content {
+      flex: 1;
+    }
+
+    .activity-text {
+      font-size: var(--font-sm);
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .activity-time {
+      font-size: var(--font-xs);
+      color: var(--text-tertiary);
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--bg-primary);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-around;
+      padding: var(--spacing-sm) 0;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: var(--spacing-xs);
+      color: var(--text-tertiary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+      min-width: 60px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item:hover {
+      color: var(--primary-light);
+    }
+
+    .nav-label {
+      font-size: var(--font-xs);
+      font-weight: 500;
+    }
+
+    /* FAB Button */
+    .fab {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      z-index: 50;
+    }
+
+    .fab:hover {
+      background-color: var(--primary-light);
+      transform: scale(1.1);
+    }
+
+    .fab:active {
+      transform: scale(0.95);
+    }
+
+    /* Utility Classes */
+    .text-primary { color: var(--primary); }
+    .text-success { color: var(--success); }
+    .text-warning { color: var(--warning); }
+    .text-danger { color: var(--danger); }
+
+    .bg-plan { background-color: #e6f2ff; }
+    .bg-do { background-color: #e6f9f0; }
+    .bg-check { background-color: #fff5e6; }
+    .bg-action { background-color: #f3e6ff; }
+
+    .material-icons {
+      font-size: 24px;
+    }
+
+    .material-icons.md-18 { font-size: 18px; }
+    .material-icons.md-24 { font-size: 24px; }
+    .material-icons.md-36 { font-size: 36px; }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="material-icons">hub</span>
+        COM:PASS
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="icon-button">
+        <span class="material-icons">notifications</span>
+      </button>
+      <div class="avatar">TS</div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+
+    <!-- COM:PASS Progress Section -->
+    <section class="section">
+      <h2 class="section-title">COM:PASS進捗サマリー</h2>
+      <div class="compass-grid">
+
+        <!-- PLAN Card -->
+        <div class="compass-card">
+          <div class="progress-circle">
+            <svg width="80" height="80">
+              <circle class="progress-circle-bg" cx="40" cy="40" r="32"></circle>
+              <circle class="progress-circle-fill" cx="40" cy="40" r="32"
+                      stroke="#2c5282"
+                      stroke-dasharray="201"
+                      stroke-dashoffset="50"></circle>
+            </svg>
+            <div class="progress-text">75%</div>
+          </div>
+          <div class="compass-label">PLAN</div>
+          <div class="compass-sublabel">計画</div>
+        </div>
+
+        <!-- DO Card -->
+        <div class="compass-card">
+          <div class="progress-circle">
+            <svg width="80" height="80">
+              <circle class="progress-circle-bg" cx="40" cy="40" r="32"></circle>
+              <circle class="progress-circle-fill" cx="40" cy="40" r="32"
+                      stroke="#48bb78"
+                      stroke-dasharray="201"
+                      stroke-dashoffset="80"></circle>
+            </svg>
+            <div class="progress-text">60%</div>
+          </div>
+          <div class="compass-label">DO</div>
+          <div class="compass-sublabel">実行</div>
+        </div>
+
+        <!-- Check Card -->
+        <div class="compass-card">
+          <div class="progress-circle">
+            <svg width="80" height="80">
+              <circle class="progress-circle-bg" cx="40" cy="40" r="32"></circle>
+              <circle class="progress-circle-fill" cx="40" cy="40" r="32"
+                      stroke="#ed8936"
+                      stroke-dasharray="201"
+                      stroke-dashoffset="100"></circle>
+            </svg>
+            <div class="progress-text">50%</div>
+          </div>
+          <div class="compass-label">Check</div>
+          <div class="compass-sublabel">振り返り</div>
+        </div>
+
+        <!-- Action Card -->
+        <div class="compass-card">
+          <div class="progress-circle">
+            <svg width="80" height="80">
+              <circle class="progress-circle-bg" cx="40" cy="40" r="32"></circle>
+              <circle class="progress-circle-fill" cx="40" cy="40" r="32"
+                      stroke="#9f7aea"
+                      stroke-dasharray="201"
+                      stroke-dashoffset="120"></circle>
+            </svg>
+            <div class="progress-text">40%</div>
+          </div>
+          <div class="compass-label">Action</div>
+          <div class="compass-sublabel">改善</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Today's Tasks Section -->
+    <section class="section">
+      <h2 class="section-title">今日のタスク</h2>
+
+      <!-- Task 1 -->
+      <div class="task-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="task-content">
+          <div class="task-title">朝のストレッチを10分間行う</div>
+          <div class="task-meta">
+            <span class="task-badge badge-goal">
+              <span class="material-icons md-18">flag</span>
+              健康管理
+            </span>
+            <span class="task-badge badge-deadline">
+              <span class="material-icons md-18">schedule</span>
+              09:00
+            </span>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="btn-icon-sm">
+            <span class="material-icons md-18">play_arrow</span>
+          </button>
+          <button class="btn-icon-sm">
+            <span class="material-icons md-18">edit</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task 2 -->
+      <div class="task-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="task-content">
+          <div class="task-title">週報の作成と送付</div>
+          <div class="task-meta">
+            <span class="task-badge badge-goal">
+              <span class="material-icons md-18">flag</span>
+              仕事の効率化
+            </span>
+            <span class="task-badge badge-deadline">
+              <span class="material-icons md-18">schedule</span>
+              17:00
+            </span>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="btn-icon-sm">
+            <span class="material-icons md-18">play_arrow</span>
+          </button>
+          <button class="btn-icon-sm">
+            <span class="material-icons md-18">edit</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Task 3 -->
+      <div class="task-item">
+        <input type="checkbox" class="task-checkbox">
+        <div class="task-content">
+          <div class="task-title">夕食後の散歩15分</div>
+          <div class="task-meta">
+            <span class="task-badge badge-goal">
+              <span class="material-icons md-18">flag</span>
+              健康管理
+            </span>
+            <span class="task-badge badge-deadline">
+              <span class="material-icons md-18">schedule</span>
+              19:30
+            </span>
+          </div>
+        </div>
+        <div class="task-actions">
+          <button class="btn-icon-sm">
+            <span class="material-icons md-18">play_arrow</span>
+          </button>
+          <button class="btn-icon-sm">
+            <span class="material-icons md-18">edit</span>
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- Recent Activity Section -->
+    <section class="section">
+      <h2 class="section-title">最近のアクティビティ</h2>
+
+      <!-- Activity 1 -->
+      <div class="activity-item">
+        <div class="activity-icon bg-do">
+          <span class="material-icons text-success">check_circle</span>
+        </div>
+        <div class="activity-content">
+          <div class="activity-text">
+            <strong>タスク完了:</strong> 読書時間30分を確保
+          </div>
+          <div class="activity-time">2分前</div>
+        </div>
+      </div>
+
+      <!-- Activity 2 -->
+      <div class="activity-item">
+        <div class="activity-icon bg-check">
+          <span class="material-icons text-warning">edit</span>
+        </div>
+        <div class="activity-content">
+          <div class="activity-text">
+            <strong>ログ記録:</strong> 集中力が高い状態を記録
+          </div>
+          <div class="activity-time">1時間前</div>
+        </div>
+      </div>
+
+      <!-- Activity 3 -->
+      <div class="activity-item">
+        <div class="activity-icon bg-plan">
+          <span class="material-icons text-primary">assignment</span>
+        </div>
+        <div class="activity-content">
+          <div class="activity-text">
+            <strong>タスク作成:</strong> 週報の作成と送付
+          </div>
+          <div class="activity-time">3時間前</div>
+        </div>
+      </div>
+
+      <!-- Activity 4 -->
+      <div class="activity-item">
+        <div class="activity-icon bg-action">
+          <span class="material-icons" style="color: var(--action-color)">lightbulb</span>
+        </div>
+        <div class="activity-content">
+          <div class="activity-text">
+            <strong>改善提案:</strong> 朝のルーティンを最適化
+          </div>
+          <div class="activity-time">昨日</div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active">
+      <span class="material-icons">home</span>
+      <span class="nav-label">ホーム</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">assignment</span>
+      <span class="nav-label">計画/実行</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">analytics</span>
+      <span class="nav-label">確認/改善</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">school</span>
+      <span class="nav-label">学習</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">history</span>
+      <span class="nav-label">ログ</span>
+    </a>
+  </nav>
+
+  <!-- FAB Button -->
+  <button class="fab">
+    <span class="material-icons">add</span>
+  </button>
+
+  <script>
+    // Bottom navigation active state
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Task checkbox interaction
+    document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', function() {
+        const taskItem = this.closest('.task-item');
+        const taskTitle = taskItem.querySelector('.task-title');
+
+        if (this.checked) {
+          taskTitle.style.textDecoration = 'line-through';
+          taskTitle.style.color = 'var(--text-disabled)';
+          taskItem.style.opacity = '0.6';
+        } else {
+          taskTitle.style.textDecoration = 'none';
+          taskTitle.style.color = 'var(--text-primary)';
+          taskItem.style.opacity = '1';
+        }
+      });
+    });
+
+    // FAB button click
+    document.querySelector('.fab').addEventListener('click', function() {
+      alert('新規タスク作成機能は実装時に追加されます');
+    });
+
+    // Task action buttons
+    document.querySelectorAll('.btn-icon-sm').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const action = this.querySelector('.material-icons').textContent;
+        if (action === 'play_arrow') {
+          alert('タスク実行機能は実装時に追加されます');
+        } else if (action === 'edit') {
+          alert('タスク編集機能は実装時に追加されます');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

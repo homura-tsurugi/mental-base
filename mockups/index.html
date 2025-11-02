@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>モックアップギャラリー - COM:PASS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* デザインシステム準拠のCSS変数 */
+    :root {
+      /* Primary Colors */
+      --primary: #2c5282;
+      --primary-dark: #1e3a5f;
+      --primary-light: #4299e1;
+      --secondary: #4299e1;
+      --accent: #48bb78;
+
+      /* Neutral Colors */
+      --background: #ffffff;
+      --surface: #f7fafc;
+      --border-color: #e2e8f0;
+
+      /* Text Colors */
+      --text-primary: #2d3748;
+      --text-secondary: #718096;
+      --text-disabled: #a0aec0;
+
+      /* Semantic Colors */
+      --success: #48bb78;
+      --warning: #ed8936;
+      --error: #f56565;
+      --info: #4299e1;
+
+      /* Shadow */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+
+      /* Typography */
+      --font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      --font-size-xs: 12px;
+      --font-size-sm: 14px;
+      --font-size-base: 16px;
+      --font-size-lg: 18px;
+      --font-size-xl: 20px;
+      --font-size-2xl: 24px;
+      --font-size-3xl: 30px;
+      --font-size-4xl: 36px;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--surface);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding: var(--spacing-xl);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      background-color: var(--background);
+      padding: var(--spacing-xl);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    h1 {
+      font-size: var(--font-size-4xl);
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .subtitle {
+      font-size: var(--font-size-lg);
+      color: var(--text-secondary);
+      font-weight: 400;
+    }
+
+    .section {
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .section-title {
+      font-size: var(--font-size-2xl);
+      font-weight: 600;
+      color: var(--primary);
+      margin-bottom: var(--spacing-lg);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .section-title .material-icons {
+      font-size: 28px;
+    }
+
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+      gap: var(--spacing-lg);
+    }
+
+    .mockup-card {
+      background-color: var(--background);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-md);
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .mockup-card:hover {
+      box-shadow: var(--shadow-lg);
+      transform: translateY(-4px);
+    }
+
+    .mockup-preview {
+      width: 100%;
+      height: 240px;
+      background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mockup-preview .material-icons {
+      font-size: 80px;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .mockup-preview::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent);
+    }
+
+    .mockup-info {
+      padding: var(--spacing-lg);
+    }
+
+    .mockup-id {
+      font-size: var(--font-size-xs);
+      font-weight: 600;
+      color: var(--primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .mockup-title {
+      font-size: var(--font-size-xl);
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .mockup-description {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin-bottom: var(--spacing-md);
+      line-height: 1.5;
+    }
+
+    .mockup-meta {
+      display: flex;
+      gap: var(--spacing-md);
+      flex-wrap: wrap;
+    }
+
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: var(--font-size-xs);
+      font-weight: 500;
+    }
+
+    .meta-badge.role {
+      background-color: rgba(66, 153, 225, 0.1);
+      color: var(--primary);
+    }
+
+    .meta-badge.status {
+      background-color: rgba(72, 187, 120, 0.1);
+      color: var(--success);
+    }
+
+    .meta-badge .material-icons {
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--spacing-lg);
+      margin-bottom: var(--spacing-xl);
+    }
+
+    .stat-card {
+      background-color: var(--background);
+      padding: var(--spacing-lg);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .stat-icon.primary {
+      background-color: rgba(44, 82, 130, 0.1);
+      color: var(--primary);
+    }
+
+    .stat-icon.success {
+      background-color: rgba(72, 187, 120, 0.1);
+      color: var(--success);
+    }
+
+    .stat-icon.info {
+      background-color: rgba(66, 153, 225, 0.1);
+      color: var(--info);
+    }
+
+    .stat-content {
+      flex: 1;
+    }
+
+    .stat-label {
+      font-size: var(--font-size-sm);
+      color: var(--text-secondary);
+      margin-bottom: 2px;
+    }
+
+    .stat-value {
+      font-size: var(--font-size-2xl);
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    footer {
+      margin-top: var(--spacing-xl);
+      padding: var(--spacing-lg);
+      text-align: center;
+      color: var(--text-secondary);
+      font-size: var(--font-size-sm);
+    }
+
+    /* レスポンシブ対応 */
+    @media (max-width: 768px) {
+      body {
+        padding: var(--spacing-md);
+      }
+
+      h1 {
+        font-size: var(--font-size-3xl);
+      }
+
+      .mockup-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- ヘッダー -->
+    <header>
+      <h1>モックアップギャラリー</h1>
+      <p class="subtitle">COM:PASS - ライフ・ワークガバナンス プラットフォーム</p>
+    </header>
+
+    <!-- 統計情報 -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-icon primary">
+          <span class="material-icons">dashboard</span>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">総ページ数</div>
+          <div class="stat-value">8</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon success">
+          <span class="material-icons">check_circle</span>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">完成済み</div>
+          <div class="stat-value">7</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon info">
+          <span class="material-icons">pending</span>
+        </div>
+        <div class="stat-content">
+          <div class="stat-label">開発中</div>
+          <div class="stat-value">1</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 認証ページ -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="material-icons">login</span>
+        認証ページ
+      </h2>
+      <div class="mockup-grid">
+        <a href="./AuthPage.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">vpn_key</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">P-001</div>
+            <h3 class="mockup-title">ログイン・登録</h3>
+            <p class="mockup-description">ログインとユーザー登録を行う認証ページ。Auth.js (NextAuth v5)による認証フロー。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">person</span>
+                PUBLIC
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- クライアントページ -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="material-icons">person</span>
+        クライアントページ
+      </h2>
+      <div class="mockup-grid">
+        <a href="./Dashboard.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">dashboard</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">C-001</div>
+            <h3 class="mockup-title">ホーム（ダッシュボード）</h3>
+            <p class="mockup-description">進捗サマリーと今日のタスクを表示するダッシュボード。スマホファースト設計。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">person</span>
+                CLIENT
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <a href="./PlanDoPage.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">flag</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">C-002</div>
+            <h3 class="mockup-title">目標と実行</h3>
+            <p class="mockup-description">PLAN（目標設定）とDO（実行記録）を管理するページ。タブ切り替えUI。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">person</span>
+                CLIENT
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <a href="./CheckActionPage.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">insights</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">C-003</div>
+            <h3 class="mockup-title">振り返りと改善</h3>
+            <p class="mockup-description">CHECK（振り返り）とACTION（改善案）を管理。AI分析機能統合。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">person</span>
+                CLIENT
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <a href="./AIAssistant.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">psychology</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">C-004</div>
+            <h3 class="mockup-title">AIアシスタント</h3>
+            <p class="mockup-description">Claude/GPT-4o miniとのチャット型対話インターフェース。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">person</span>
+                CLIENT
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+
+        <a href="./SettingsPage.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">settings</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">C-005</div>
+            <h3 class="mockup-title">設定</h3>
+            <p class="mockup-description">プロフィール、通知設定、メンター登録などの設定ページ。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">person</span>
+                CLIENT
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- メンターページ -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="material-icons">school</span>
+        メンターページ
+      </h2>
+      <div class="mockup-grid">
+        <a href="./MentorDashboard.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">analytics</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">M-001</div>
+            <h3 class="mockup-title">メンターダッシュボード</h3>
+            <p class="mockup-description">担当クライアントの進捗を一覧表示。240pxサイドバー付きPC用レイアウト。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">school</span>
+                MENTOR
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- デザインツール -->
+    <section class="section">
+      <h2 class="section-title">
+        <span class="material-icons">palette</span>
+        デザインツール
+      </h2>
+      <div class="mockup-grid">
+        <a href="./design-theme-selector.html" class="mockup-card">
+          <div class="mockup-preview">
+            <span class="material-icons">color_lens</span>
+          </div>
+          <div class="mockup-info">
+            <div class="mockup-id">TOOL-001</div>
+            <h3 class="mockup-title">デザインシステムセレクター</h3>
+            <p class="mockup-description">CSS変数ベースのデザインシステムテストツール。テーマのプレビュー確認。</p>
+            <div class="mockup-meta">
+              <span class="meta-badge role">
+                <span class="material-icons">build</span>
+                TOOL
+              </span>
+              <span class="meta-badge status">
+                <span class="material-icons">check_circle</span>
+                完成
+              </span>
+            </div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- フッター -->
+    <footer>
+      <p>COM:PASS - ライフ・ワークガバナンス プラットフォーム</p>
+      <p style="margin-top: 8px;">モックアップギャラリー | 最終更新: 2025-11-02</p>
+    </footer>
+  </div>
+</invoke>

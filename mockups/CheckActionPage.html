@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>振り返り・改善ページ - COM:PASS</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    /* ========================================
+       CSS変数（デザインシステム）
+       ======================================== */
+    :root {
+      /* Primary Colors */
+      --primary: #2c5282;
+      --primary-dark: #1e3a5f;
+      --primary-light: #4a90e2;
+
+      /* Status Colors */
+      --success: #48bb78;
+      --warning: #ed8936;
+      --danger: #f56565;
+
+      /* COM:PASS Phase Colors */
+      --plan-color: #2c5282;    /* 青 */
+      --do-color: #48bb78;      /* 緑 */
+      --check-color: #ed8936;   /* オレンジ */
+      --action-color: #9f7aea;  /* 紫 */
+
+      /* Grayscale */
+      --gray-50: #f7fafc;
+      --gray-100: #edf2f7;
+      --gray-200: #e2e8f0;
+      --gray-300: #cbd5e0;
+      --gray-400: #a0aec0;
+      --gray-500: #718096;
+      --gray-600: #4a5568;
+      --gray-700: #2d3748;
+      --gray-800: #1a202c;
+      --gray-900: #171923;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1);
+
+      /* Typography */
+      --font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+    }
+
+    /* ========================================
+       基本スタイル
+       ======================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--gray-50);
+      color: var(--gray-800);
+      line-height: 1.6;
+      padding-bottom: 70px; /* ボトムナビゲーション分 */
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* ========================================
+       ヘッダー（Sticky）
+       ======================================== */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background-color: white;
+      box-shadow: var(--shadow-sm);
+      padding: var(--spacing-md);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-md);
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--gray-600);
+      position: relative;
+    }
+
+    .icon-button .material-icons {
+      font-size: 24px;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-full);
+      background-color: var(--primary);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    /* ========================================
+       メインコンテンツ
+       ======================================== */
+    .main-content {
+      padding: var(--spacing-md);
+    }
+
+    .page-title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: var(--spacing-lg);
+      color: var(--gray-900);
+    }
+
+    /* ========================================
+       タブ切り替え（Check / Action）
+       ======================================== */
+    .phase-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-lg);
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-xs);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .phase-tab {
+      flex: 1;
+      padding: var(--spacing-md);
+      border: none;
+      background: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--gray-600);
+    }
+
+    .phase-tab.active {
+      background-color: var(--check-color);
+      color: white;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .phase-tab.action-tab.active {
+      background-color: var(--action-color);
+    }
+
+    /* ========================================
+       期間選択バー
+       ======================================== */
+    .period-selector {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .period-label {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-600);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .period-buttons {
+      display: flex;
+      gap: var(--spacing-sm);
+    }
+
+    .period-button {
+      flex: 1;
+      padding: var(--spacing-sm) var(--spacing-md);
+      border: 1px solid var(--gray-300);
+      background-color: white;
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      color: var(--gray-700);
+    }
+
+    .period-button.active {
+      background-color: var(--check-color);
+      border-color: var(--check-color);
+      color: white;
+      font-weight: 500;
+    }
+
+    /* ========================================
+       進捗統計カード
+       ======================================== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .stat-card {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--check-color);
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .stat-label {
+      font-size: 14px;
+      color: var(--gray-600);
+    }
+
+    .stat-card:nth-child(2) .stat-value {
+      color: var(--do-color);
+    }
+
+    .stat-card:nth-child(3) .stat-value {
+      color: var(--primary);
+    }
+
+    .stat-card:nth-child(4) .stat-value {
+      color: var(--action-color);
+    }
+
+    /* ========================================
+       進捗グラフ
+       ======================================== */
+    .chart-card {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .chart-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .chart-placeholder {
+      height: 200px;
+      background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--gray-500);
+      font-size: 14px;
+      border: 2px dashed var(--gray-300);
+    }
+
+    /* ========================================
+       振り返り記録フォーム
+       ======================================== */
+    .reflection-form {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .form-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-900);
+      margin-bottom: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--gray-700);
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .form-textarea {
+      width: 100%;
+      min-height: 80px;
+      padding: var(--spacing-md);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      font-size: 14px;
+      resize: vertical;
+      transition: border-color 0.2s;
+    }
+
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--check-color);
+    }
+
+    .ai-analyze-button {
+      width: 100%;
+      padding: var(--spacing-md);
+      background: linear-gradient(135deg, var(--check-color) 0%, var(--action-color) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      transition: all 0.2s;
+      box-shadow: var(--shadow-md);
+    }
+
+    .ai-analyze-button:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ========================================
+       AI分析レポート（Actionタブ）
+       ======================================== */
+    .action-content {
+      display: none;
+    }
+
+    .action-content.active {
+      display: block;
+    }
+
+    .ai-report-card {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+      border-left: 4px solid var(--action-color);
+    }
+
+    .report-header {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .report-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+
+    .confidence-badge {
+      margin-left: auto;
+      padding: var(--spacing-xs) var(--spacing-md);
+      background-color: var(--success);
+      color: white;
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .report-section {
+      margin-bottom: var(--spacing-md);
+    }
+
+    .report-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--gray-700);
+      margin-bottom: var(--spacing-sm);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .report-content {
+      font-size: 14px;
+      color: var(--gray-600);
+      line-height: 1.8;
+      padding-left: var(--spacing-lg);
+    }
+
+    .insight-item {
+      margin-bottom: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--gray-50);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--check-color);
+    }
+
+    .recommendation-item {
+      margin-bottom: var(--spacing-sm);
+      padding: var(--spacing-sm) var(--spacing-md);
+      background-color: var(--gray-50);
+      border-radius: var(--radius-md);
+      border-left: 3px solid var(--action-color);
+    }
+
+    /* ========================================
+       改善計画作成フォーム
+       ======================================== */
+    .action-plan-form {
+      background-color: white;
+      border-radius: var(--radius-md);
+      padding: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .form-input {
+      width: 100%;
+      padding: var(--spacing-md);
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius-md);
+      font-family: var(--font-family);
+      font-size: 14px;
+      transition: border-color 0.2s;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--action-color);
+    }
+
+    .action-items-list {
+      margin-top: var(--spacing-md);
+    }
+
+    .action-item {
+      display: flex;
+      gap: var(--spacing-sm);
+      margin-bottom: var(--spacing-sm);
+      padding: var(--spacing-md);
+      background-color: var(--gray-50);
+      border-radius: var(--radius-md);
+      align-items: center;
+    }
+
+    .action-item-number {
+      width: 24px;
+      height: 24px;
+      background-color: var(--action-color);
+      color: white;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+
+    .action-item-text {
+      flex: 1;
+      font-size: 14px;
+      color: var(--gray-700);
+    }
+
+    .add-action-button {
+      width: 100%;
+      padding: var(--spacing-md);
+      background-color: var(--gray-100);
+      color: var(--gray-600);
+      border: 2px dashed var(--gray-300);
+      border-radius: var(--radius-md);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      transition: all 0.2s;
+      margin-bottom: var(--spacing-md);
+    }
+
+    .add-action-button:hover {
+      background-color: var(--gray-200);
+      border-color: var(--gray-400);
+    }
+
+    .create-plan-button {
+      width: 100%;
+      padding: var(--spacing-md);
+      background-color: var(--action-color);
+      color: white;
+      border: none;
+      border-radius: var(--radius-md);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--spacing-sm);
+      transition: all 0.2s;
+      box-shadow: var(--shadow-md);
+    }
+
+    .create-plan-button:hover {
+      background-color: #805ad5;
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* ========================================
+       ボトムナビゲーション
+       ======================================== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      background-color: white;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-around;
+      padding: var(--spacing-sm) 0;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-decoration: none;
+      color: var(--gray-500);
+      font-size: 12px;
+      padding: var(--spacing-xs);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+
+    .nav-item.active {
+      color: var(--check-color);
+    }
+
+    .nav-item .material-icons {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+
+    /* ========================================
+       FAB（Floating Action Button）
+       ======================================== */
+    .fab {
+      position: fixed;
+      bottom: 85px;
+      right: 16px;
+      width: 56px;
+      height: 56px;
+      background: linear-gradient(135deg, var(--check-color) 0%, var(--action-color) 100%);
+      color: white;
+      border: none;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .fab:hover {
+      transform: scale(1.1);
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .fab .material-icons {
+      font-size: 28px;
+    }
+
+    /* ========================================
+       レスポンシブ（600px以上）
+       ======================================== */
+    @media (min-width: 600px) {
+      .bottom-nav {
+        max-width: 600px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- ========================================
+       ヘッダー
+       ======================================== -->
+  <header class="header">
+    <div class="logo">
+      <span class="material-icons">hub</span>
+      COM:PASS
+    </div>
+    <div class="header-actions">
+      <button class="icon-button">
+        <span class="material-icons">notifications</span>
+      </button>
+      <div class="avatar">TU</div>
+    </div>
+  </header>
+
+  <!-- ========================================
+       メインコンテンツ
+       ======================================== -->
+  <main class="main-content">
+    <h1 class="page-title">振り返り・改善</h1>
+
+    <!-- タブ切り替え（Check / Action） -->
+    <div class="phase-tabs">
+      <button class="phase-tab active" id="check-tab">
+        <span class="material-icons" style="vertical-align: middle; margin-right: 4px;">fact_check</span>
+        Check（振り返り）
+      </button>
+      <button class="phase-tab action-tab" id="action-tab">
+        <span class="material-icons" style="vertical-align: middle; margin-right: 4px;">trending_up</span>
+        Action（改善）
+      </button>
+    </div>
+
+    <!-- ========================================
+         Checkタブのコンテンツ
+         ======================================== -->
+    <div class="check-content active" id="check-content">
+      <!-- 期間選択 -->
+      <div class="period-selector">
+        <div class="period-label">振り返り期間</div>
+        <div class="period-buttons">
+          <button class="period-button">今日</button>
+          <button class="period-button active">今週</button>
+          <button class="period-button">先週</button>
+          <button class="period-button">今月</button>
+        </div>
+      </div>
+
+      <!-- 進捗統計 -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-value">85%</div>
+          <div class="stat-label">達成率</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">12</div>
+          <div class="stat-label">完了タスク</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">7</div>
+          <div class="stat-label">ログ記録日数</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value">3</div>
+          <div class="stat-label">目標進行中</div>
+        </div>
+      </div>
+
+      <!-- 進捗グラフ -->
+      <div class="chart-card">
+        <div class="chart-title">
+          <span class="material-icons" style="vertical-align: middle; margin-right: 4px;">show_chart</span>
+          週間タスク完了推移
+        </div>
+        <div class="chart-placeholder">
+          Chart.js や D3.js でグラフを表示
+        </div>
+      </div>
+
+      <!-- 振り返り記録フォーム -->
+      <div class="reflection-form">
+        <div class="form-title">
+          <span class="material-icons">edit_note</span>
+          振り返りを記録
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">今週の振り返り内容</label>
+          <textarea
+            class="form-textarea"
+            placeholder="今週の活動を振り返って、気づいたことや学びを記録しましょう"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">達成したこと（成功体験）</label>
+          <textarea
+            class="form-textarea"
+            placeholder="うまくいったこと、達成できたことを記録しましょう"
+          ></textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">課題・困難だったこと</label>
+          <textarea
+            class="form-textarea"
+            placeholder="うまくいかなかったこと、難しかったことを記録しましょう"
+          ></textarea>
+        </div>
+
+        <button class="ai-analyze-button">
+          <span class="material-icons">psychology</span>
+          AI分析を見る
+        </button>
+      </div>
+    </div>
+
+    <!-- ========================================
+         Actionタブのコンテンツ
+         ======================================== -->
+    <div class="action-content" id="action-content">
+      <!-- AI分析レポート -->
+      <div class="ai-report-card">
+        <div class="report-header">
+          <span class="material-icons" style="color: var(--action-color);">auto_awesome</span>
+          <div class="report-title">AI分析レポート</div>
+          <div class="confidence-badge">信頼度: 92%</div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">
+            <span class="material-icons" style="font-size: 18px; color: var(--check-color);">lightbulb</span>
+            洞察（Insights）
+          </div>
+          <div class="report-content">
+            <div class="insight-item">
+              <strong>パターン発見:</strong> 朝の時間帯にタスクを実行すると完了率が高い傾向があります（85% vs 夜間60%）
+            </div>
+            <div class="insight-item">
+              <strong>進捗状況:</strong> 目標「英語学習」の週次タスク達成率が90%と非常に高く、良い習慣が形成されています
+            </div>
+            <div class="insight-item">
+              <strong>課題の特定:</strong> 「運動習慣」の目標で週末のタスク実行率が低下（30%）しています
+            </div>
+          </div>
+        </div>
+
+        <div class="report-section">
+          <div class="report-section-title">
+            <span class="material-icons" style="font-size: 18px; color: var(--action-color);">recommend</span>
+            推奨事項（Recommendations）
+          </div>
+          <div class="report-content">
+            <div class="recommendation-item">
+              <strong>1. 実行時間の最適化:</strong> 重要なタスクは朝8-10時に設定することをお勧めします
+            </div>
+            <div class="recommendation-item">
+              <strong>2. 週末の運動習慣改善:</strong> 土曜朝にリマインダーを設定し、30分の軽い運動から始めましょう
+            </div>
+            <div class="recommendation-item">
+              <strong>3. 成功パターンの活用:</strong> 英語学習で成功している「朝の10分ルーティン」を他の目標にも適用してみましょう
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 改善計画作成フォーム -->
+      <div class="action-plan-form">
+        <div class="form-title">
+          <span class="material-icons">assignment</span>
+          改善計画を作成
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">計画タイトル</label>
+          <input
+            type="text"
+            class="form-input"
+            placeholder="例: 週末運動習慣の改善プラン"
+            value="週末運動習慣の改善プラン"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">計画の説明</label>
+          <textarea
+            class="form-textarea"
+            placeholder="AI提案を参考に、具体的な改善内容を記載しましょう"
+          >AI分析の推奨事項に基づき、週末の運動習慣を改善するための具体的なアクションプランを実行します。</textarea>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">アクション項目</label>
+          <div class="action-items-list">
+            <div class="action-item">
+              <div class="action-item-number">1</div>
+              <div class="action-item-text">土曜朝8時にリマインダーを設定する</div>
+            </div>
+            <div class="action-item">
+              <div class="action-item-number">2</div>
+              <div class="action-item-text">30分の軽いウォーキングから始める</div>
+            </div>
+            <div class="action-item">
+              <div class="action-item-number">3</div>
+              <div class="action-item-text">運動後にログを記録して達成感を得る</div>
+            </div>
+          </div>
+          <button class="add-action-button">
+            <span class="material-icons">add_circle_outline</span>
+            アクション項目を追加
+          </button>
+        </div>
+
+        <button class="create-plan-button">
+          <span class="material-icons">done</span>
+          改善計画を作成
+        </button>
+      </div>
+    </div>
+  </main>
+
+  <!-- ========================================
+       ボトムナビゲーション
+       ======================================== -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item">
+      <span class="material-icons">dashboard</span>
+      <span>ホーム</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">assignment</span>
+      <span>計画/実行</span>
+    </a>
+    <a href="#" class="nav-item active">
+      <span class="material-icons">fact_check</span>
+      <span>確認/改善</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">school</span>
+      <span>学習</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">analytics</span>
+      <span>ログ</span>
+    </a>
+  </nav>
+
+  <!-- ========================================
+       FAB（クイックアクション）
+       ======================================== -->
+  <button class="fab">
+    <span class="material-icons">add</span>
+  </button>
+
+  <!-- ========================================
+       JavaScript（タブ切り替え）
+       ======================================== -->
+  <script>
+    const checkTab = document.getElementById('check-tab');
+    const actionTab = document.getElementById('action-tab');
+    const checkContent = document.getElementById('check-content');
+    const actionContent = document.getElementById('action-content');
+
+    // Checkタブをクリック
+    checkTab.addEventListener('click', () => {
+      checkTab.classList.add('active');
+      actionTab.classList.remove('active');
+      checkContent.classList.add('active');
+      actionContent.classList.remove('active');
+    });
+
+    // Actionタブをクリック
+    actionTab.addEventListener('click', () => {
+      actionTab.classList.add('active');
+      checkTab.classList.remove('active');
+      actionContent.classList.add('active');
+      checkContent.classList.remove('active');
+    });
+
+    // 期間選択ボタン
+    const periodButtons = document.querySelectorAll('.period-button');
+    periodButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        periodButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+      });
+    });
+
+    // AI分析ボタン（CheckからActionタブへ遷移）
+    const aiAnalyzeButton = document.querySelector('.ai-analyze-button');
+    aiAnalyzeButton.addEventListener('click', () => {
+      actionTab.click();
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AIアシスタント - COM:PASS</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <style>
+    /* CSS Variables - Design System */
+    :root {
+      /* Colors */
+      --primary: #2c5282;
+      --primary-light: #3182ce;
+      --primary-dark: #1a365d;
+      --secondary: #4299e1;
+      --secondary-light: #63b3ed;
+      --secondary-dark: #2b6cb0;
+
+      --success: #48bb78;
+      --success-light: #68d391;
+      --success-dark: #2f855a;
+
+      --warning: #ed8936;
+      --warning-light: #f6ad55;
+      --warning-dark: #c05621;
+
+      --danger: #f56565;
+      --danger-light: #fc8181;
+      --danger-dark: #c53030;
+
+      --info: #4299e1;
+      --info-light: #63b3ed;
+      --info-dark: #2b6cb0;
+
+      /* COMPASS Colors */
+      --plan-color: #2c5282;
+      --do-color: #48bb78;
+      --check-color: #ed8936;
+      --action-color: #9f7aea;
+
+      /* Neutral Colors */
+      --bg-primary: #ffffff;
+      --bg-secondary: #f7fafc;
+      --bg-tertiary: #edf2f7;
+
+      --text-primary: #2d3748;
+      --text-secondary: #4a5568;
+      --text-tertiary: #718096;
+      --text-disabled: #a0aec0;
+
+      --border-color: #e2e8f0;
+      --border-dark: #cbd5e0;
+
+      /* Spacing */
+      --spacing-xs: 4px;
+      --spacing-sm: 8px;
+      --spacing-md: 16px;
+      --spacing-lg: 24px;
+      --spacing-xl: 32px;
+      --spacing-2xl: 48px;
+
+      /* Border Radius */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-xl: 16px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+      /* Font Sizes */
+      --font-xs: 12px;
+      --font-sm: 14px;
+      --font-md: 16px;
+      --font-lg: 18px;
+      --font-xl: 20px;
+      --font-2xl: 24px;
+
+      /* Transitions */
+      --transition-fast: 150ms ease-in-out;
+      --transition-normal: 250ms ease-in-out;
+      --transition-slow: 350ms ease-in-out;
+    }
+
+    /* Reset & Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', 'Noto Sans JP', sans-serif;
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+    .header {
+      position: sticky;
+      top: 0;
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-md);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow-sm);
+      z-index: 100;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .logo {
+      font-size: var(--font-xl);
+      font-weight: 700;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-sm);
+    }
+
+    .icon-button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--spacing-sm);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color var(--transition-fast);
+      color: var(--text-secondary);
+    }
+
+    .icon-button:hover {
+      background-color: var(--bg-tertiary);
+    }
+
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius-full);
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 500;
+      font-size: var(--font-sm);
+    }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      padding-bottom: 80px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Mode Selector */
+    .mode-selector {
+      position: sticky;
+      top: 61px;
+      background-color: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: var(--spacing-md);
+      overflow-x: auto;
+      z-index: 90;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .mode-selector::-webkit-scrollbar {
+      display: none;
+    }
+
+    .mode-tabs {
+      display: flex;
+      gap: var(--spacing-sm);
+      min-width: min-content;
+    }
+
+    .mode-tab {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-xs);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: var(--radius-full);
+      border: 1px solid var(--border-dark);
+      background-color: var(--bg-primary);
+      color: var(--text-secondary);
+      font-size: var(--font-sm);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .mode-tab:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background-color: var(--bg-secondary);
+    }
+
+    .mode-tab.active {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: var(--bg-primary);
+    }
+
+    .mode-tab .material-icons {
+      font-size: 18px;
+    }
+
+    /* Chat History Area */
+    .chat-history {
+      flex: 1;
+      overflow-y: auto;
+      padding: var(--spacing-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-md);
+      background-color: var(--bg-secondary);
+    }
+
+    /* Message Styles */
+    .message {
+      display: flex;
+      flex-direction: column;
+      max-width: 75%;
+      animation: fadeIn 0.3s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* User Message */
+    .message.user {
+      align-self: flex-end;
+      align-items: flex-end;
+    }
+
+    .message.user .message-content {
+      background: var(--primary);
+      color: var(--bg-primary);
+      border-radius: 16px 16px 4px 16px;
+    }
+
+    /* AI Message */
+    .message.assistant {
+      align-self: flex-start;
+      align-items: flex-start;
+    }
+
+    .message.assistant .message-content {
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      border-radius: 16px 16px 16px 4px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .message-content {
+      padding: 12px 16px;
+      word-wrap: break-word;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    .message-timestamp {
+      font-size: var(--font-xs);
+      color: var(--text-tertiary);
+      margin-top: 4px;
+      padding: 0 4px;
+    }
+
+    /* Input Area */
+    .input-area {
+      position: fixed;
+      bottom: 70px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      background: var(--bg-primary);
+      padding: var(--spacing-md);
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: var(--spacing-sm);
+      align-items: center;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      z-index: 50;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      font-size: 15px;
+      font-family: inherit;
+      outline: none;
+      transition: border-color var(--transition-fast);
+    }
+
+    .input-area input:focus {
+      border-color: var(--primary);
+    }
+
+    .send-button {
+      background: var(--primary);
+      color: var(--bg-primary);
+      border: none;
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition-fast);
+      flex-shrink: 0;
+    }
+
+    .send-button:hover {
+      background: var(--primary-light);
+    }
+
+    .send-button:active {
+      transform: scale(0.95);
+    }
+
+    .send-button .material-icons {
+      font-size: 24px;
+    }
+
+    /* Bottom Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--bg-primary);
+      border-top: 1px solid var(--border-color);
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      display: flex;
+      justify-content: space-around;
+      padding: var(--spacing-sm) 0;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: var(--spacing-xs);
+      color: var(--text-tertiary);
+      text-decoration: none;
+      cursor: pointer;
+      transition: color var(--transition-fast);
+      min-width: 60px;
+    }
+
+    .nav-item.active {
+      color: var(--primary);
+    }
+
+    .nav-item:hover {
+      color: var(--primary-light);
+    }
+
+    .nav-label {
+      font-size: var(--font-xs);
+      font-weight: 500;
+    }
+
+    /* FAB Button */
+    .fab {
+      position: fixed;
+      bottom: 80px;
+      right: 20px;
+      width: 56px;
+      height: 56px;
+      border-radius: var(--radius-full);
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      box-shadow: var(--shadow-lg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all var(--transition-fast);
+      z-index: 50;
+    }
+
+    .fab:hover {
+      background-color: var(--primary-light);
+      transform: scale(1.1);
+    }
+
+    .fab:active {
+      transform: scale(0.95);
+    }
+
+    /* Scrollbar Styles */
+    .chat-history::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .chat-history::-webkit-scrollbar-track {
+      background: var(--bg-tertiary);
+    }
+
+    .chat-history::-webkit-scrollbar-thumb {
+      background: var(--text-tertiary);
+      border-radius: 3px;
+    }
+
+    /* Material Icons */
+    .material-icons {
+      font-size: 24px;
+    }
+
+    .material-icons.md-18 { font-size: 18px; }
+    .material-icons.md-24 { font-size: 24px; }
+    .material-icons.md-36 { font-size: 36px; }
+
+    /* Mobile Responsive */
+    @media (max-width: 375px) {
+      .message-content {
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+
+      .input-area input {
+        font-size: 14px;
+        padding: 10px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-left">
+      <div class="logo">
+        <span class="material-icons">hub</span>
+        COM:PASS
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="icon-button">
+        <span class="material-icons">notifications</span>
+      </button>
+      <div class="avatar">TS</div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Mode Selector -->
+    <div class="mode-selector">
+      <div class="mode-tabs">
+        <button class="mode-tab active" data-mode="problem-solving">
+          <span class="material-icons">psychology</span>
+          <span>課題解決モード</span>
+        </button>
+        <button class="mode-tab" data-mode="learning-support">
+          <span class="material-icons">school</span>
+          <span>学習支援モード</span>
+        </button>
+        <button class="mode-tab" data-mode="planning">
+          <span class="material-icons">assignment</span>
+          <span>計画立案モード</span>
+        </button>
+        <button class="mode-tab" data-mode="companionship">
+          <span class="material-icons">support_agent</span>
+          <span>伴走補助モード</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat History Area -->
+    <div class="chat-history">
+      <!-- AI Message -->
+      <div class="message assistant">
+        <div class="message-content">
+          こんにちは！COM:PASSアシスタントです。目標達成のサポートをさせていただきます。何かお困りのことはありますか？
+        </div>
+        <div class="message-timestamp">10:30</div>
+      </div>
+
+      <!-- User Message -->
+      <div class="message user">
+        <div class="message-content">
+          今週の目標が進んでいないのですが、どうすればいいでしょうか？
+        </div>
+        <div class="message-timestamp">10:32</div>
+      </div>
+
+      <!-- AI Message -->
+      <div class="message assistant">
+        <div class="message-content">
+          あなたの今週の目標「毎日30分の運動習慣を作る」について確認しました。<br><br>
+
+          現在の進捗状況を見ると、7日中2日しか達成できていませんね。以下のアドバイスをお試しください：<br><br>
+
+          1. <strong>時間を固定する</strong>：毎朝7時など決まった時間に設定<br>
+          2. <strong>ハードルを下げる</strong>：まずは10分から始める<br>
+          3. <strong>記録を続ける</strong>：できなかった日も理由を記録する<br><br>
+
+          特に、あなたのログを見ると夜は疲れていることが多いようです。朝の運動に変更するのはいかがでしょうか？
+        </div>
+        <div class="message-timestamp">10:33</div>
+      </div>
+
+      <!-- User Message -->
+      <div class="message user">
+        <div class="message-content">
+          なるほど！朝に変更してみます。ありがとうございます！
+        </div>
+        <div class="message-timestamp">10:35</div>
+      </div>
+
+      <!-- AI Message -->
+      <div class="message assistant">
+        <div class="message-content">
+          素晴らしいですね！明日から実践してみてください。<br><br>
+
+          進捗が気になったらいつでも声をかけてくださいね。応援しています！
+        </div>
+        <div class="message-timestamp">10:35</div>
+      </div>
+    </div>
+
+    <!-- Message Input Area -->
+    <div class="input-area">
+      <input type="text" placeholder="メッセージを入力..." />
+      <button class="send-button">
+        <span class="material-icons">send</span>
+      </button>
+    </div>
+  </main>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item">
+      <span class="material-icons">home</span>
+      <span class="nav-label">ホーム</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">assignment</span>
+      <span class="nav-label">計画/実行</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">analytics</span>
+      <span class="nav-label">確認/改善</span>
+    </a>
+    <a href="#" class="nav-item active">
+      <span class="material-icons">school</span>
+      <span class="nav-label">学習</span>
+    </a>
+    <a href="#" class="nav-item">
+      <span class="material-icons">history</span>
+      <span class="nav-label">ログ</span>
+    </a>
+  </nav>
+
+  <!-- FAB Button -->
+  <button class="fab">
+    <span class="material-icons">add</span>
+  </button>
+
+  <script>
+    // Mode tab switching
+    document.querySelectorAll('.mode-tab').forEach(tab => {
+      tab.addEventListener('click', function() {
+        // Remove active class from all tabs
+        document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+        // Add active class to clicked tab
+        this.classList.add('active');
+
+        // Get selected mode
+        const mode = this.dataset.mode;
+        console.log('Selected mode:', mode);
+
+        // Update chat welcome message based on mode
+        updateWelcomeMessage(mode);
+      });
+    });
+
+    // Function to update welcome message based on selected mode
+    function updateWelcomeMessage(mode) {
+      const welcomeMessages = {
+        'problem-solving': 'こんにちは！課題解決モードです。抱えている問題について相談してください。一緒に解決策を考えましょう。',
+        'learning-support': 'こんにちは！学習支援モードです。COMPASS教材の学習をサポートします。どの部分について学びたいですか？',
+        'planning': 'こんにちは！計画立案モードです。目標設定や計画づくりをアシストします。どんな目標を立てたいですか？',
+        'companionship': 'こんにちは！伴走補助モードです。あなたのログを分析して、継続的なサポートをします。進捗状況を確認しましょう。'
+      };
+
+      // This would update the first AI message in a real implementation
+      console.log('Welcome message:', welcomeMessages[mode]);
+    }
+
+    // Bottom navigation active state
+    document.querySelectorAll('.nav-item').forEach(item => {
+      item.addEventListener('click', function(e) {
+        e.preventDefault();
+        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+
+    // Send button interaction
+    const sendButton = document.querySelector('.send-button');
+    const messageInput = document.querySelector('.input-area input');
+
+    sendButton.addEventListener('click', function() {
+      if (messageInput.value.trim()) {
+        alert('メッセージ送信機能は実装時に追加されます');
+        messageInput.value = '';
+      }
+    });
+
+    messageInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && this.value.trim()) {
+        alert('メッセージ送信機能は実装時に追加されます');
+        this.value = '';
+      }
+    });
+
+    // FAB button click
+    document.querySelector('.fab').addEventListener('click', function() {
+      alert('クイックアクション機能は実装時に追加されます');
+    });
+
+    // Auto-scroll to bottom on load
+    const chatHistory = document.querySelector('.chat-history');
+    chatHistory.scrollTop = chatHistory.scrollHeight;
+  </script>
+
+</body>
+</html>

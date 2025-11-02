@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>M-002 ビジュアル検証 - モックアップ vs React実装</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f7fafc;
+      padding: 2rem;
+    }
+
+    .header {
+      background: white;
+      padding: 2rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+    }
+
+    h1 {
+      color: #2d3748;
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: #718096;
+      font-size: 1rem;
+    }
+
+    .comparison-grid {
+      display: grid;
+      gap: 2rem;
+    }
+
+    .comparison-item {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+
+    .comparison-header {
+      background: #2c5282;
+      color: white;
+      padding: 1rem 1.5rem;
+      font-weight: 600;
+      font-size: 1.125rem;
+    }
+
+    .comparison-body {
+      padding: 1.5rem;
+    }
+
+    .image-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .image-section {
+      border: 2px solid #e2e8f0;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .image-label {
+      background: #edf2f7;
+      padding: 0.5rem 1rem;
+      font-weight: 600;
+      color: #2d3748;
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    .image-wrapper {
+      padding: 1rem;
+      background: #f7fafc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 300px;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .viewport-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: #4299e1;
+      color: white;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+    }
+
+    .tab-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      background: #48bb78;
+      color: white;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      margin-left: 0.5rem;
+    }
+
+    .note {
+      background: #fffaf0;
+      border-left: 4px solid #f6ad55;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 4px;
+    }
+
+    .note-title {
+      font-weight: 600;
+      color: #744210;
+      margin-bottom: 0.5rem;
+    }
+
+    .note-content {
+      color: #975a16;
+      font-size: 0.875rem;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1200px) {
+      .image-container {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>M-002: クライアント詳細ページ - ビジュアル検証</h1>
+    <p class="subtitle">HTMLモックアップ vs React実装の比較</p>
+  </div>
+
+  <div class="comparison-grid">
+    <!-- Desktop - Tab 1 (目標) -->
+    <div class="comparison-item">
+      <div class="comparison-header">
+        <span class="viewport-badge">デスクトップ (1920x1080)</span>
+        <span class="tab-badge">タブ1: 目標</span>
+      </div>
+      <div class="comparison-body">
+        <div class="image-container">
+          <div class="image-section">
+            <div class="image-label">HTMLモックアップ</div>
+            <div class="image-wrapper">
+              <img src="mockups/ClientDetail-desktop-tab1.png" alt="HTMLモックアップ - デスクトップ - タブ1">
+            </div>
+          </div>
+          <div class="image-section">
+            <div class="image-label">React実装</div>
+            <div class="image-wrapper">
+              <img src="react/ClientDetail-desktop-tab1.png" alt="React実装 - デスクトップ - タブ1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop - Tab 2 (タスク) -->
+    <div class="comparison-item">
+      <div class="comparison-header">
+        <span class="viewport-badge">デスクトップ (1920x1080)</span>
+        <span class="tab-badge">タブ2: タスク</span>
+      </div>
+      <div class="comparison-body">
+        <div class="image-container">
+          <div class="image-section">
+            <div class="image-label">HTMLモックアップ</div>
+            <div class="image-wrapper">
+              <img src="mockups/ClientDetail-desktop-tab2.png" alt="HTMLモックアップ - デスクトップ - タブ2">
+            </div>
+          </div>
+          <div class="image-section">
+            <div class="image-label">React実装</div>
+            <div class="image-wrapper">
+              <img src="react/ClientDetail-desktop-tab2.png" alt="React実装 - デスクトップ - タブ2">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Desktop - Tab 6 (メンターノート) -->
+    <div class="comparison-item">
+      <div class="comparison-header">
+        <span class="viewport-badge">デスクトップ (1920x1080)</span>
+        <span class="tab-badge">タブ6: メンターノート</span>
+      </div>
+      <div class="comparison-body">
+        <div class="image-container">
+          <div class="image-section">
+            <div class="image-label">HTMLモックアップ</div>
+            <div class="image-wrapper">
+              <img src="mockups/ClientDetail-desktop-tab6.png" alt="HTMLモックアップ - デスクトップ - タブ6">
+            </div>
+          </div>
+          <div class="image-section">
+            <div class="image-label">React実装</div>
+            <div class="image-wrapper">
+              <img src="react/ClientDetail-desktop-tab6.png" alt="React実装 - デスクトップ - タブ6">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tablet - Tab 1 (目標) -->
+    <div class="comparison-item">
+      <div class="comparison-header">
+        <span class="viewport-badge">タブレット (768x1024)</span>
+        <span class="tab-badge">タブ1: 目標</span>
+      </div>
+      <div class="comparison-body">
+        <div class="image-container">
+          <div class="image-section">
+            <div class="image-label">HTMLモックアップ</div>
+            <div class="image-wrapper">
+              <img src="mockups/ClientDetail-tablet-tab1.png" alt="HTMLモックアップ - タブレット - タブ1">
+            </div>
+          </div>
+          <div class="image-section">
+            <div class="image-label">React実装</div>
+            <div class="image-wrapper">
+              <img src="react/ClientDetail-tablet-tab1.png" alt="React実装 - タブレット - タブ1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile - Tab 1 (目標) -->
+    <div class="comparison-item">
+      <div class="comparison-header">
+        <span class="viewport-badge">モバイル (375x667)</span>
+        <span class="tab-badge">タブ1: 目標</span>
+      </div>
+      <div class="comparison-body">
+        <div class="image-container">
+          <div class="image-section">
+            <div class="image-label">HTMLモックアップ</div>
+            <div class="image-wrapper">
+              <img src="mockups/ClientDetail-mobile-tab1.png" alt="HTMLモックアップ - モバイル - タブ1">
+            </div>
+          </div>
+          <div class="image-section">
+            <div class="image-label">React実装</div>
+            <div class="image-wrapper">
+              <img src="react/ClientDetail-mobile-tab1.png" alt="React実装 - モバイル - タブ1">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 検証チェックリスト -->
+    <div class="comparison-item">
+      <div class="comparison-header">検証チェックリスト</div>
+      <div class="comparison-body">
+        <div class="note">
+          <div class="note-title">📋 確認ポイント</div>
+          <div class="note-content">
+            <ul style="list-style: disc; margin-left: 1.5rem; margin-top: 0.5rem;">
+              <li>クライアント基本情報ヘッダーのレイアウトと配色</li>
+              <li>進捗円グラフの表示</li>
+              <li>ステータスバッジの色とアイコン</li>
+              <li>タブナビゲーションのスタイル</li>
+              <li>各タブコンテンツの配置と余白</li>
+              <li>レスポンシブ対応（モバイル/タブレット/デスクトップ）</li>
+              <li>フォントサイズと可読性</li>
+              <li>アイコンとテキストの整列</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
