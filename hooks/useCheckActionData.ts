@@ -109,12 +109,18 @@ export const useCheckActionData = (): UseCheckActionDataReturn => {
 
   const createActionPlan = async (formData: ActionPlanForm): Promise<ActionPlanDetailed> => {
     try {
+      console.log('[useCheckActionData] Creating action plan...', formData);
       const plan = await checkActionService.createActionPlan(formData);
-      // データをリフレッシュ
-      await fetchData();
+      console.log('[useCheckActionData] Action plan created successfully', plan);
+      // データをリフレッシュ（非同期で実行、成功を待たない）
+      console.log('[useCheckActionData] Refreshing data...');
+      fetchData().catch((err) => {
+        console.error('[useCheckActionData] Data refresh error (non-blocking):', err);
+      });
+      console.log('[useCheckActionData] Returning plan without waiting for data refresh');
       return plan;
     } catch (err) {
-      console.error('Create action plan error:', err);
+      console.error('[useCheckActionData] Create action plan error:', err);
       throw err;
     }
   };

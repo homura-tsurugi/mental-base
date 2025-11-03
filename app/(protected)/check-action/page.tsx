@@ -147,23 +147,22 @@ export default function CheckActionPage() {
         </div>
 
         {/* Check Tab Content */}
-        {activeTab === 'check' && (
-          <div className="px-6">
-            {/* Period Selector */}
-            <PeriodSelector
-              currentPeriod={currentPeriod}
-              onPeriodChange={changePeriod}
-            />
+        <div className="px-6" style={{ display: activeTab === 'check' ? 'block' : 'none' }}>
+          {/* Period Selector */}
+          <PeriodSelector
+            currentPeriod={currentPeriod}
+            onPeriodChange={changePeriod}
+          />
 
-            {/* Progress Statistics */}
-            <div data-testid="stats-container">
-              <ProgressStats stats={data.stats} />
-            </div>
+          {/* Progress Statistics */}
+          <div data-testid="stats-container">
+            <ProgressStats stats={data.stats} />
+          </div>
 
-            {/* Progress Chart */}
-            <div data-testid="chart-container">
-              <ProgressChart chartData={data.chartData} />
-            </div>
+          {/* Progress Chart */}
+          <div data-testid="chart-container">
+            <ProgressChart chartData={data.chartData} />
+          </div>
 
           {/* Reflection Form */}
           <ReflectionForm
@@ -183,11 +182,9 @@ export default function CheckActionPage() {
             </div>
           )}
         </div>
-      )}
 
-      {/* Action Tab Content */}
-      {activeTab === 'action' && (
-        <div data-testid="action-tab-content" className="px-6">
+        {/* Action Tab Content */}
+        <div data-testid="action-tab-content" className="px-6" style={{ display: activeTab === 'action' ? 'block' : 'none' }}>
           {/* AI Analysis Report */}
           {data.latestReport ? (
             <>
@@ -222,7 +219,6 @@ export default function CheckActionPage() {
             </div>
           )}
         </div>
-      )}
       </div>
     </MainLayout>
   );

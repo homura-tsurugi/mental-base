@@ -37,8 +37,11 @@ export class CheckActionService {
       // E2Eテストモード検出
       const skipAuth = typeof window !== 'undefined' && localStorage.getItem('VITE_SKIP_AUTH') === 'true';
 
+      // noReportパラメータを取得
+      const noReport = typeof window !== 'undefined' && new URL(window.location.href).searchParams.get('noReport') === 'true';
+
       const response = await fetch(
-        `${this.baseUrl}/check-action?period=${periodType}&startDate=${period.startDate.toISOString()}&endDate=${period.endDate.toISOString()}${skipAuth ? '&skipAuth=true' : ''}`,
+        `${this.baseUrl}/check-action?period=${periodType}&startDate=${period.startDate.toISOString()}&endDate=${period.endDate.toISOString()}${skipAuth ? '&skipAuth=true' : ''}${noReport ? '&noReport=true' : ''}`,
         {
           method: 'GET',
           headers: {

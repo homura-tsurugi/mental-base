@@ -58,6 +58,7 @@ export async function GET(request: Request) {
     // E2Eテストモード検出
     const { searchParams } = new URL(request.url);
     const skipAuth = searchParams.get('skipAuth') === 'true';
+    const noReport = searchParams.get('noReport') === 'true';
 
     // テストモード: モックデータを返却
     if (skipAuth || process.env.VITE_SKIP_AUTH === 'true') {
@@ -103,7 +104,7 @@ export async function GET(request: Request) {
             updatedAt: new Date('2025-11-03'),
           },
         ],
-        latestReport: {
+        latestReport: noReport ? null : {
           id: 'report-1',
           userId: 'test-user',
           reflectionId: 'refl-1',

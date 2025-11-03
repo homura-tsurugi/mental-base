@@ -65,12 +65,15 @@ test.describe('Check/Actionページ - ワークフロー・エッジケース�
   });
 
   test('E2E-CHKACT-051: Actionタブのレポートなし表示', async ({ page }) => {
+    // noReport=trueパラメータ付きでページにアクセス（レポートなし状態をテスト）
+    await page.goto('/check-action?noReport=true');
+
     // AI分析を実行せずにActionタブに移動
     const actionTab = page.locator('[data-testid="tab-action"]');
     await actionTab.click();
 
-    // ページの読み込みを待つ
-    await page.waitForSelector('[data-testid="action-tab-content"]', { timeout: 5000 });
+    // Actionタブがアクティブになるまで待つ
+    await expect(actionTab).toHaveAttribute('data-active', 'true');
 
     // 「AI分析レポートがありません」メッセージが表示される
     const noReportMessage = page.locator('[data-testid="no-report-message"]');
@@ -342,7 +345,7 @@ test.describe('Check/Actionページ - ワークフロー・エッジケース�
 
     // 最新データを再取得していることを確認（統計が表示されている）
     const stats = page.locator('[data-testid="stats-card"]');
-    await expect(stats).toBeVisible();
+    await expect(stats.first()).toBeVisible();
   });
 
   test('E2E-CHKACT-058: フォーム送信後のクリア', async ({ page }) => {

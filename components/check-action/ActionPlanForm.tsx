@@ -38,6 +38,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log('[ActionPlanForm] Submit started', { title, description, actionItems: actionItems.length });
 
     if (!title.trim()) {
       alert('計画タイトルを入力してください');
@@ -50,6 +51,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
     }
 
     setIsSubmitting(true);
+    console.log('[ActionPlanForm] Calling onSubmit...');
 
     try {
       await onSubmit({
@@ -59,6 +61,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
         reportId,
       });
 
+      console.log('[ActionPlanForm] onSubmit succeeded, showing success alert');
       setShowSuccess(true);
       setTimeout(() => setShowSuccess(false), 5000);
 
@@ -67,10 +70,11 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
       // setDescription('');
       // setActionItems([]);
     } catch (error) {
-      console.error('Action plan submission error:', error);
+      console.error('[ActionPlanForm] Submission error:', error);
       alert('改善計画の作成に失敗しました');
     } finally {
       setIsSubmitting(false);
+      console.log('[ActionPlanForm] Submit finished, showSuccess=', showSuccess);
     }
   };
 

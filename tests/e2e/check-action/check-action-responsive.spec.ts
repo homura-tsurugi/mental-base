@@ -161,6 +161,9 @@ test.describe('Check/Actionページ - レスポンシブテスト', () => {
 
   // ===== タッチジェスチャー対応テスト =====
 
+  // タッチサポートを有効化
+  test.use({ hasTouch: true });
+
   test('E2E-CHKACT-047: タッチジェスチャー対応', async ({ page }) => {
     // モバイルサイズに設定
     await page.setViewportSize({ width: 375, height: 667 });

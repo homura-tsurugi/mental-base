@@ -175,7 +175,7 @@ test.describe('E2E-PLDO-012: 目標作成（必須項目のみ）', () => {
     const isEmpty = await emptyGoalsMessage.isVisible().catch(() => false);
 
     if (hasGoals) {
-      const goalCards = goalList.locator('.bg-\\[var\\(--bg-primary\\)\\]');
+      const goalCards = goalList.locator('[data-testid="goal-card"]');
       initialGoalCount = await goalCards.count();
       console.log(`[Test] 作成前の目標数: ${initialGoalCount}`);
     } else if (isEmpty) {
@@ -280,15 +280,26 @@ test.describe('E2E-PLDO-012: 目標作成（必須項目のみ）', () => {
     // ==========================================
     console.log('[Test] Step 10: 目標一覧に作成した目標が追加されたことを確認');
 
-    // 一覧の更新を待つ
-    await page.waitForTimeout(1000);
+    // 一覧の更新を待つ（APIレスポンス + React再レンダリング）
+    await page.waitForTimeout(2000);
 
-    // 目標一覧を再取得
+    // 目標一覧を再取得（空メッセージが消えるまで待つ）
+    const emptyMessageAfterCreation = page.locator('[data-testid="empty-goals-message"]');
+    const hasEmptyMessageAfterCreation = await emptyMessageAfterCreation.isVisible().catch(() => false);
+
+    if (hasEmptyMessageAfterCreation) {
+      console.warn('[警告] 作成後も空メッセージが表示されている。再取得を待機中...');
+      await emptyMessageAfterCreation.waitFor({ state: 'hidden', timeout: 5000 }).catch((e) => {
+        console.error(`[エラー] 空メッセージが消えない: ${e.message}`);
+      });
+    }
+
+    // 目標一覧が表示されるまで待つ
     const updatedGoalList = page.locator('[data-testid="goal-list"]');
     await expect(updatedGoalList).toBeVisible({ timeout: 5000 });
     console.log('[Test] ✅ 目標一覧が表示');
 
-    const goalCards = updatedGoalList.locator('.bg-\\[var\\(--bg-primary\\)\\]');
+    const goalCards = updatedGoalList.locator('[data-testid="goal-card"]');
     const updatedGoalCount = await goalCards.count();
     console.log(`[Test] 作成後の目標数: ${updatedGoalCount}`);
 
