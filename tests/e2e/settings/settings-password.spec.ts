@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test('E2E-SET-009: パスワード変更（正常）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -43,7 +43,7 @@ test('E2E-SET-009: パスワード変更（正常）', async ({ page }) => {
 });
 
 test('E2E-SET-010: パスワード変更（全フィールド空欄）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -61,7 +61,7 @@ test('E2E-SET-010: パスワード変更（全フィールド空欄）', async (
 });
 
 test('E2E-SET-011: パスワード変更（8文字未満）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -90,7 +90,7 @@ test('E2E-SET-011: パスワード変更（8文字未満）', async ({ page }) =
 });
 
 test('E2E-SET-012: パスワード変更（確認パスワード不一致）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -119,7 +119,7 @@ test('E2E-SET-012: パスワード変更（確認パスワード不一致）', a
 });
 
 test('E2E-SET-027: パスワードフィールドの非表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -141,7 +141,7 @@ test('E2E-SET-027: パスワードフィールドの非表示', async ({ page })
 });
 
 test('E2E-SET-029: パスワード変更ボタンの視覚フィードバック', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -163,7 +163,7 @@ test('E2E-SET-029: パスワード変更ボタンの視覚フィードバック'
 });
 
 test('E2E-SET-036: パスワード変更（現在のパスワード不正）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -192,7 +192,7 @@ test('E2E-SET-036: パスワード変更（現在のパスワード不正）', a
 });
 
 test('E2E-SET-041: パスワード変更時のセキュリティ強度チェック', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');

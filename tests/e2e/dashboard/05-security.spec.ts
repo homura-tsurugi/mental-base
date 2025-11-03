@@ -18,7 +18,7 @@ test.describe('Dashboard Security Tests', () => {
     await context.clearCookies();
 
     // ダッシュボードにアクセス
-    await page.goto('/');
+    await page.goto('/client');
 
     // 認証ページ（/auth）にリダイレクトされることを確認
     // または、モックユーザーで動作していることを確認（認証未実装の場合）
@@ -47,7 +47,7 @@ test.describe('Dashboard Security Tests', () => {
     context,
   }) => {
     // ダッシュボードにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // ページが正常に表示されていることを確認
@@ -86,7 +86,7 @@ test.describe('Dashboard Security Tests', () => {
   // E2E-DASH-030: XSS攻撃対策
   test('E2E-DASH-030: XSS攻撃対策 - アクティビティ説明でのXSS対策', async ({ page }) => {
     // XSS攻撃をシミュレートするため、モックでscriptタグを含む説明を設定
-    await page.goto('/?mock=xss-attack');
+    await page.goto('/client?mock=xss-attack');
     await page.waitForLoadState('networkidle');
 
     // scriptタグが実行されないことを確認
@@ -121,7 +121,7 @@ test.describe('Dashboard Security Tests', () => {
   // E2E-DASH-031: CSRF攻撃対策
   test('E2E-DASH-031: CSRF攻撃対策 - タスク更新時のCSRF対策', async ({ page }) => {
     // ダッシュボードにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // タスク完了APIを直接呼び出す際にCSRFトークンが必要であることを確認

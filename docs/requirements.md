@@ -131,516 +131,121 @@ MVPでは**6ページ**のみ実装：
 
 ### 3.2 P-001: 認証ページ
 
-#### 目的
-ユーザー登録とログインによるセキュアなアクセス提供
+**ステータス**: ✅ 実装済み（E2E: 96.8%）
 
 #### 主要機能
 - メール＋パスワードによるログイン
 - 新規ユーザー登録
 - パスワードリセット（メール送信）
 
-#### 必要な操作
-
-| 操作種別 | 操作内容 | 必要な入力 | 期待される出力 |
-|---------|---------|-----------|---------------|
-| 作成 | 新規ユーザー登録 | メール、パスワード、名前 | ユーザーID、セッショントークン |
-| 取得 | ログイン | メール、パスワード | セッショントークン、リダイレクト |
-| 更新 | パスワードリセット（リクエスト） | メール | リセットリンク送信確認 |
-| 更新 | パスワードリセット（実行） | トークン、新パスワード | パスワード更新確認 |
-
-#### 処理フロー
-
-**新規登録:**
-1. ユーザーがメール・パスワード・名前を入力
-2. バリデーション実行（メール形式、パスワード8文字以上）
-3. パスワードをbcryptでハッシュ化
-4. ユーザーレコードをDBに作成
-5. 自動ログイン（セッション作成）
-6. ホームページへリダイレクト
-
-**ログイン:**
-1. ユーザーがメール・パスワードを入力
-2. DBからユーザー検索
-3. パスワード検証（bcrypt.compare）
-4. セッション作成（JWT）
-5. ホームページへリダイレクト
-
-**パスワードリセット:**
-1. ユーザーがメールアドレスを入力
-2. リセットトークン生成（1時間有効）
-3. トークンをDBに保存
-4. リセットリンクをメール送信
-5. ユーザーがリンクをクリック
-6. 新しいパスワードを入力
-7. トークン検証＋パスワード更新
-
-#### データ構造（概念）
-
-```yaml
-User:
-  識別子: id (UUID)
-  基本情報:
-    - email（必須、ユニーク）
-    - password（必須、ハッシュ化）
-    - name（必須）
-  メタ情報:
-    - emailVerified（日時、任意）
-    - createdAt（作成日時）
-    - updatedAt（更新日時）
-  関連:
-    - Session（1対多）
-    - Goal（1対多）
-    - Task（1対多）
-    - Log（1対多）
-
-PasswordResetToken:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー）
-    - token（ユニーク、ランダム）
-    - expires（有効期限）
-  メタ情報:
-    - createdAt（作成日時）
-```
+**詳細**: 実装コードを参照（`app/(auth)/auth/`, `app/api/auth/`, `lib/auth.ts`）
 
 ---
 
 ### 3.3 C-001: ホーム（ダッシュボード）
 
-#### 目的
-COM:PASS進捗の全体像と今日やるべきことの把握
+**ステータス**: ✅ 実装済み（E2E: 84.1%）
 
 #### 主要機能
-- COM:PASS進捗サマリー（4つのフェーズの進捗状況を円形プログレスで表示）
-- 今日のタスク一覧（チェックボックス、優先度、目標、期限表示）
-- 最近のアクティビティ（アイコン付きリスト）
-- 通知ボタン（ヘッダー内）
-- ボトムナビゲーション（全ページ共通）
-- FAB（クイックアクション用）
+- COM:PASS進捗サマリー（4フェーズの進捗状況）
+- 今日のタスク一覧
+- 最近のアクティビティ
+- 通知機能
 
-#### UI/UX仕様
-
-**デザインシステム:**
-- Material Icons使用
-- Google Fonts（Roboto + Noto Sans JP）
-- CSS変数による統一デザイン
-  - Primary: #2c5282（青）
-  - Success: #48bb78（緑）
-  - Warning: #ed8936（オレンジ）
-  - Danger: #f56565（赤）
-  - COMPASS配色: PLAN（青）、DO（緑）、Check（オレンジ）、Action（紫 #9f7aea）
-
-**レイアウト:**
-- スマホファースト設計（最大幅600px、基準375px）
-- Sticky Header（スクロール時も固定表示）
-- Fixed Bottom Navigation（画面下部固定）
-- コンテンツ余白: 下部70px（ボトムナビ分）
-
-**ヘッダー構成:**
-- ロゴ「COM:PASS」（hubアイコン付き）
-- 通知ボタン
-- ユーザーアバター（イニシャル表示）
-
-**COM:PASS進捗サマリー:**
-- 2×2グリッドレイアウト
-- 各カードに円形プログレスバーと進捗率（%）表示
-- PLAN（計画）: 青色
-- DO（実行）: 緑色
-- Check（振り返り）: オレンジ色
-- Action（改善）: 紫色
-
-**ボトムナビゲーション（5項目）:**
-1. ホーム（dashboard アイコン）- active状態
-2. 計画/実行（assignment アイコン）
-3. 確認/改善（fact_check アイコン）
-4. 学習（school アイコン）
-5. ログ（analytics アイコン）
-
-**FAB（Floating Action Button）:**
-- 位置: 右下固定（bottom: 70px, right: 16px）
-- アイコン: add（+）
-- 用途: クイックアクション（タスク追加等）
-
-#### 必要な操作
-
-| 操作種別 | 操作内容 | 必要な入力 | 期待される出力 |
-|---------|---------|-----------|---------------|
-| 取得 | ダッシュボードデータ取得 | ユーザーID（セッション） | COM:PASS進捗、今日のタスク、通知 |
-| 更新 | タスク完了チェック | タスクID | 更新されたタスク状態 |
-
-#### 処理フロー
-1. ページロード時、ユーザーのダッシュボードデータをAPI経由で取得
-2. COM:PASS各フェーズの進捗率を計算・表示
-3. 今日のタスクをフィルタリングして表示
-4. 最近のアクティビティ（直近10件）を表示
-5. 未読通知があれば表示
-6. ユーザーがタスクをタップして完了マーク
-7. クイックアクションボタンで各ページに遷移
-
-#### データ構造（概念）
-
-```yaml
-DashboardData:
-  compassSummary:
-    - planProgress（計画進捗率、パーセント）
-    - doProgress（実行進捗率、パーセント）
-    - checkProgress（振り返り進捗率、パーセント）
-    - actionProgress（改善進捗率、パーセント）
-  todayTasks:
-    - Task[]（今日期限のタスク一覧）
-  recentActivities:
-    - Activity[]（最近のアクティビティ）
-  notifications:
-    - Notification[]（未読通知）
-```
+**詳細**: 実装コードを参照（`app/(client)/client/`, `app/api/dashboard/`, `components/dashboard/`）
 
 ---
 
-### 3.4 C-002: 目標・実行ページ
+### 3.4 C-002: 目標・実行ページ（Plan-Do）
 
-#### 目的
-目標設定と日々のタスク実行・ログ記録（PLAN + DO）
+**ステータス**: ✅ 実装済み（E2E: 72.4%、改善中）
 
 #### 主要機能
 - 目標の作成・編集・削除
-- 目標に紐づくタスクの作成・管理
-- タスクの実行チェック
-- 日々のログ記録（メモ、感情、状態）
+- 目標に紐づくタスク管理
+- タスク完了チェック
+- 日々のログ記録
 - 進捗バー表示
 
-#### 必要な操作
-
-| 操作種別 | 操作内容 | 必要な入力 | 期待される出力 |
-|---------|---------|-----------|---------------|
-| 取得 | 目標一覧取得 | ユーザーID | Goal[] |
-| 作成 | 新規目標作成 | タイトル、説明、期限 | 作成されたGoal |
-| 更新 | 目標編集 | goalId、更新内容 | 更新されたGoal |
-| 削除 | 目標削除 | goalId | 削除確認 |
-| 取得 | タスク一覧取得 | goalId（任意） | Task[] |
-| 作成 | 新規タスク作成 | タイトル、期限、優先度、goalId | 作成されたTask |
-| 更新 | タスク完了切り替え | taskId | 更新されたTask |
-| 作成 | ログ記録 | 内容、感情、状態、タスクID（任意） | 作成されたLog |
-
-#### 処理フロー
-
-**PLAN（計画）:**
-1. ユーザーが「新規目標」ボタンをタップ
-2. 目標タイトル、説明、期限を入力
-3. 目標をDBに保存
-4. 目標に紐づくタスクを作成
-5. 目標一覧に追加表示
-
-**DO（実行）:**
-1. ユーザーが今日のタスクを確認
-2. タスクをタップして詳細表示
-3. タスク実行後、完了チェック
-4. 必要に応じてログを記録（メモ、感情、状態）
-5. 進捗バーが更新される
-
-#### データ構造（概念）
-
-```yaml
-Goal:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー、必須）
-    - title（タイトル、必須）
-    - description（説明、任意）
-    - deadline（期限、任意）
-    - status（ステータス: active, completed, archived）
-  メタ情報:
-    - createdAt（作成日時）
-    - updatedAt（更新日時）
-  関連:
-    - Task（1対多）
-
-Task:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー、必須）
-    - goalId（外部キー、任意）
-    - title（タイトル、必須）
-    - description（説明、任意）
-    - dueDate（期限、任意）
-    - priority（優先度: high, medium, low）
-    - status（ステータス: pending, in_progress, completed）
-  メタ情報:
-    - completedAt（完了日時、任意）
-    - createdAt（作成日時）
-    - updatedAt（更新日時）
-  関連:
-    - Goal（多対1）
-    - Log（1対多）
-
-Log:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー、必須）
-    - taskId（外部キー、任意）
-    - content（内容、必須）
-    - emotion（感情: happy, neutral, sad, anxious等、任意）
-    - state（状態: energetic, tired, focused等、任意）
-    - type（ログ種別: daily, reflection, insight）
-  メタ情報:
-    - createdAt（作成日時）
-```
+**詳細**: 実装コードを参照（`app/(client)/client/plan-do/`, `app/api/goals/`, `app/api/tasks/`, `components/plan-do/`）
 
 ---
 
-### 3.5 C-003: 振り返り・改善ページ
+### 3.5 C-003: 振り返り・改善ページ（Check-Action）
 
-#### 目的
-進捗確認とAI分析による改善計画の作成（Check + Action）
+**ステータス**: ✅ 実装済み（E2E: 74.1%、改善中）
 
 #### 主要機能
 - 期間別進捗確認（日次、週次、月次）
 - データ可視化（グラフ、チャート）
 - 振り返り記録
 - AI分析レポート表示
-- AIによる改善提案の受け取り
 - 改善計画の作成
 
-#### 必要な操作
-
-| 操作種別 | 操作内容 | 必要な入力 | 期待される出力 |
-|---------|---------|-----------|---------------|
-| 取得 | 進捗データ取得 | userId、期間（日次/週次/月次） | 進捗統計、グラフデータ |
-| 作成 | 振り返り記録 | 内容、対象期間 | 作成されたReflection |
-| 取得 | AI分析リクエスト | userId、分析対象期間 | AI分析レポート |
-| 作成 | 改善計画作成 | AI提案に基づく改善内容 | 作成されたActionPlan |
-
-#### 処理フロー
-
-**Check（振り返り）:**
-1. ユーザーが期間を選択（今週、先週、今月等）
-2. その期間の進捗データを取得・可視化
-3. 完了タスク数、ログ記録日数、達成率を表示
-4. ユーザーが振り返りを記録（良かった点、課題点）
-5. 「AI分析を見る」ボタンをタップ
-
-**Action（改善）:**
-1. AI分析エンジンがログ・タスク・振り返りを分析
-2. AIがパターン、課題、改善提案を生成
-3. AI分析レポートを表示
-4. ユーザーがAI提案を確認
-5. 改善計画を作成（新しい目標・タスク設定）
-6. 次のサイクルへ
-
-#### データ構造（概念）
-
-```yaml
-Reflection:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー、必須）
-    - period（対象期間: daily, weekly, monthly）
-    - startDate（期間開始日）
-    - endDate（期間終了日）
-    - content（振り返り内容、必須）
-    - achievements（達成したこと、任意）
-    - challenges（課題・困難、任意）
-  メタ情報:
-    - createdAt（作成日時）
-
-AIAnalysisReport:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー、必須）
-    - reflectionId（外部キー、任意）
-    - analysisType（分析種別: progress, pattern, recommendation）
-    - insights（洞察、JSON形式）
-    - recommendations（推奨事項、JSON形式）
-    - confidence（信頼度、0-1）
-  メタ情報:
-    - createdAt（作成日時）
-
-ActionPlan:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー、必須）
-    - reportId（外部キー、任意）
-    - title（タイトル、必須）
-    - description（説明、必須）
-    - actionItems（アクション項目、JSON配列）
-    - status（ステータス: planned, in_progress, completed）
-  メタ情報:
-    - createdAt（作成日時）
-    - updatedAt（更新日時）
-```
+**詳細**: 実装コードを参照（`app/(client)/client/check-action/`, `app/api/reflections/`, `app/api/analysis/`, `components/check-action/`）
 
 ---
 
 ### 3.6 C-004: AIアシスタント
 
-#### 目的
-AIとの対話による個別アドバイスとフィードバック
+**ステータス**: ✅ 実装済み（E2E: 76.0%、改善中）
 
 #### 主要機能
-- AIチャット機能
-- **モード選択機能**（4つのAIアシスタントモード）
-  - **課題解決モード**: 抱えている問題に対してコンサルティング
-  - **学習支援モード**: COMPASS教材の学習を支援
-  - **計画立案モード**: 目標設定をアシスト
-  - **伴走補助モード**: ユーザーログの分析や助言
-- コンテキスト理解（ユーザーの目標・タスク・ログを考慮）
-- 質問への回答
-- アドバイス・フィードバック提供
-- モチベーション支援
-- チャット履歴の保存
+- AIチャット機能（4モード対応）
+  - 課題解決モード
+  - 学習支援モード
+  - 計画立案モード
+  - 伴走補助モード
+- コンテキスト理解（ユーザー目標・タスク・ログ）
+- チャット履歴保存
 
-#### 必要な操作
-
-| 操作種別 | 操作内容 | 必要な入力 | 期待される出力 |
-|---------|---------|-----------|---------------|
-| 取得 | チャット履歴取得 | userId | ChatMessage[] |
-| 作成 | メッセージ送信 | userId、メッセージ内容、モード | AIレスポンス |
-| 更新 | モード切り替え | モード選択（課題解決/学習支援/計画立案/伴走補助） | 選択されたモード |
-| 削除 | チャット履歴削除 | userId | 削除確認 |
-
-#### 処理フロー
-1. ユーザーがAIアシスタントページを開く
-2. デフォルトで「課題解決モード」を選択状態で表示
-3. ユーザーが必要に応じてモードを切り替え（課題解決/学習支援/計画立案/伴走補助）
-4. 過去のチャット履歴を表示
-5. ユーザーが質問・相談を入力
-6. バックエンドがユーザーのコンテキスト（目標、タスク、ログ）と選択中のモードを取得
-7. AI API（Claude/OpenAI）にコンテキスト＋モード付きでリクエスト
-8. AIが選択されたモードに応じたパーソナライズ回答を生成
-9. 回答を表示、チャット履歴に保存
-10. ユーザーが継続的に対話可能
-
-#### データ構造（概念）
-
-```yaml
-ChatMessage:
-  識別子: id (UUID)
-  基本情報:
-    - userId（外部キー、必須）
-    - role（送信者: user, assistant）
-    - content（メッセージ内容、必須）
-    - mode（モード: problem_solving, learning_support, planning, mentoring、必須）
-    - context（コンテキスト情報、JSON、任意）
-  メタ情報:
-    - createdAt（作成日時）
-
-AIAssistantMode（Enum）:
-  - problem_solving: 課題解決モード
-  - learning_support: 学習支援モード
-  - planning: 計画立案モード
-  - mentoring: 伴走補助モード
-```
+**詳細**: 実装コードを参照（`app/(client)/client/ai-assistant/`, `app/api/chat/`, `app/api/ai-assistant/`, `components/chat/`）
 
 ---
 
 ### 3.7 C-005: 設定
 
-#### 目的
-プロフィール管理と通知設定
+**ステータス**: ✅ 実装済み（E2E: 100%）
 
 #### 主要機能
 - プロフィール編集（名前、メール）
 - パスワード変更
-- 通知設定（メール通知のオン/オフ）
+- 通知設定
+- メンター登録
 - アカウント削除
 
-#### 必要な操作
-
-| 操作種別 | 操作内容 | 必要な入力 | 期待される出力 |
-|---------|---------|-----------|---------------|
-| 取得 | プロフィール取得 | userId | User情報 |
-| 更新 | プロフィール更新 | userId、更新内容 | 更新されたUser |
-| 更新 | パスワード変更 | 現在のパスワード、新パスワード | 変更確認 |
-| 更新 | 通知設定変更 | 通知設定内容 | 更新された設定 |
-| 削除 | アカウント削除 | userId、確認入力 | 削除確認 |
-
-#### 処理フロー
-1. ユーザーが設定ページを開く
-2. 現在のプロフィール情報を表示
-3. ユーザーが情報を編集
-4. 保存ボタンをタップ
-5. バリデーション実行
-6. DBを更新
-7. 成功メッセージ表示
-
-#### データ構造（概念）
-
-```yaml
-UserSettings:
-  識別子: userId（外部キー、プライマリ）
-  基本情報:
-    - emailNotifications（メール通知、boolean）
-    - reminderTime（リマインダー時刻、時:分）
-    - theme（テーマ: light, dark, auto）
-  メタ情報:
-    - updatedAt（更新日時）
-```
+**詳細**: 実装コードを参照（`app/(client)/client/settings/`, `app/api/users/`, `components/settings/`）
 
 ---
 
 ## 4. データモデル概要
 
-### 4.1 主要エンティティ
+**ステータス**: ✅ 実装済み（Prismaスキーマ: `prisma/schema.prisma`）
 
-| エンティティ | 主な属性 | 関連エンティティ | 備考 |
-|------------|----------|----------------|------|
-| User | id, email, password, name | Session, Goal, Task, Log, Reflection, ChatMessage | 認証基本情報 |
-| Session | id, sessionToken, userId, expires | User | セッション管理 |
-| Goal | id, userId, title, description, deadline, status | User, Task | 目標管理 |
-| Task | id, userId, goalId, title, dueDate, priority, status | User, Goal, Log | タスク管理 |
-| Log | id, userId, taskId, content, emotion, state, type | User, Task | 日々の活動記録 |
-| Reflection | id, userId, period, startDate, endDate, content | User, AIAnalysisReport | 振り返り記録 |
-| AIAnalysisReport | id, userId, reflectionId, insights, recommendations | User, Reflection | AI分析結果 |
-| ActionPlan | id, userId, reportId, title, actionItems, status | User, AIAnalysisReport | 改善計画 |
-| ChatMessage | id, userId, role, content | User | AIチャット履歴 |
-| UserSettings | userId, emailNotifications, reminderTime, theme | User | ユーザー設定 |
-| PasswordResetToken | id, userId, token, expires | User | パスワードリセット |
+### 主要エンティティ（14モデル）
 
-### 4.2 エンティティ関係図
+#### フェーズ1: クライアント機能
+- **User** - ユーザー情報（role, isMentor拡張済み）
+- **Session** - セッション管理
+- **PasswordResetToken** - パスワードリセット
+- **UserSettings** - ユーザー設定
+- **Goal** - 目標管理
+- **Task** - タスク管理
+- **Log** - ログ記録
+- **Reflection** - 振り返り
+- **AIAnalysisReport** - AI分析レポート
+- **ActionPlan** - 改善計画
+- **ChatMessage** - AIチャット履歴（4モード対応）
+- **Notification** - 通知
 
-```
-User ──┬── Session (1対多)
-       ├── Goal (1対多)
-       │    └── Task (1対多)
-       ├── Task (1対多)
-       │    └── Log (1対多)
-       ├── Log (1対多)
-       ├── Reflection (1対多)
-       │    └── AIAnalysisReport (1対多)
-       ├── AIAnalysisReport (1対多)
-       │    └── ActionPlan (1対多)
-       ├── ActionPlan (1対多)
-       ├── ChatMessage (1対多)
-       ├── UserSettings (1対1)
-       └── PasswordResetToken (1対多)
-```
+#### フェーズ2: メンター機能
+- **MentorClientRelationship** - メンター-クライアント関係
+- **ClientDataAccessPermission** - データアクセス権限
+- **ClientDataViewLog** - 閲覧監査ログ
+- **MentorNote** - メンターノート
+- **ClientProgressReport** - 進捗レポート
 
-### 4.3 バリデーションルール
-
-```yaml
-メールアドレス:
-  - ルール: 有効なメール形式、ユニーク
-  - 理由: アカウント識別と通知送信のため
-
-パスワード:
-  - ルール: 8文字以上、英数字混在推奨
-  - 理由: セキュリティ確保のため
-
-目標タイトル:
-  - ルール: 1文字以上、200文字以下
-  - 理由: 可読性とDB制約
-
-タスクタイトル:
-  - ルール: 1文字以上、200文字以下
-  - 理由: 可読性とDB制約
-
-ログ内容:
-  - ルール: 1文字以上、5000文字以下
-  - 理由: AI分析の効率性とDB制約
-
-チャットメッセージ:
-  - ルール: 1文字以上、2000文字以下
-  - 理由: AI APIのトークン制限
-```
+**詳細**: `prisma/schema.prisma` と `types/index.ts` を参照
 
 ---
 
@@ -691,244 +296,87 @@ User ──┬── Session (1対多)
 
 ---
 
-## 6. 複合API処理（バックエンド内部処理）
+## 6. 技術スタック
 
-### 複合処理-001: AI分析レポート生成
+**ステータス**: ✅ 実装済み
 
-**トリガー**: ユーザーが「AI分析を見る」ボタンをタップ（C-003: 振り返り・改善ページ）
+### フロントエンド
+- **React 19** + **Next.js 16** (App Router) + **TypeScript 5**
+- **TailwindCSS** + **shadcn/ui**
+- **Zustand**, **React Query**（TanStack Query）
 
-**フロントエンドAPI**: `POST /api/analysis/generate`
+### バックエンド
+- **Next.js API Routes**（FastAPI統合は未実装）
+- **Prisma ORM** + **PostgreSQL 16**（Supabase）
 
-**バックエンド内部処理**:
-1. ユーザーの指定期間のデータ取得（Goal、Task、Log、Reflection）
-2. データを構造化してプロンプト生成
-3. AI API（Claude/OpenAI）に分析リクエスト送信
-4. AIレスポンスを解析・構造化
-5. AIAnalysisReportレコードをDBに保存
-6. フロントエンドにレポートを返却
+### 認証・認可
+- **Auth.js v5**（NextAuth）+ **Data Access Layer**（DAL）
+- **bcrypt**パスワードハッシュ化
 
-**結果**: AI分析レポート（洞察、推奨事項、信頼度）
+### AI/ML
+- **開発**: Anthropic Claude 3.5 Sonnet
+- **本番**: OpenAI GPT-4o mini
 
-**外部サービス依存**: Anthropic Claude API / OpenAI API、Supabase
+### インフラ
+- **フロントエンド**: Vercel（本番: https://mental-base-mvp.vercel.app）
+- **データベース**: Supabase PostgreSQL
+- **メール**: Resend
+- **CI/CD**: GitHub Actions（未設定）
 
----
-
-### 複合処理-002: AIチャット応答生成
-
-**トリガー**: ユーザーがAIアシスタントにメッセージ送信（C-004: AIアシスタント）
-
-**フロントエンドAPI**: `POST /api/chat/message`
-
-**バックエンド内部処理**:
-1. ユーザーのメッセージを受信
-2. ユーザーのコンテキスト取得（最新の目標、タスク、最近のログ）
-3. チャット履歴を取得（直近10件）
-4. コンテキスト付きプロンプト生成
-5. AI API（Claude/OpenAI）にリクエスト送信
-6. AIレスポンスを受信
-7. ユーザーメッセージとAIレスポンスをChatMessageとしてDBに保存
-8. フロントエンドにAIレスポンスを返却
-
-**結果**: AIの返答メッセージ
-
-**外部サービス依存**: Anthropic Claude API / OpenAI API、Supabase
+**詳細**: `package.json`, `prisma/schema.prisma`, `.env.example` を参照
 
 ---
 
-### 複合処理-003: 日次進捗サマリー生成
+## 7. 必要な外部サービス
 
-**トリガー**: ダッシュボード表示時（C-001: ホーム）
+**ステータス**: ✅ セットアップ済み
 
-**フロントエンドAPI**: `GET /api/dashboard`
+### 必須サービス
+- **Anthropic Claude API** - 開発・テスト用AI（$10無料枠）
+- **OpenAI API** - 本番用AI（GPT-4o mini）
+- **Supabase** - PostgreSQL（無料枠）
+- **Vercel** - フロントエンドホスティング（無料枠）
 
-**バックエンド内部処理**:
-1. ユーザーの全Goal取得
-2. 各Goalの完了タスク数と総タスク数を計算
-3. COM:PASS各フェーズの進捗率を計算
-4. 今日期限のTaskを抽出
-5. 最近のActivityを取得（直近10件）
-6. 未読Notificationを取得
-7. すべてのデータを統合してDashboardDataとして返却
+### オプションサービス
+- **Resend** - パスワードリセットメール（無料枠: 100通/日）
 
-**結果**: ダッシュボード表示用統合データ
-
-**外部サービス依存**: Supabase
+**詳細**: `.env.example` を参照
 
 ---
 
-## 7. 技術スタック
-
-### 7.1 フロントエンド（BlueLamp標準）
-
-```yaml
-フレームワーク:
-  - React 18: モダンなUI構築
-  - Next.js 15 (App Router): PWA対応、Server Components
-  - TypeScript 5: 型安全性による品質保証
-
-UIライブラリ:
-  - TailwindCSS: 最軽量、モバイルファースト
-  - shadcn/ui: コピペ可能な高品質コンポーネント集
-
-状態管理:
-  - Zustand: 軽量グローバル状態管理
-
-データフェッチ:
-  - React Query (TanStack Query): サーバー状態管理
-
-PWA対応:
-  - Serwist: Service Worker管理
-
-ビルドツール:
-  - Vite 5: 高速開発サーバー
-```
-
-### 7.2 バックエンド
-
-```yaml
-言語・フレームワーク:
-  - Python 3.12
-  - FastAPI: 高速、非同期処理、自動ドキュメント生成
-
-ORM:
-  - SQLAlchemy: Python標準ORM
-  - Alembic: マイグレーション管理
-```
-
-### 7.3 データベース
-
-```yaml
-メインDB:
-  - PostgreSQL 16（Supabase）
-  - 理由: 無料枠充実、Auth.js相性良好、JSONBカラム対応
-
-キャッシュ:
-  - Redis（必要に応じてUpstash）
-```
-
-### 7.4 認証・認可
-
-```yaml
-認証システム:
-  - Auth.js (NextAuth v5)
-  - Prisma Adapter
-  - bcrypt: パスワードハッシュ化
-```
-
-### 7.5 AI/ML
-
-```yaml
-言語モデル:
-  - 開発・テスト: Anthropic Claude 3.5 Sonnet
-  - 本番運用: OpenAI GPT-4o mini
-
-データ分析:
-  - FastAPI内でカスタム分析ロジック
-  - Pandas、NumPy
-```
-
-### 7.6 インフラストラクチャ
-
-```yaml
-フロントエンド:
-  - Vercel（無料枠）
-
-バックエンド:
-  - Google Cloud Run（無料枠、サーバーレス）
-
-データベース:
-  - Supabase（無料枠）
-
-CI/CD:
-  - GitHub Actions
-
-モニタリング:
-  - Sentry（無料枠: 5,000 errors/月）
-
-メール送信:
-  - Resend（無料枠: 100通/日）
-```
-
----
-
-## 8. 必要な外部サービス・アカウント
-
-### 8.1 必須サービス
-
-| サービス名 | 用途 | 取得先 | 料金 | 備考 |
-|-----------|------|--------|------|------|
-| **Anthropic Claude API** | 開発・テスト時のAI分析・アドバイス生成 | https://console.anthropic.com | $10無料枠、その後従量課金 | クレジットカード登録必須 |
-| **OpenAI API** | 本番運用時のAI分析・アドバイス生成 | https://platform.openai.com | $5最低入金、従量課金 | GPT-4o mini推奨 |
-| **Supabase** | PostgreSQLデータベース、認証基盤 | https://supabase.com | 無料枠、$10/月〜 | GitHub連携推奨 |
-| **Vercel** | フロントエンドホスティング | https://vercel.com | 無料枠、$20/月〜 | GitHub連携推奨 |
-| **Google Cloud** | バックエンドホスティング（Cloud Run） | https://cloud.google.com | 無料枠、従量課金 | $300初回クレジットあり |
-
-### 8.2 オプションサービス
-
-| サービス名 | 用途 | 取得先 | 料金 | 備考 |
-|-----------|------|--------|------|------|
-| **Resend** | パスワードリセットメール送信 | https://resend.com | 無料枠（100通/日）、$20/月〜 | Next.js推奨 |
-| **Sentry** | エラーモニタリング | https://sentry.io | 無料枠（5,000 errors/月）、$29/月〜 | 問題の早期発見 |
-| **Upstash Redis** | キャッシュ・セッション管理 | https://upstash.com | 無料枠（10,000コマンド/日）、$0.2/100K〜 | サーバーレスRedis |
-| **Cloudinary** | 画像アップロード・最適化 | https://cloudinary.com | 無料枠（25GB/月）、$99/月〜 | プロフィール画像等 |
-
-### 8.3 概算コスト
-
-| 項目 | 初期費用 | 月額（開発） | 月額（本番10ユーザー） |
-|------|---------|-------------|---------------------|
-| Claude API | 無料 | 無料（$10枠内） | - |
-| OpenAI API | $5（約750円） | - | 約47円 |
-| Supabase | 無料 | 無料 | 無料 |
-| Vercel | 無料 | 無料 | 無料 |
-| Google Cloud | 無料（$300クレジット） | 無料（枠内） | 無料〜$5 |
-| Resend | 無料 | 無料 | 無料 |
-| **合計** | **約750円** | **無料** | **約47円〜$5** |
-
----
-
-## 9. 今後の拡張予定（フェーズ2以降）
-
-MVPで検証した価値に基づき、以下の機能を段階的に追加予定：
+## 8. 今後の拡張予定
 
 ### フェーズ2: メンター機能
-- メンターダッシュボード
-- 複数クライアント管理
-- クライアント個別詳細画面
-- メンター向けAI分析レポート
-- クライアントとのメッセージング
+**ステータス**: ✅ 実装完了（2025-11-02）
 
-### フェーズ3: 組織管理機能
-- 組織単位でのクライアント・メンター管理
-- 組織全体のデータ分析ダッシュボード
-- ロール・権限管理の拡張
+- ✅ メンターダッシュボード
+- ✅ 複数クライアント管理
+- ✅ クライアント詳細画面（6タブ）
+- ✅ データアクセス制御（5種類の権限）
+- ✅ メンターノート
+- ✅ 進捗レポート
 
-### フェーズ4: 高度なAI機能
-- AIのパーソナライゼーション機能の高度化
-- 予測分析（目標達成確率の予測）
+**詳細**: `docs/requirements_mentor.md` を参照
+
+### フェーズ3: 高度な機能（計画中）
+- メンターレビュー機能
+- 検索・マッチング機能
+- ビデオ通話統合
+- 組織管理機能
+
+### フェーズ4: AI機能高度化（計画中）
+- AIパーソナライゼーション
+- 予測分析（目標達成確率）
 - 自動リマインダー最適化
 
-### フェーズ5: 外部連携
-- 外部ウェアラブルデバイスとの連携
+### フェーズ5: 外部連携（計画中）
+- ウェアラブルデバイス連携
 - カレンダー連携（Google Calendar等）
-- 他のタスク管理ツールとの連携
+- タスク管理ツール連携
 
 ---
 
-## 10. 開発スケジュール目安
-
-### MVP開発期間: 4-8週間
-
-| フェーズ | 期間 | 主な作業 |
-|---------|------|---------|
-| **Week 1-2** | 環境構築・基盤整備 | Next.js/FastAPIセットアップ、Supabase設定、Auth.js実装、CI/CD構築 |
-| **Week 3-4** | コア機能開発（前半） | 認証ページ、ダッシュボード、目標・実行ページ |
-| **Week 5-6** | コア機能開発（後半） | 振り返り・改善ページ、AIアシスタント、AI API連携 |
-| **Week 7** | UI/UX最適化・PWA対応 | モバイル最適化、タッチジェスチャー、Service Worker、デザイン調整 |
-| **Week 8** | テスト・デバッグ・デプロイ | E2Eテスト、バグ修正、本番デプロイ、初期ユーザーテスト |
-
----
-
-## 11. 成功の定義
+## 9. 成功の定義
 
 このMVPが成功したと判断する基準：
 
@@ -946,4 +394,10 @@ MVPで検証した価値に基づき、以下の機能を段階的に追加予�
 
 **要件定義書 完**
 
-次のステップ: モックアップ作成 → 開発開始
+**最終更新**: 2025-11-03（ドキュメント同期作業）
+
+**注**: 実装済み詳細はコードを真実源として参照してください。
+- **Prismaスキーマ**: `prisma/schema.prisma`
+- **型定義**: `types/index.ts`
+- **API仕様**: 各 `app/api/*/route.ts`
+- **コンポーネント**: `components/`, `app/(client)/`, `app/(admin)/`

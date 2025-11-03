@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test('E2E-SET-048: プロフィール・パスワード連続更新', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -52,7 +52,7 @@ test('E2E-SET-048: プロフィール・パスワード連続更新', async ({ p
 });
 
 test('E2E-SET-049: 通知設定とプロフィール連続更新', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -96,7 +96,7 @@ test('E2E-SET-049: 通知設定とプロフィール連続更新', async ({ page
 });
 
 test('E2E-SET-050: ページリロード後の状態保持', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');

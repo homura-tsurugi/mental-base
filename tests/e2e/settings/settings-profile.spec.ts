@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test('E2E-SET-006: プロフィール更新（正常）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -40,7 +40,7 @@ test('E2E-SET-006: プロフィール更新（正常）', async ({ page }) => {
 });
 
 test('E2E-SET-007: プロフィール更新（名前空欄）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -61,7 +61,7 @@ test('E2E-SET-007: プロフィール更新（名前空欄）', async ({ page })
 });
 
 test('E2E-SET-008: プロフィール更新（無効なメール形式）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -83,7 +83,7 @@ test('E2E-SET-008: プロフィール更新（無効なメール形式）', asyn
 });
 
 test('E2E-SET-025: プロフィール名前フィールド入力', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -103,7 +103,7 @@ test('E2E-SET-025: プロフィール名前フィールド入力', async ({ page
 });
 
 test('E2E-SET-026: プロフィールメールフィールド入力', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -123,7 +123,7 @@ test('E2E-SET-026: プロフィールメールフィールド入力', async ({ p
 });
 
 test('E2E-SET-035: プロフィール更新（メール重複）', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -145,7 +145,7 @@ test('E2E-SET-035: プロフィール更新（メール重複）', async ({ page
 });
 
 test('E2E-SET-051: 長い名前の表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -172,7 +172,7 @@ test('E2E-SET-051: 長い名前の表示', async ({ page }) => {
 });
 
 test('E2E-SET-052: 長いメールアドレスの表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -199,7 +199,7 @@ test('E2E-SET-052: 長いメールアドレスの表示', async ({ page }) => {
 });
 
 test('E2E-SET-053: 特殊文字を含む名前', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -225,7 +225,7 @@ test('E2E-SET-053: 特殊文字を含む名前', async ({ page }) => {
 });
 
 test('E2E-SET-054: 空白のみの名前', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');

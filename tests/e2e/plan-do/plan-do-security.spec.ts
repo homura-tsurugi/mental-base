@@ -8,7 +8,7 @@ test.describe('Plan-Do Page Security Tests', () => {
     // await context.clearCookies();
 
     // /plan-doにアクセス
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     // /authにリダイレクトされるか確認
     const currentUrl = page.url();
@@ -21,7 +21,7 @@ test.describe('Plan-Do Page Security Tests', () => {
   // E2E-PLDO-064: セッション期限切れ
   test('E2E-PLDO-064: セッション期限切れ時の挙動', async ({ page }) => {
     // ページにアクセス
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     // セッション期限を切れさせる（Auth.js実装後）
     // セッション期限切れをシミュレート（実装による）
@@ -43,7 +43,7 @@ test.describe('Plan-Do Page Security Tests', () => {
 
   // E2E-PLDO-065: XSS攻撃対策（目標タイトル）
   test('E2E-PLDO-065: 目標タイトルのXSS対策', async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const planTab = page.getByRole('button', { name: /Plan/i });
     await planTab.click();
@@ -80,7 +80,7 @@ test.describe('Plan-Do Page Security Tests', () => {
 
   // E2E-PLDO-066: XSS攻撃対策（目標説明）
   test('E2E-PLDO-066: 目標説明のXSS対策', async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const planTab = page.getByRole('button', { name: /Plan/i });
     await planTab.click();
@@ -112,7 +112,7 @@ test.describe('Plan-Do Page Security Tests', () => {
 
   // E2E-PLDO-067: XSS攻撃対策（タスク名）
   test('E2E-PLDO-067: タスク名のXSS対策', async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const doTab = page.getByRole('button', { name: /Do/i });
     await doTab.click();
@@ -144,7 +144,7 @@ test.describe('Plan-Do Page Security Tests', () => {
 
   // E2E-PLDO-068: XSS攻撃対策（ログ内容）
   test('E2E-PLDO-068: ログ内容のXSS対策', async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const doTab = page.getByRole('button', { name: /Do/i });
     await doTab.click();
@@ -179,7 +179,7 @@ test.describe('Plan-Do Page Security Tests', () => {
     // Auth.js実装時に自動対応されるため、直接テストは困難
     // Auth.jsのCSRFトークン検証が動作することを確認
 
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const planTab = page.getByRole('button', { name: /Plan/i });
     await planTab.click();
@@ -206,7 +206,7 @@ test.describe('Plan-Do Page Security Tests', () => {
 
   // E2E-PLDO-070: 他ユーザーの目標アクセス防止
   test('E2E-PLDO-070: 自分の目標のみ表示', async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const planTab = page.getByRole('button', { name: /Plan/i });
     await planTab.click();
@@ -233,7 +233,7 @@ test.describe('Plan-Do Page Security Tests', () => {
 
   // E2E-PLDO-071: 他ユーザーのタスクアクセス防止
   test('E2E-PLDO-071: 自分のタスクのみ表示', async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const doTab = page.getByRole('button', { name: /Do/i });
     await doTab.click();

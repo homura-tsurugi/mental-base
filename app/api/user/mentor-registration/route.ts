@@ -35,11 +35,11 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // メンター登録（role を MENTOR に設定し、isMentor を true に）
+    // メンター登録（role を mentor に設定し、isMentor を true に）
     const updatedUser = await prisma.user.update({
       where: { id: userId },
       data: {
-        role: 'MENTOR',
+        role: 'mentor',
         isMentor: true,
         ...(bio !== undefined && { bio }),
         ...(expertise !== undefined && { expertise }),

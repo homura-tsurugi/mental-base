@@ -41,7 +41,7 @@ test.describe('AIアシスタント - 認証・認可', () => {
     // 将来の実装を考慮したテスト構造を提供
 
     // ページアクセス
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // メッセージ送信
     const inputField = page.locator('[data-testid="message-input"]');
@@ -63,7 +63,7 @@ test.describe('AIアシスタント - 認証・認可', () => {
     // Auth.js実装時に自動対応される
 
     // ページアクセス
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // 正常なメッセージ送信フロー
     const inputField = page.locator('[data-testid="message-input"]');
@@ -82,7 +82,7 @@ test.describe('AIアシスタント - 認証・認可', () => {
 
 test.describe('AIアシスタント - XSS対策', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-038: XSS攻撃対策（AI応答）', async ({ page }) => {
@@ -130,7 +130,7 @@ test.describe('AIアシスタント - データアクセス制御', () => {
     // API側で実装されることが想定されているため、
     // フロントエンド側では表示されているデータが本人のものであることを確認
 
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // チャット履歴が表示される
     const chatMessages = page.locator('[data-testid^="chat-message-"]');

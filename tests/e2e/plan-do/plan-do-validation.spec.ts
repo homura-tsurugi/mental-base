@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Plan-Do Page Validation Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
   });
 
   // E2E-PLDO-049: 目標作成（タイトル空欄）
@@ -265,7 +265,7 @@ test.describe('Plan-Do Page Validation Tests', () => {
     // ネットワーク切断をシミュレート
     await page.context().setOffline(true);
 
-    await page.goto('/plan-do').catch(() => {
+    await page.goto('/client/plan-do').catch(() => {
       // ナビゲーション失敗を許容
     });
 

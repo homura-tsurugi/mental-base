@@ -22,7 +22,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
       window.localStorage.setItem('MOCK_API_DISABLED', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // 赤色背景のエラーカード表示「エラーが発生しました」
     const errorCard = page.locator('[data-testid="error-card"]');
@@ -43,7 +43,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
       window.localStorage.setItem('EMPTY_TEST_DATA', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // 「データがありません」テキストが表示される
     const emptyMessage = page.locator('[data-testid="empty-state-message"]');
@@ -54,7 +54,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
   // ===== フォーム検証エラー =====
 
   test('E2E-CHKACT-029: 振り返り内容空欄エラー', async ({ page }) => {
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="reflection-form"]', { timeout: 5000 });
@@ -77,7 +77,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
   });
 
   test('E2E-CHKACT-030: AI分析失敗エラー', async ({ page }) => {
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="reflection-form"]', { timeout: 5000 });
@@ -114,7 +114,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
       window.localStorage.setItem('NO_REFLECTION_DATA', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="reflection-form"]', { timeout: 5000 });
@@ -132,7 +132,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
   // ===== アクションプラン作成エラー =====
 
   test('E2E-CHKACT-032: 改善計画タイトル空欄エラー', async ({ page }) => {
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // Actionタブに移動
     const actionTab = page.locator('[data-testid="tab-action"]');
@@ -156,7 +156,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
   });
 
   test('E2E-CHKACT-033: アクション項目なしエラー', async ({ page }) => {
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // Actionタブに移動
     const actionTab = page.locator('[data-testid="tab-action"]');
@@ -199,7 +199,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
       window.localStorage.setItem('ACTION_PLAN_CREATE_ERROR', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // Actionタブに移動
     const actionTab = page.locator('[data-testid="tab-action"]');
@@ -230,7 +230,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
   });
 
   test('E2E-CHKACT-035: ネットワーク切断時の挙動', async ({ page }) => {
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="stats-card"]', { timeout: 5000 });
@@ -265,7 +265,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
       window.localStorage.setItem('AI_API_TIMEOUT', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="reflection-form"]', { timeout: 5000 });
@@ -306,7 +306,7 @@ test.describe('Check/Actionページ - 異常系テスト', () => {
       window.localStorage.setItem('INVALID_DATA_FORMAT', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページが読み込まれ、エラーメッセージが表示される
     const errorCard = page.locator('[data-testid="error-card"]');

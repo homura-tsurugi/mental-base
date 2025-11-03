@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Dashboard Task Operations', () => {
   test.beforeEach(async ({ page }) => {
     // ダッシュボードページにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     // ページロード完了を待機
     await page.waitForLoadState('networkidle');
   });

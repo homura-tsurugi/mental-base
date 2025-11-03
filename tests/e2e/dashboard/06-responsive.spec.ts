@@ -14,7 +14,7 @@ test.describe('Dashboard Responsive Design', () => {
     await page.setViewportSize({ width: 1920, height: 1080 });
 
     // ダッシュボードにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // COM:PASSカードが2列（grid-cols-2）で表示されていることを確認
@@ -60,7 +60,7 @@ test.describe('Dashboard Responsive Design', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
 
     // ダッシュボードにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // COM:PASSカードが2列で表示されていることを確認
@@ -104,7 +104,7 @@ test.describe('Dashboard Responsive Design', () => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     // ダッシュボードにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // COM:PASSカードが2列で表示されていることを確認
@@ -153,7 +153,7 @@ test.describe('Dashboard Responsive Design', () => {
     const page = await context.newPage();
 
     // ダッシュボードにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // 最初のタスクを取得
@@ -195,7 +195,7 @@ test.describe('Dashboard Responsive Design', () => {
   }) => {
     // 縦向き（portrait）で表示
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // 縦向きのコンテンツを取得

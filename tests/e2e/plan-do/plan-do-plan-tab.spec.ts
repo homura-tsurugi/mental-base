@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Plan-Do Page Plan Tab Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     // Planタブをクリック
     const planTab = page.getByRole('button', { name: /Plan/i });

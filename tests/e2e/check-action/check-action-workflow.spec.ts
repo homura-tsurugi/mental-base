@@ -12,7 +12,7 @@ test.describe('Check/Actionページ - ワークフロー・エッジケース�
     await page.context().addInitScript(() => {
       localStorage.setItem('VITE_SKIP_AUTH', 'true');
     });
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
   });
 
   // ===== タブ状態管理テスト =====

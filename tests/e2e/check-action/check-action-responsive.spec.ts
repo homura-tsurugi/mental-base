@@ -21,7 +21,7 @@ test.describe('Check/Actionページ - レスポンシブテスト', () => {
     await page.setViewportSize({ width: 1920, height: 1080 });
 
     // ページにアクセス
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="page-title"]', { timeout: 5000 });
@@ -57,7 +57,7 @@ test.describe('Check/Actionページ - レスポンシブテスト', () => {
     await page.setViewportSize({ width: 768, height: 1024 });
 
     // ページにアクセス
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="page-title"]', { timeout: 5000 });
@@ -95,7 +95,7 @@ test.describe('Check/Actionページ - レスポンシブテスト', () => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     // ページにアクセス
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="page-title"]', { timeout: 5000 });
@@ -169,7 +169,7 @@ test.describe('Check/Actionページ - レスポンシブテスト', () => {
     await page.setViewportSize({ width: 375, height: 667 });
 
     // ページにアクセス
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="tab-check"]', { timeout: 5000 });
@@ -204,7 +204,7 @@ test.describe('Check/Actionページ - レスポンシブテスト', () => {
     // 縦向き（375x667）で開始
     await page.setViewportSize({ width: 375, height: 667 });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="page-title"]', { timeout: 5000 });
@@ -245,7 +245,7 @@ test.describe('Check/Actionページ - レスポンシブテスト', () => {
     // モバイルサイズに設定
     await page.setViewportSize({ width: 375, height: 667 });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="page-title"]', { timeout: 5000 });

@@ -22,6 +22,19 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
   const [showError, setShowError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
+  const handleAIAnalyzeClick = () => {
+    // AI分析ボタンクリック前にバリデーション
+    if (!content.trim()) {
+      setErrorMessage('振り返り内容を入力してください');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
+      return;
+    }
+
+    // バリデーション通過後、親コンポーネントのハンドラーを呼ぶ
+    onAIAnalyzeClick();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -77,7 +90,7 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
         </h3>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} noValidate className="space-y-4">
         {/* 振り返り内容 */}
         <div>
           <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">
@@ -136,7 +149,7 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
         <button
           data-testid="btn-ai-analyze"
           type="button"
-          onClick={onAIAnalyzeClick}
+          onClick={handleAIAnalyzeClick}
           disabled={isSubmitting}
           className="w-full px-4 py-3 bg-gradient-to-r from-[var(--check-color)] to-[var(--action-color)] text-white rounded-lg font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
         >

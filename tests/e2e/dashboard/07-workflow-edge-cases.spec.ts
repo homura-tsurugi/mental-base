@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Dashboard Workflow & Edge Cases', () => {
   test.beforeEach(async ({ page }) => {
     // ダッシュボードページにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     // ページロード完了を待機
     await page.waitForLoadState('networkidle');
   });
@@ -151,7 +151,7 @@ test.describe('Dashboard Workflow & Edge Cases', () => {
     page,
   }) => {
     // モック用のクエリパラメータで長いタイトルをシミュレート
-    await page.goto('/?mock=long-title');
+    await page.goto('/client?mock=long-title');
     await page.waitForLoadState('networkidle');
 
     // タスク一覧を取得
@@ -198,7 +198,7 @@ test.describe('Dashboard Workflow & Edge Cases', () => {
     page,
   }) => {
     // モック用のクエリパラメータで進捗率0%をシミュレート
-    await page.goto('/?mock=zero-progress');
+    await page.goto('/client?mock=zero-progress');
     await page.waitForLoadState('networkidle');
 
     // COM:PASS進捗カードを取得
@@ -232,7 +232,7 @@ test.describe('Dashboard Workflow & Edge Cases', () => {
     page,
   }) => {
     // モック用のクエリパラメータで進捗率100%をシミュレート
-    await page.goto('/?mock=full-progress');
+    await page.goto('/client?mock=full-progress');
     await page.waitForLoadState('networkidle');
 
     // COM:PASS進捗カードを取得

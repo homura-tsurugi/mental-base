@@ -14,7 +14,7 @@ import { test, expect } from '@playwright/test';
 test.describe('AIアシスタント - ページ表示', () => {
   test.beforeEach(async ({ page }) => {
     // テスト前にページにアクセス
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-001: AIアシスタントページ初期アクセス', async ({ page }) => {
@@ -48,7 +48,7 @@ test.describe('AIアシスタント - ページ表示', () => {
 
 test.describe('AIアシスタント - モード選択', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-002: 初期モード選択状態', async ({ page }) => {
@@ -93,7 +93,7 @@ test.describe('AIアシスタント - モード選択', () => {
 
 test.describe('AIアシスタント - チャット表示', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-004: チャット履歴初期表示', async ({ page }) => {
@@ -140,8 +140,14 @@ test.describe('AIアシスタント - チャット表示', () => {
     await page.reload();
 
     // プレースホルダーが表示される
-    const placeholder = page.locator('text=/メッセージを送信して会話を始めましょう/');
-    await expect(placeholder).toBeVisible({ timeout: 3000 });
+    const emptyMessage = page.locator('[data-testid="empty-chat-message"]');
+    await expect(emptyMessage).toBeVisible({ timeout: 3000 });
+
+    // プレースホルダーテキストを確認
+    await expect(emptyMessage).toContainText('メッセージを送信して会話を始めましょう');
+
+    // チャット履歴を復元（後続テストのため）
+    await page.request.post('/api/ai-assistant/chat/history');
   });
 
   test('E2E-AIA-006: ユーザーメッセージの表示スタイル', async ({ page }) => {
@@ -153,19 +159,22 @@ test.describe('AIアシスタント - チャット表示', () => {
 
       // メッセージが右寄せで表示されるか確認
       const messageClass = await firstUserMessage.getAttribute('class');
-      const hasRightAlign = messageClass?.includes('ml-auto') || messageClass?.includes('justify-end');
-      expect(hasRightAlign || true).toBeTruthy(); // レイアウト次第でチェック
+      const hasRightAlign = messageClass?.includes('self-end');
+      expect(hasRightAlign).toBeTruthy();
 
-      // 背景色がblueか確認
-      const style = await firstUserMessage.evaluate((el) => {
+      // メッセージバブルの背景色を確認（内側のdiv要素を取得）
+      const messageBubble = firstUserMessage.locator('div').first();
+      const style = await messageBubble.evaluate((el) => {
         const computedStyle = window.getComputedStyle(el);
         return computedStyle.backgroundColor;
       });
-      // 青系の色（rgb値でblue系を確認）
-      expect(style).toMatch(/rgb\(.*,.*,.*\)/);
+      // rgb()またはrgba()形式にマッチ（透明でない色を確認）
+      expect(style).toMatch(/rgba?\(.*\)/);
+      // 透明色でないことを確認
+      expect(style).not.toBe('rgba(0, 0, 0, 0)');
 
       // テキストが白色か確認
-      const textColor = await firstUserMessage.evaluate((el) => {
+      const textColor = await messageBubble.evaluate((el) => {
         const computedStyle = window.getComputedStyle(el);
         return computedStyle.color;
       });
@@ -227,7 +236,7 @@ test.describe('AIアシスタント - チャット表示', () => {
 
 test.describe('AIアシスタント - メッセージ入力', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-009: メッセージ入力フィールド表示', async ({ page }) => {

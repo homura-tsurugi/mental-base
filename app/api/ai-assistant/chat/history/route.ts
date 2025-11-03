@@ -5,12 +5,25 @@ import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/dal';
 
+// E2Eテスト用: チャット履歴クリア状態を保持（メモリ内）
+let mockChatHistoryCleared = false;
+
 // GET /api/ai-assistant/chat/history
 export async function GET(request: Request) {
   try {
     // E2Eテスト用: 認証スキップモード
     if (process.env.VITE_SKIP_AUTH === 'true') {
       console.log('[API] 認証スキップモード: モックAIチャット履歴を返却');
+
+      // チャット履歴がクリアされている場合は空配列を返す
+      if (mockChatHistoryCleared) {
+        console.log('[API] チャット履歴クリア済み: 空配列を返却');
+        return NextResponse.json({
+          messages: [],
+          hasMore: false,
+          nextCursor: undefined,
+        });
+      }
 
       const { searchParams } = new URL(request.url);
       const mode = searchParams.get('mode') || 'problem_solving';
@@ -156,6 +169,7 @@ export async function DELETE() {
     // E2Eテスト用: 認証スキップモード
     if (process.env.VITE_SKIP_AUTH === 'true') {
       console.log('[API] 認証スキップモード: チャット履歴クリア（モック）');
+      mockChatHistoryCleared = true;
       return new NextResponse(null, { status: 204 });
     }
 
@@ -178,6 +192,29 @@ export async function DELETE() {
       return NextResponse.json({ error: '認証が必要です' }, { status: 401 });
     }
 
+    return NextResponse.json(
+      { error: 'サーバーエラーが発生しました' },
+      { status: 500 }
+    );
+  }
+}
+
+// POST /api/ai-assistant/chat/history - チャット履歴復元（E2Eテスト用）
+export async function POST() {
+  try {
+    // E2Eテスト用: 認証スキップモード
+    if (process.env.VITE_SKIP_AUTH === 'true') {
+      console.log('[API] 認証スキップモード: チャット履歴復元（モック）');
+      mockChatHistoryCleared = false;
+      return new NextResponse(null, { status: 204 });
+    }
+
+    return NextResponse.json(
+      { error: 'この機能はテストモードでのみ利用可能です' },
+      { status: 403 }
+    );
+  } catch (error) {
+    console.error('AI Assistant chat history POST error:', error);
     return NextResponse.json(
       { error: 'サーバーエラーが発生しました' },
       { status: 500 }

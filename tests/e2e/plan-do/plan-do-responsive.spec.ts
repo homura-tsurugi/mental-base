@@ -10,10 +10,10 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-072: デスクトップ表示（1920x1080）
   test('E2E-PLDO-072: デスクトップでの表示確認', async ({ page }) => {
     await page.setViewportSize({ width: 1920, height: 1080 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     // レイアウトが崩れていないことを確認
-    const mainContent = page.locator('main').or(page.locator('[data-testid="main-content"]'));
+    const mainContent = page.locator('main').first();
     await expect(mainContent).toBeVisible();
 
     // 全要素が適切に表示される
@@ -27,10 +27,10 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-073: タブレット表示（768x1024）
   test('E2E-PLDO-073: タブレットでの表示確認', async ({ page }) => {
     await page.setViewportSize({ width: 768, height: 1024 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     // レイアウトが崩れていないことを確認
-    const mainContent = page.locator('main').or(page.locator('[data-testid="main-content"]'));
+    const mainContent = page.locator('main').first();
     await expect(mainContent).toBeVisible();
 
     // タッチ操作に適したサイズであることを確認
@@ -45,10 +45,10 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-074: モバイル表示（375x667）
   test('E2E-PLDO-074: モバイルでの表示確認', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     // レイアウトが崩れていないことを確認
-    const mainContent = page.locator('main').or(page.locator('[data-testid="main-content"]'));
+    const mainContent = page.locator('main').first();
     await expect(mainContent).toBeVisible();
 
     // モバイルに最適化された表示を確認
@@ -68,7 +68,7 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-075: モバイルでのタッチ操作（タブ切り替え）
   test('E2E-PLDO-075: モバイルでのタッチ操作でタブ切り替え', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const doTab = page.getByRole('button', { name: /Do/i });
 
@@ -82,7 +82,7 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-076: モバイルでのタッチ操作（チェックボックス）
   test('E2E-PLDO-076: モバイルでのタッチ操作でチェック可能', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const doTab = page.getByRole('button', { name: /Do/i });
     await doTab.click();
@@ -101,7 +101,7 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-077: モバイルでのタッチ操作（感情選択）
   test('E2E-PLDO-077: モバイルでのタッチ操作で感情選択可能', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const doTab = page.getByRole('button', { name: /Do/i });
     await doTab.click();
@@ -128,7 +128,7 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-078: モバイルモーダル表示
   test('E2E-PLDO-078: モバイルでモーダルが適切に表示', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const planTab = page.getByRole('button', { name: /Plan/i });
     await planTab.click();
@@ -162,15 +162,15 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   test('E2E-PLDO-079: 画面回転時の表示確認', async ({ page }) => {
     // 縦向き
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
-    const mainContent1 = page.locator('main').or(page.locator('[data-testid="main-content"]'));
+    const mainContent1 = page.locator('main').first();
     await expect(mainContent1).toBeVisible();
 
     // 横向きに回転
     await page.setViewportSize({ width: 667, height: 375 });
 
-    const mainContent2 = page.locator('main').or(page.locator('[data-testid="main-content"]'));
+    const mainContent2 = page.locator('main').first();
     await expect(mainContent2).toBeVisible();
 
     // レイアウトが適切に調整される
@@ -183,7 +183,7 @@ test.describe('Plan-Do Page Responsive Tests', () => {
   // E2E-PLDO-080: 長いテキストの表示（目標説明）
   test('E2E-PLDO-080: 長文の折り返し表示', async ({ page }) => {
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     const planTab = page.getByRole('button', { name: /Plan/i });
     await planTab.click();

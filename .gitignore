@@ -35,5 +35,19 @@ Thumbs.db
 test-results/
 playwright-report/
 
+# Test scripts and screenshots (temporary files)
+test-*.ts
+test-*.js
+test-*.png
+check-*.ts
+check_*.js
+fix-*.ts
+fix_*.js
+create_*.js
+delete-*.ts
+tests/screenshots/
+mockups/
+
 /lib/generated/prisma
 
+.vercel

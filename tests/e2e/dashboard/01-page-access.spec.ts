@@ -8,7 +8,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Dashboard Page Access & Basic Display', () => {
   test.beforeEach(async ({ page }) => {
     // ダッシュボードページにアクセス
-    await page.goto('/');
+    await page.goto('/client');
   });
 
   // E2E-DASH-001: ダッシュボード初期アクセス

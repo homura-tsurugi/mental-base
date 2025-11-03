@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test('E2E-SET-013: メール通知ON→OFF切り替え', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -32,7 +32,7 @@ test('E2E-SET-013: メール通知ON→OFF切り替え', async ({ page }) => {
 });
 
 test('E2E-SET-014: メール通知OFF→ON切り替え', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -67,7 +67,7 @@ test('E2E-SET-015: 通知設定変更（APIエラー）', async ({ page }) => {
     route.abort('failed');
   });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -94,7 +94,7 @@ test('E2E-SET-015: 通知設定変更（APIエラー）', async ({ page }) => {
 });
 
 test('E2E-SET-031: トグルスイッチアニメーション', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');

@@ -19,7 +19,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('AIアシスタント - メッセージ送信エラー', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-025: 空白メッセージの送信防止', async ({ page }) => {

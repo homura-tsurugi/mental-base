@@ -9,7 +9,7 @@ import { ReflectionForm } from '@/components/check-action/ReflectionForm';
 import { AIReportCard } from '@/components/check-action/AIReportCard';
 import { ActionPlanForm } from '@/components/check-action/ActionPlanForm';
 import { useCheckActionData } from '@/hooks/useCheckActionData';
-import { UserDisplay } from '@/types';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 type TabType = 'check' | 'action';
 
@@ -29,25 +29,14 @@ export default function CheckActionPage() {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [pageError, setPageError] = useState<string | null>(null);
 
-  // モックユーザー（将来的には認証から取得）
-  const mockUser: UserDisplay = {
-    id: 'user1',
-    email: 'test@mentalbase.local',
-    name: 'Tanaka Sato',
-    initials: 'TS',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    role: 'CLIENT',
-    isMentor: false,
-    expertise: [],
-  };
-
   const handleAIAnalyzeClick = async () => {
     if (!data?.reflections || data.reflections.length === 0) {
-      alert('まず振り返りを記録してください');
+      setPageError('まず振り返りを記録してください');
+      setTimeout(() => setPageError(null), 3000);
       return;
     }
 
+    setPageError(null);
     setIsAnalyzing(true);
     try {
       const latestReflection = data.reflections[0];
@@ -56,7 +45,8 @@ export default function CheckActionPage() {
       setActiveTab('action');
     } catch (err) {
       console.error('AI analysis error:', err);
-      alert('AI分析に失敗しました');
+      setPageError('AI分析に失敗しました');
+      setTimeout(() => setPageError(null), 3000);
     } finally {
       setIsAnalyzing(false);
     }
@@ -64,7 +54,7 @@ export default function CheckActionPage() {
 
   if (loading) {
     return (
-      <MainLayout user={mockUser}>
+      <MainLayout>
         <div className="flex items-center justify-center min-h-[50vh]">
           <div className="text-center">
             <div data-testid="loading-spinner" className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary)] mx-auto mb-4"></div>
@@ -77,7 +67,7 @@ export default function CheckActionPage() {
 
   if (error) {
     return (
-      <MainLayout user={mockUser}>
+      <MainLayout>
         <div className="px-6 py-6">
           <div data-testid="error-card" className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800">
             <p className="font-medium">エラーが発生しました</p>
@@ -90,7 +80,7 @@ export default function CheckActionPage() {
 
   if (!data) {
     return (
-      <MainLayout user={mockUser}>
+      <MainLayout>
         <div className="px-6 py-6">
           <p data-testid="empty-state-message" className="text-[var(--text-tertiary)]">データがありません</p>
         </div>
@@ -99,7 +89,7 @@ export default function CheckActionPage() {
   }
 
   return (
-    <MainLayout user={mockUser}>
+    <MainLayout>
       <div data-testid="page-container">
         {/* Page Title */}
         <div className="px-6 pt-6 pb-4">
@@ -145,6 +135,18 @@ export default function CheckActionPage() {
           </button>
           </div>
         </div>
+
+        {/* Page-level Error Alert */}
+        {pageError && (
+          <div className="px-6 mb-6">
+            <Alert variant="error" data-testid="alert-error">
+              <AlertDescription className="flex items-center gap-2">
+                <span className="material-icons">error</span>
+                <span className="font-medium">{pageError}</span>
+              </AlertDescription>
+            </Alert>
+          </div>
+        )}
 
         {/* Check Tab Content */}
         <div className="px-6" style={{ display: activeTab === 'check' ? 'block' : 'none' }}>

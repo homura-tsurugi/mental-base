@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test('E2E-SET-001: 設定ページ初期アクセス', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ページが正常に読み込まれることを確認（タイトルは動的に設定されるため少し待つ）
   await page.waitForLoadState('networkidle');
@@ -18,7 +18,7 @@ test('E2E-SET-001: 設定ページ初期アクセス', async ({ page }) => {
 });
 
 test('E2E-SET-002: プロフィール情報表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング状態が完了するまで待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -41,7 +41,7 @@ test('E2E-SET-002: プロフィール情報表示', async ({ page }) => {
 });
 
 test('E2E-SET-003: 通知設定表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング状態が完了するまで待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -66,7 +66,7 @@ test('E2E-SET-003: 通知設定表示', async ({ page }) => {
 });
 
 test('E2E-SET-004: パスワード変更フォーム表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング状態が完了するまで待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -96,7 +96,7 @@ test('E2E-SET-004: パスワード変更フォーム表示', async ({ page }) =>
 });
 
 test('E2E-SET-005: アカウント管理セクション表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング状態が完了するまで待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -137,7 +137,7 @@ test('E2E-SET-021: ローディング状態表示', async ({ page }) => {
     route.continue();
   });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // スピナーアニメーションが表示されることを確認
   const spinner = page.locator('[data-testid="loading-spinner"]');
@@ -162,7 +162,7 @@ test('E2E-SET-022: API接続エラー表示', async ({ page }) => {
     route.abort('failed');
   });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // エラーボックスが表示されることを確認
   const errorBox = page.locator('[data-testid="error-message"]');

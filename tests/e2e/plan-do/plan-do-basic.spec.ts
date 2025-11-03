@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('Plan-Do Page Basic Tests', () => {
   test.beforeEach(async ({ page }) => {
     // ページへのアクセス
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
   });
 
   // E2E-PLDO-001: Plan-Doページ初期アクセス

@@ -1,81 +1,35 @@
-'use client';
+import { redirect } from 'next/navigation';
+import { auth } from '@/lib/auth';
 
-import React from 'react';
-import { MainLayout } from '@/components/layouts/MainLayout';
-import { CompassProgress } from '@/components/dashboard/CompassProgress';
-import { TodayTasks } from '@/components/dashboard/TodayTasks';
-import { RecentActivities } from '@/components/dashboard/RecentActivities';
-import { useDashboardData } from '@/hooks/useDashboardData';
-import { UserDisplay } from '@/types';
-
-export default function Home() {
-  const { data, loading, error, toggleTaskComplete } = useDashboardData();
-
-  // モックユーザー（将来的には認証から取得）
-  const mockUser: UserDisplay = {
-    id: 'user1',
-    email: 'test@mentalbase.local',
-    name: 'Tanaka Sato',
-    initials: 'TS',
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    role: 'CLIENT',
-    isMentor: false,
-    expertise: [],
-  };
-
-  if (loading) {
-    return (
-      <MainLayout user={mockUser}>
-        <div className="flex items-center justify-center min-h-[50vh]" data-testid="dashboard-loading">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--primary)] mx-auto mb-4" data-testid="dashboard-loading-spinner"></div>
-            <p className="text-[var(--text-tertiary)]" data-testid="dashboard-loading-text">読み込み中...</p>
-          </div>
-        </div>
-      </MainLayout>
-    );
+/**
+ * ルートページ - 認証状態とロールに基づいてリダイレクト
+ *
+ * リダイレクト先:
+ * - 未認証 → /auth
+ * - CLIENT → /client
+ * - MENTOR → /admin
+ */
+export default async function RootPage() {
+  // E2Eテストモード: 認証スキップ
+  if (process.env.VITE_SKIP_AUTH === 'true') {
+    redirect('/client');
   }
 
-  if (error) {
-    return (
-      <MainLayout user={mockUser}>
-        <div className="px-6 py-6">
-          <div
-            className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-800"
-            data-testid="dashboard-error"
-          >
-            <div data-testid="api-error" style={{ display: 'none' }}></div>
-            <p className="font-medium" data-testid="error-message">エラーが発生しました</p>
-            <p className="text-sm mt-1" data-testid="error-detail">{error.message}</p>
-          </div>
-        </div>
-      </MainLayout>
-    );
+  // 認証状態を取得
+  const session = await auth();
+
+  // 未認証の場合は認証ページへ
+  if (!session?.user) {
+    redirect('/auth');
   }
 
-  if (!data) {
-    return (
-      <MainLayout user={mockUser}>
-        <div className="px-6 py-6">
-          <p className="text-[var(--text-tertiary)]" data-testid="no-data-message">データがありません</p>
-        </div>
-      </MainLayout>
-    );
+  // ロールに基づいてリダイレクト
+  const userRole = session.user.role || 'client';
+
+  if (userRole === 'mentor' || userRole === 'admin') {
+    redirect('/admin');
   }
 
-  return (
-    <MainLayout user={mockUser}>
-      <div className="px-6 py-6" data-testid="dashboard-container">
-        {/* COM:PASS Progress Summary */}
-        <CompassProgress progress={data.compassSummary} />
-
-        {/* Today's Tasks */}
-        <TodayTasks tasks={data.todayTasks} onToggleComplete={toggleTaskComplete} />
-
-        {/* Recent Activities */}
-        <RecentActivities activities={data.recentActivities} />
-      </div>
-    </MainLayout>
-  );
+  // デフォルト: クライアントダッシュボード
+  redirect('/client');
 }

@@ -98,7 +98,7 @@ export function ClientDetailHeader({
         {/* 戻るボタン */}
         <div className="mb-3">
           <Link
-            href="/mentor"
+            href="/admin"
             className="inline-flex items-center text-sm text-gray-600 hover:text-gray-900"
           >
             <span className="material-icons text-base mr-1">arrow_back</span>

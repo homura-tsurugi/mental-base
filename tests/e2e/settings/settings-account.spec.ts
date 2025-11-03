@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test('E2E-SET-016: アカウント削除モーダル表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -46,7 +46,7 @@ test('E2E-SET-016: アカウント削除モーダル表示', async ({ page }) =>
 });
 
 test('E2E-SET-017: アカウント削除モーダルキャンセル', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -73,7 +73,7 @@ test('E2E-SET-017: アカウント削除モーダルキャンセル', async ({ p
 });
 
 test('E2E-SET-018: アカウント削除モーダル背景クリックで閉じる', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -100,7 +100,7 @@ test('E2E-SET-018: アカウント削除モーダル背景クリックで閉じ�
 });
 
 test('E2E-SET-019: アカウント削除実行', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -135,7 +135,7 @@ test('E2E-SET-020: アカウント削除APIエラー', async ({ page }) => {
     route.abort('failed');
   });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -166,7 +166,7 @@ test('E2E-SET-020: アカウント削除APIエラー', async ({ page }) => {
 });
 
 test('E2E-SET-030: アカウント削除ボタンの視覚フィードバック', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');

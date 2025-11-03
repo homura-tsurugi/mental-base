@@ -8,6 +8,7 @@ declare module 'next-auth' {
     user: {
       id: string;
       role: 'client' | 'mentor' | 'admin';
+      isMentor: boolean;
     } & DefaultSession['user'];
   }
 
@@ -16,6 +17,7 @@ declare module 'next-auth' {
     email: string;
     name: string;
     role: 'client' | 'mentor' | 'admin';
+    isMentor: boolean;
   }
 }
 
@@ -23,5 +25,6 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id: string;
     role: 'client' | 'mentor' | 'admin';
+    isMentor: boolean;
   }
 }

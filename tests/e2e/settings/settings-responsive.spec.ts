@@ -9,7 +9,7 @@ test('E2E-SET-043: デスクトップ表示（1920x1080）', async ({ page }) =>
   // ブラウザを1920x1080にリサイズ
   await page.setViewportSize({ width: 1920, height: 1080 });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -48,7 +48,7 @@ test('E2E-SET-044: タブレット表示（768x1024）', async ({ page }) => {
   // ブラウザを768x1024にリサイズ
   await page.setViewportSize({ width: 768, height: 1024 });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -85,7 +85,7 @@ test('E2E-SET-045: モバイル表示（375x667）', async ({ page }) => {
   // ブラウザを375x667にリサイズ
   await page.setViewportSize({ width: 375, height: 667 });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -140,7 +140,7 @@ test('E2E-SET-046: タッチジェスチャー対応', async ({ page }) => {
   // モバイルデバイスの設定
   await page.setViewportSize({ width: 375, height: 667 });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -169,7 +169,7 @@ test('E2E-SET-047: 縦向き・横向き切り替え', async ({ page }) => {
   // 縦向き表示（375x667）
   await page.setViewportSize({ width: 375, height: 667 });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   let loading = page.locator('[data-testid="loading-spinner"]');

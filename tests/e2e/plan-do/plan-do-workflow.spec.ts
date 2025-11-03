@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Plan-Do Page Workflow & Edge Case Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
   });
 
   // E2E-PLDO-081: 目標作成後に進捗0%表示

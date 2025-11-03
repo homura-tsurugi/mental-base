@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
 
 test('E2E-SET-037: 認証なしアクセス', async ({ page }) => {
   // 認証情報なしで設定ページにアクセス
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // 現在の実装ではモックユーザーで動作
   // 将来的には認証ページにリダイレクトされるはず
@@ -28,7 +28,7 @@ test('E2E-SET-037: 認証なしアクセス', async ({ page }) => {
 });
 
 test('E2E-SET-038: セッション期限切れ', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -58,7 +58,7 @@ test('E2E-SET-038: セッション期限切れ', async ({ page }) => {
 });
 
 test('E2E-SET-039: CSRF攻撃対策', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -93,7 +93,7 @@ test('E2E-SET-040: 他ユーザーのデータ取得試行', async ({ page }) =>
   // 他ユーザーのuserIdでAPI呼び出しを試みる
   // （本番API実装時に対応）
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -114,7 +114,7 @@ test('E2E-SET-040: 他ユーザーのデータ取得試行', async ({ page }) =>
 });
 
 test('E2E-SET-041: パスワード変更時のセキュリティ強度チェック', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -157,7 +157,7 @@ test('E2E-SET-041: パスワード変更時のセキュリティ強度チェッ�
 });
 
 test('E2E-SET-042: アカウント削除時のトランザクション処理', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');

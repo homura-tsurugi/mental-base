@@ -14,7 +14,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('AIアシスタント - ワークフロー', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-046: 連続メッセージ送信', async ({ page }) => {
@@ -48,8 +48,12 @@ test.describe('AIアシスタント - ワークフロー', () => {
     expect(finalCount).toBe(initialCount + 6);
 
     // メッセージが正しい順序で表示される
-    const lastThreeMessages = finalMessages.slice(-6);
-    const contents = await lastThreeMessages.allTextContents();
+    const contents = [];
+    const startIndex = Math.max(0, finalCount - 6);
+    for (let i = startIndex; i < finalCount; i++) {
+      const text = await finalMessages.nth(i).textContent();
+      if (text) contents.push(text);
+    }
 
     // 最後のメッセージ3が最後から2番目に表示される（その次がAI応答）
     expect(contents.join('')).toContain('メッセージ1');
@@ -178,7 +182,7 @@ test.describe('AIアシスタント - ワークフロー', () => {
 
 test.describe('AIアシスタント - エッジケース', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
   });
 
   test('E2E-AIA-050: 特殊文字を含むメッセージ', async ({ page }) => {

@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 import { UserDisplay } from '@/types';
 
 interface MainLayoutProps {
@@ -10,23 +11,48 @@ interface MainLayoutProps {
   user?: UserDisplay;
 }
 
-export const MainLayout: React.FC<MainLayoutProps> = ({ children, user }) => {
+export const MainLayout: React.FC<MainLayoutProps> = ({ children, user: userProp }) => {
   const pathname = usePathname();
+  const { data: session } = useSession();
+
+  // イニシャル生成ヘルパー
+  const getInitials = (name: string): string => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length === 1) {
+      return parts[0].substring(0, 2).toUpperCase();
+    }
+    return parts.map(part => part[0]).join('').substring(0, 2).toUpperCase();
+  };
+
+  // userPropが渡されていればそれを使用、なければセッションから取得
+  const user: UserDisplay | null = userProp || (session?.user
+    ? {
+        id: session.user.id || 'unknown',
+        email: session.user.email || '',
+        name: session.user.name || 'Unknown User',
+        initials: getInitials(session.user.name || 'U'),
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        role: session.user.role || 'client',
+        isMentor: session.user.isMentor || false,
+        expertise: [],
+      }
+    : null);
 
   // 基本ナビゲーションアイテム
   const baseNavigationItems = [
-    { id: 'home', label: 'ホーム', icon: 'home', href: '/' },
-    { id: 'plan-do', label: '計画/実行', icon: 'assignment', href: '/plan-do' },
-    { id: 'check-action', label: '確認/改善', icon: 'analytics', href: '/check-action' },
-    { id: 'ai-assistant', label: '学習', icon: 'school', href: '/ai-assistant' },
-    { id: 'settings', label: '設定', icon: 'settings', href: '/settings' },
+    { id: 'home', label: 'ホーム', icon: 'home', href: '/client' },
+    { id: 'plan-do', label: '計画/実行', icon: 'assignment', href: '/client/plan-do' },
+    { id: 'check-action', label: '確認/改善', icon: 'analytics', href: '/client/check-action' },
+    { id: 'ai-assistant', label: '学習', icon: 'school', href: '/client/ai-assistant' },
+    { id: 'settings', label: '設定', icon: 'settings', href: '/client/settings' },
   ];
 
   // メンターロールの場合、メンターダッシュボードを追加
   const navigationItems = user?.isMentor
     ? [
         ...baseNavigationItems.slice(0, 4), // ホーム〜学習まで
-        { id: 'mentor', label: 'メンター', icon: 'groups', href: '/mentor' },
+        { id: 'mentor', label: 'メンター', icon: 'groups', href: '/admin' },
         baseNavigationItems[4], // 設定
       ]
     : baseNavigationItems;
@@ -43,19 +69,25 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, user }) => {
           <button className="p-2 rounded-full hover:bg-[var(--bg-tertiary)] transition-colors">
             <span className="material-icons text-[var(--text-secondary)]">notifications</span>
           </button>
-          <div className="flex items-center gap-2">
-            <div className="hidden sm:block text-right">
-              <div className="text-sm font-medium text-[var(--text-primary)]" data-testid="user-name">
-                {user?.name || 'Tanaka Sato'}
+          {user && (
+            <Link
+              href="/client/settings"
+              className="flex items-center gap-2 hover:opacity-80 transition-opacity cursor-pointer"
+              data-testid="user-account-link"
+            >
+              <div className="hidden sm:block text-right">
+                <div className="text-sm font-medium text-[var(--text-primary)]" data-testid="user-name">
+                  {user.name}
+                </div>
+                <div className="text-xs text-[var(--text-tertiary)]" data-testid="user-email">
+                  {user.email}
+                </div>
               </div>
-              <div className="text-xs text-[var(--text-tertiary)]" data-testid="user-email">
-                {user?.email || 'test@mentalbase.local'}
+              <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center text-white text-sm font-medium" data-testid="user-initials">
+                {user.initials}
               </div>
-            </div>
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-[var(--primary)] to-[var(--secondary)] flex items-center justify-center text-white text-sm font-medium" data-testid="user-initials">
-              {user?.initials || 'TS'}
-            </div>
-          </div>
+            </Link>
+          )}
         </div>
       </header>
 

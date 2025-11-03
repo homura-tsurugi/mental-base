@@ -6,7 +6,7 @@ import { test, expect } from '@playwright/test';
  */
 
 test('E2E-SET-023: 成功メッセージ表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -39,7 +39,7 @@ test('E2E-SET-023: 成功メッセージ表示', async ({ page }) => {
 });
 
 test('E2E-SET-024: エラーメッセージ表示', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -71,7 +71,7 @@ test('E2E-SET-024: エラーメッセージ表示', async ({ page }) => {
 });
 
 test('E2E-SET-028: プロフィール保存ボタンの視覚フィードバック', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -99,7 +99,7 @@ test('E2E-SET-028: プロフィール保存ボタンの視覚フィードバッ�
 });
 
 test('E2E-SET-056: 成功メッセージの自動消去タイマー', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -122,7 +122,7 @@ test('E2E-SET-056: 成功メッセージの自動消去タイマー', async ({ p
 });
 
 test('E2E-SET-057: 複数の成功メッセージ上書き', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -165,7 +165,7 @@ test('E2E-SET-057: 複数の成功メッセージ上書き', async ({ page }) =>
 });
 
 test('E2E-SET-058: エラーメッセージと成功メッセージの排他制御', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');

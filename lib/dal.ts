@@ -28,6 +28,7 @@ const getMockSession = () => {
     userEmail: 'test@mentalbase.local',
     userName: 'Test User',
     userRole: 'client' as UserRole,
+    isMentor: false,
   };
 };
 
@@ -56,6 +57,7 @@ export const verifySession = cache(async () => {
     userEmail: session.user.email || '',
     userName: session.user.name || '',
     userRole: session.user.role,
+    isMentor: session.user.isMentor,
   };
 });
 
@@ -83,6 +85,7 @@ export const getSession = cache(async () => {
     userEmail: session.user.email || '',
     userName: session.user.name || '',
     userRole: session.user.role,
+    isMentor: session.user.isMentor,
   };
 });
 
@@ -125,6 +128,7 @@ export const verifyMentor = cache(async () => {
       userEmail: 'mentor@mentalbase.local',
       userName: 'Test Mentor',
       userRole: 'mentor' as UserRole,
+      isMentor: true,
     };
   }
   return verifyRole('mentor', '/auth');

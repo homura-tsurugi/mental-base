@@ -191,7 +191,7 @@ test.describe('E2E-MENTOR-016～025: メンターダッシュボード検索・�
 
     if (await sortDropdown.locator('select').count() > 0) {
       // selectの場合は選択値を変更
-      await sortDropdown.locator('select').selectOption(/progress|進捗率/i);
+      await sortDropdown.locator('select').selectOption('progress');
     } else {
       // ボタンドロップダウンの場合
       const sortButton = page.locator('button:has-text("最終活動日順"), [data-testid="sort-button"]');
@@ -223,7 +223,7 @@ test.describe('E2E-MENTOR-016～025: メンターダッシュボード検索・�
 
     if (await sortDropdown.locator('select').count() > 0) {
       // selectの場合は選択値を変更
-      await sortDropdown.locator('select').selectOption(/name|名前/i);
+      await sortDropdown.locator('select').selectOption('name');
     } else {
       // ボタンドロップダウンの場合
       const sortButton = page.locator('button:has-text("最終活動日順"), [data-testid="sort-button"]');

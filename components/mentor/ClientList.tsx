@@ -7,6 +7,7 @@
 import { useEffect, useState } from 'react';
 import { ClientCard } from './ClientCard';
 import { SearchFilter } from './SearchFilter';
+import { RegisterClientModal } from './RegisterClientModal';
 import type { ClientSummary, ClientFilterType, ClientSortOrder } from '@/types';
 
 interface ClientListProps {
@@ -20,25 +21,32 @@ export function ClientList({ mentorId }: ClientListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState<ClientFilterType>('all');
   const [sortBy, setSortBy] = useState<ClientSortOrder>('progress');
+  const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
+
+  // クライアント一覧取得関数
+  const fetchClients = async () => {
+    try {
+      const response = await fetch(`/api/mentor/dashboard?mentorId=${mentorId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setClients(data.clients || []);
+        setFilteredClients(data.clients || []);
+      }
+    } catch (error) {
+      console.error('クライアントデータの取得に失敗しました:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // クライアント登録成功時のコールバック
+  const handleRegisterSuccess = () => {
+    fetchClients();
+  };
 
   useEffect(() => {
     // @MOCK_TO_API: メンターダッシュボードクライアント一覧取得
     // 本番: /api/mentor/dashboard から取得
-    async function fetchClients() {
-      try {
-        const response = await fetch(`/api/mentor/dashboard?mentorId=${mentorId}`);
-        if (response.ok) {
-          const data = await response.json();
-          setClients(data.clients || []);
-          setFilteredClients(data.clients || []);
-        }
-      } catch (error) {
-        console.error('クライアントデータの取得に失敗しました:', error);
-      } finally {
-        setLoading(false);
-      }
-    }
-
     fetchClients();
   }, [mentorId]);
 
@@ -126,20 +134,26 @@ export function ClientList({ mentorId }: ClientListProps) {
 
   return (
     <>
+      {/* クライアント登録モーダル */}
+      <RegisterClientModal
+        isOpen={isRegisterModalOpen}
+        onClose={() => setIsRegisterModalOpen(false)}
+        mentorId={mentorId}
+        onSuccess={handleRegisterSuccess}
+      />
+
       {/* クライアント招待ボタン */}
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-bold" style={{ color: 'var(--text-primary)' }}>
           クライアント一覧
         </h2>
         <button
-          data-testid="invite-client-btn"
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors"
-          onClick={() => {
-            // TODO: 招待モーダルを開く
-            console.log('クライアント招待');
-          }}
+          data-testid="register-client-btn"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-medium transition-colors flex items-center gap-2"
+          onClick={() => setIsRegisterModalOpen(true)}
         >
-          クライアント招待
+          <span className="material-icons text-base">person_add</span>
+          クライアント登録
         </button>
       </div>
 

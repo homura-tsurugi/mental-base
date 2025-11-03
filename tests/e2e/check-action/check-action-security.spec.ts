@@ -16,7 +16,7 @@ test.describe('Check/Actionページ - セキュリティテスト', () => {
     });
 
     // /check-actionにアクセス
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // /authページにリダイレクトされることを確認
     // NOTE: Auth.js実装待ちのため、リダイレクト先はプロジェクト設定に応じて変更
@@ -38,7 +38,7 @@ test.describe('Check/Actionページ - セキュリティテスト', () => {
       localStorage.setItem('VITE_SKIP_AUTH', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="page-title"]', { timeout: 5000 });
@@ -79,7 +79,7 @@ test.describe('Check/Actionページ - セキュリティテスト', () => {
       localStorage.setItem('VITE_SKIP_AUTH', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="reflection-form"]', { timeout: 5000 });
@@ -121,7 +121,7 @@ test.describe('Check/Actionページ - セキュリティテスト', () => {
       window.localStorage.setItem('XSS_MOCK_REPORT', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // Actionタブに移動
     const actionTab = page.locator('[data-testid="tab-action"]');
@@ -160,7 +160,7 @@ test.describe('Check/Actionページ - セキュリティテスト', () => {
       localStorage.setItem('VITE_SKIP_AUTH', 'true');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // Actionタブに移動
     const actionTab = page.locator('[data-testid="tab-action"]');
@@ -217,7 +217,7 @@ test.describe('Check/Actionページ - セキュリティテスト', () => {
       localStorage.setItem('TEST_USER_ID', 'user1');
     });
 
-    await page.goto('/check-action');
+    await page.goto('/client/check-action');
 
     // ページ読み込みを待つ
     await page.waitForSelector('[data-testid="stats-card"]', { timeout: 5000 });

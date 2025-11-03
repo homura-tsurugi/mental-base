@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { MainLayout } from '@/components/layouts/MainLayout';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { signOut } from 'next-auth/react';
 import { useSettingsData } from '@/hooks/useSettingsData';
 import { ProfileUpdateForm, PasswordChangeForm } from '@/types';
 import { MentorRegistration } from '@/components/settings/MentorRegistration';
@@ -358,6 +359,20 @@ const SettingsPage: React.FC = () => {
                 アカウントを削除
               </button>
             </div>
+          </Card>
+        </section>
+
+        {/* Logout Section */}
+        <section data-testid="logout-section" className="px-6 pb-6">
+          <Card className="p-4 shadow-md">
+            <button
+              data-testid="logout-button"
+              onClick={() => signOut({ callbackUrl: '/auth' })}
+              className="w-full px-4 py-3 bg-[var(--bg-tertiary)] text-[var(--text-primary)] rounded-lg text-base font-medium hover:bg-[var(--border-dark)] active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+            >
+              <span className="material-icons text-lg">logout</span>
+              ログアウト
+            </button>
           </Card>
         </section>
       </div>

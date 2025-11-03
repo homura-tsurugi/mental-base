@@ -18,7 +18,7 @@ test.describe('AIアシスタント - レスポンシブ（デスクトップ）
     await page.setViewportSize({ width: 1920, height: 1080 });
 
     // ページアクセス
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // モード選択ボタンが横並びで表示
     const modeButtons = page.locator('[data-testid^="mode-tab-"]');
@@ -54,7 +54,7 @@ test.describe('AIアシスタント - レスポンシブ（タブレット）', 
     await page.setViewportSize({ width: 768, height: 1024 });
 
     // ページアクセス
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // モード選択ボタンが存在
     const modeButtons = page.locator('[data-testid^="mode-tab-"]');
@@ -86,7 +86,7 @@ test.describe('AIアシスタント - レスポンシブ（モバイル）', () 
     await page.setViewportSize({ width: 375, height: 667 });
 
     // ページアクセス
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // モード選択ボタンが横スクロール可能か確認
     const modeContainer = page.locator('[data-testid="mode-buttons-container"]');
@@ -131,7 +131,7 @@ test.describe('AIアシスタント - レスポンシブ（モバイル）', () 
     await page.setViewportSize({ width: 375, height: 667 });
 
     // ページアクセス
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // モード選択エリアをスワイプ
     const modeContainer = page.locator('[data-testid="mode-buttons-container"]');
@@ -175,7 +175,7 @@ test.describe('AIアシスタント - レスポンシブ（モバイル）', () 
   test('E2E-AIA-045: 縦向き・横向き切り替え', async ({ page }) => {
     // 縦向きで開始
     await page.setViewportSize({ width: 375, height: 667 });
-    await page.goto('/ai-assistant');
+    await page.goto('/client/ai-assistant');
 
     // 初期状態で要素が表示されている
     const modeButtons = page.locator('[data-testid^="mode-tab-"]');

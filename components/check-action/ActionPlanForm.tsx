@@ -116,7 +116,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
         </h3>
       </div>
 
-      <form data-testid="action-plan-form" onSubmit={handleSubmit} className="space-y-4">
+      <form data-testid="action-plan-form" onSubmit={handleSubmit} noValidate className="space-y-4">
         {/* 計画タイトル */}
         <div>
           <label className="block text-sm font-medium text-[var(--text-primary)] mb-2">

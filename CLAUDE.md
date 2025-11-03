@@ -47,7 +47,14 @@
 外部サービス:
   Claude API: 開発・テスト用（$10無料枠）
   OpenAI API: 本番用（GPT-4o mini）
-  Supabase: 無料枠利用
+  Supabase:
+    - プロジェクト名: mental-base
+    - 無料枠利用
+    - ⚠️ Rag-Base（RAGベースAIコーチングbot）と同じプロジェクト共有
+    - テーブル命名規則:
+      - Mental-Base: mental_base_* プレフィックス
+      - Rag-Base: rag_base_* プレフィックス
+    - 最終的に1つのアプリケーションに統合予定
 ```
 
 ## コーディング規約
@@ -242,6 +249,10 @@ AI API制約:
   - Supabase無料枠: 500MB、50,000 MAU/月
   - コネクション数制限: 60同時接続
   - Prismaのコネクションプーリング推奨
+  - ⚠️ 重要: Rag-Baseと同じプロジェクト共有
+    - Mental-Baseテーブル: mental_base_* プレフィックス必須
+    - Rag-Baseテーブル: rag_base_* プレフィックス
+    - 例: mental_base_users, mental_base_goals, mental_base_tasks
 
 モバイルPWA:
   - iOS Safariではプッシュ通知不可
@@ -421,11 +432,11 @@ gcloud run deploy          # Cloud Runにデプロイ（バックエンド）
 ## 📋 作業ログ（最新5件）
 
 ```yaml
+- 2025-11-03: Rag-Baseとのデータベース共有設計確定（テーブルプレフィックス: mental_base_*）
 - 2025-11-01: MVP要件定義書作成完了
 - 2025-11-01: 技術スタック確定（React + Next.js 15 + FastAPI + Supabase）
 - 2025-11-01: 6ページのMVP構成確定（認証1 + ユーザー5）
 - 2025-11-01: AI API選定（Claude開発、OpenAI本番）
-- 2025-11-01: プロジェクトセットアップ完了、開発準備完了
 ```
 
 ## 🎯 次のアクション
@@ -742,3 +753,41 @@ Week 4: フロントエンド、テスト、デプロイ
 ---
 
 **最終更新**: 2025-11-02 - メンター機能の要件定義完了
+
+---
+
+## 🚀 デプロイ設定（2025-11-03 追加）
+
+```yaml
+本番環境:
+  プラットフォーム: Vercel
+  URL: https://mental-base-mvp.vercel.app
+  デプロイ日: 2025-11-03
+  Vercelユーザー: homura-tsurugi
+
+データベース:
+  本番DB: 開発DBと同じ（Supabase PostgreSQL）
+  接続文字列: DATABASE_URL（.env.localと同じ）
+  構成: お試しデプロイ（A構成）
+
+環境変数（Vercel Production）:
+  - NEXTAUTH_SECRET: 本番用に新規生成済み
+  - NEXTAUTH_URL: https://mental-base-mvp.vercel.app
+  - DATABASE_URL: Supabase Transaction Pooler
+  - DIRECT_DATABASE_URL: Supabase Direct Connection
+  - ANTHROPIC_API_KEY: Claude API
+  - OPENAI_API_KEY: OpenAI API
+  - NODE_ENV: production
+  - CORS_ORIGIN: https://mental-base-mvp.vercel.app
+
+デプロイコマンド:
+  初回: vercel
+  本番: vercel --prod
+  環境変数設定: vercel env add [変数名] production
+
+重要な修正:
+  - Prisma binaryTargets追加: ["native", "rhel-openssl-3.0.x"]
+  - VITE_SKIP_AUTH: 本番では無効化（セキュリティ）
+```
+
+**デプロイ成功確認**: 本番URLでログインページ正常表示 ✅

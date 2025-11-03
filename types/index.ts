@@ -8,7 +8,7 @@
 // ============================================================================
 
 // ユーザーロール（フェーズ2で追加）
-export type UserRole = 'CLIENT' | 'MENTOR' | 'ADMIN';
+export type UserRole = 'client' | 'mentor' | 'admin';
 
 // メンター専門分野（C-005: 設定）
 export type MentorExpertise =
@@ -876,4 +876,86 @@ export interface DataAccessPermissionForm {
   allowLogs: boolean;
   allowReflections: boolean;
   allowAiReports: boolean;
+}
+
+// ============================================================================
+// Rag-Base統合用型定義（Dify統合）
+// ============================================================================
+
+// メッセージロール（Rag-Base用）
+export type MessageRole = 'user' | 'assistant';
+
+// 引用元情報（RAG検索結果）
+export interface Citation {
+  source: string; // ドキュメント名
+  content: string; // 引用テキスト
+  dataset_type: 'system' | 'user'; // システムRAG or ユーザーRAG
+  chunk_number?: number; // チャンク番号
+  similarity_score?: number; // 類似度スコア 0-1
+}
+
+// 会話情報（Rag-Base用）
+export interface Conversation {
+  session_id: string; // UUID
+  user_id: string;
+  title?: string;
+  created_at: string; // ISO 8601
+  updated_at?: string; // ISO 8601
+  message_count?: number;
+  crisis_flag?: boolean; // 危機フラグ
+}
+
+// メッセージ情報（Rag-Base用）
+export interface Message {
+  message_id: string; // UUID
+  session_id: string;
+  role: MessageRole;
+  content: string;
+  citations?: Citation[]; // 引用元情報
+  created_at: string; // ISO 8601
+  tokens_used?: number;
+  crisis_detected?: boolean; // 危機キーワード検出フラグ
+}
+
+// チャットメッセージ送信リクエスト
+export interface ChatMessageRequest {
+  session_id?: string; // 新規会話の場合は省略
+  content: string;
+  user_id?: string; // ユーザーID
+}
+
+// チャットメッセージレスポンス
+export interface ChatMessageResponse {
+  message: Message;
+  session_id: string;
+}
+
+// 会話要約情報
+export interface ConversationSummary {
+  summary_id: string; // UUID
+  session_id: string;
+  user_id: string;
+  topics: string[]; // 主なトピック
+  problems: string[]; // 問題・課題
+  advice: string[]; // 提供したアドバイス
+  insights: string[]; // クライアントの気づき
+  next_steps: string[]; // 次のステップ
+  mentor_notes?: string; // メンターメモ（任意）
+  crisis_flags?: string[]; // 危機フラグ（検出されたキーワード等）
+  created_at: string; // ISO 8601
+  updated_at?: string; // ISO 8601
+}
+
+// 会話要約生成リクエスト
+export interface GenerateSummaryRequest {
+  session_id: string;
+  user_id: string;
+  messages: Message[];
+}
+
+// 会話要約生成レスポンス
+export interface GenerateSummaryResponse {
+  summary: ConversationSummary;
+  success: boolean;
+  message?: string;
 }

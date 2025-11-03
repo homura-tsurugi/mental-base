@@ -11,7 +11,7 @@ test.describe('Dashboard Loading & Error States', () => {
     page,
   }) => {
     // ページにアクセス（ネットワークを遅延させるため、まずルートにアクセス）
-    const navigationPromise = page.goto('/');
+    const navigationPromise = page.goto('/client');
 
     // ローディング要素が表示されることを確認
     const loadingElement = page.locator('[data-testid="dashboard-loading"]');
@@ -50,7 +50,7 @@ test.describe('Dashboard Loading & Error States', () => {
   // E2E-DASH-020: タスクなし状態表示
   test('E2E-DASH-020: タスクなし状態表示 - タスクが0件の場合の表示', async ({ page }) => {
     // モック用のクエリパラメータを使用してタスク0件の状態をシミュレート
-    await page.goto('/?mock=no-tasks');
+    await page.goto('/client?mock=no-tasks');
     await page.waitForLoadState('networkidle');
 
     // 「今日のタスクはありません」メッセージが表示されていることを確認
@@ -75,7 +75,7 @@ test.describe('Dashboard Loading & Error States', () => {
     page,
   }) => {
     // モック用のクエリパラメータを使用してアクティビティ0件の状態をシミュレート
-    await page.goto('/?mock=no-activities');
+    await page.goto('/client?mock=no-activities');
     await page.waitForLoadState('networkidle');
 
     // 「アクティビティはありません」メッセージが表示されていることを確認
@@ -98,7 +98,7 @@ test.describe('Dashboard Loading & Error States', () => {
   // E2E-DASH-022: API接続エラー表示
   test('E2E-DASH-022: API接続エラー表示 - API接続エラー時のエラー表示', async ({ page }) => {
     // モック用のクエリパラメータを使用してエラーをシミュレート
-    await page.goto('/?mock=api-error');
+    await page.goto('/client?mock=api-error');
     await page.waitForLoadState('networkidle');
 
     // エラーボックスが表示されていることを確認
@@ -131,7 +131,7 @@ test.describe('Dashboard Loading & Error States', () => {
   // E2E-DASH-023: データなし状態表示
   test('E2E-DASH-023: データなし状態表示 - データがnullの場合の表示', async ({ page }) => {
     // モック用のクエリパラメータを使用してデータなしをシミュレート
-    await page.goto('/?mock=no-data');
+    await page.goto('/client?mock=no-data');
     await page.waitForLoadState('networkidle');
 
     // 「データがありません」メッセージが表示されていることを確認
@@ -151,7 +151,7 @@ test.describe('Dashboard Loading & Error States', () => {
     page,
   }) => {
     // モック用のクエリパラメータを使用してAPIエラーをシミュレート
-    await page.goto('/?mock=toggle-error');
+    await page.goto('/client?mock=toggle-error');
     await page.waitForLoadState('networkidle');
 
     // 最初のタスクを取得
@@ -188,7 +188,7 @@ test.describe('Dashboard Loading & Error States', () => {
     context,
   }) => {
     // ページにアクセス
-    await page.goto('/');
+    await page.goto('/client');
     await page.waitForLoadState('networkidle');
 
     // ネットワークを切断
@@ -215,7 +215,7 @@ test.describe('Dashboard Loading & Error States', () => {
   // E2E-DASH-026: APIタイムアウト処理
   test('E2E-DASH-026: APIタイムアウト処理 - API応答遅延時の挙動', async ({ page }) => {
     // モック用のクエリパラメータを使用してタイムアウトをシミュレート
-    await page.goto('/?mock=slow-api');
+    await page.goto('/client?mock=slow-api');
     // ローディング表示が表示されることを確認
     const loadingSpinner = page.locator('[data-testid="dashboard-loading-spinner"]');
     try {
@@ -245,7 +245,7 @@ test.describe('Dashboard Loading & Error States', () => {
     page,
   }) => {
     // モック用のクエリパラメータを使用して不正なデータをシミュレート
-    await page.goto('/?mock=invalid-data');
+    await page.goto('/client?mock=invalid-data');
     await page.waitForLoadState('networkidle');
 
     // TypeScriptエラーまたはランタイムエラーが出力されていることを確認

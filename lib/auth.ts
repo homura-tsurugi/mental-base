@@ -44,6 +44,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
           email: user.email,
           name: user.name,
           role: user.role as 'client' | 'mentor' | 'admin',
+          isMentor: user.isMentor,
         };
       },
     }),
@@ -59,6 +60,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       if (user) {
         token.id = user.id;
         token.role = user.role;
+        token.isMentor = user.isMentor;
       }
       return token;
     },
@@ -66,6 +68,7 @@ export const { auth, signIn, signOut, handlers } = NextAuth({
       if (session.user) {
         session.user.id = token.id as string;
         session.user.role = token.role as 'client' | 'mentor' | 'admin';
+        session.user.isMentor = token.isMentor as boolean;
       }
       return session;
     },

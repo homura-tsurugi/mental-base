@@ -2,7 +2,7 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Plan-Do Page Do Tab Tests', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto('/plan-do');
+    await page.goto('/client/plan-do');
 
     // Doタブをクリック
     const doTab = page.getByRole('button', { name: /Do/i });
@@ -334,7 +334,7 @@ test.describe('Plan-Do Page Do Tab Tests', () => {
 
     // 優先度を選択
     const prioritySelect = modal.locator('select').nth(1).or(modal.getByLabel(/優先度|Priority/i));
-    await prioritySelect.selectOption({ label: /高|高優先度/i }).catch(() => {
+    await prioritySelect.selectOption({ label: '高' }).catch(() => {
       // 優先度フィールドが見つからない場合もある
     });
 
@@ -384,7 +384,7 @@ test.describe('Plan-Do Page Do Tab Tests', () => {
 
     if (isVisible) {
       // 優先度を選択
-      await prioritySelect.selectOption({ label: /高|High/ }).catch(() => {
+      await prioritySelect.selectOption({ label: '高' }).catch(() => {
         // ラベル指定が失敗する場合もある
         prioritySelect.selectOption({ index: 0 });
       });

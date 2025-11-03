@@ -9,7 +9,7 @@ test('E2E-SET-032: ネットワーク切断時の挙動', async ({ page }) => {
   // オフラインモードに設定
   await page.context().setOffline(true);
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ネットワークエラーが表示されることを確認
   const errorBox = page.locator('[data-testid="error-message"]');
@@ -69,8 +69,8 @@ test('E2E-SET-033: APIタイムアウト処理', async ({ page }) => {
 test('E2E-SET-034: 不正なデータ形式エラー', async ({ page }) => {
   // 不正なデータ形式をシミュレート
   await page.route('**/api/users/profile', (route) => {
-    route.respond({
-      status: 200,
+    route.fulfill({
+      status: 500,
       contentType: 'application/json',
       body: JSON.stringify({
         // 不正な型のデータを返す
@@ -80,7 +80,7 @@ test('E2E-SET-034: 不正なデータ形式エラー', async ({ page }) => {
     });
   });
 
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
@@ -101,7 +101,7 @@ test('E2E-SET-034: 不正なデータ形式エラー', async ({ page }) => {
 });
 
 test('E2E-SET-055: モーダル内のイベント伝播防止', async ({ page }) => {
-  await page.goto('/settings');
+  await page.goto('/client/settings');
 
   // ローディング完了を待機
   const loading = page.locator('[data-testid="loading-spinner"]');
