@@ -464,37 +464,8 @@ app/
 
 ## 🔗 関連ドキュメント
 
-### Phase 2完了レポート
-- **完了レポート**: `docs/PHASE2_COMPLETION_REPORT.md` ⭐ **最新**
-  - 実装サマリー（29ファイル）
-  - セキュリティ実装詳細
-  - パフォーマンス最適化
-  - デプロイ準備手順
-
-### 設計・要件
-- 要件定義書: `docs/requirements_mentor.md`
-- API仕様書: `docs/api-specs/mentor-dashboard-api.md`, `docs/api-specs/client-detail-api.md`
-
-### 実装ファイル（29ファイル）
-- **APIルート** (13): `app/api/mentor/`, `app/api/client/data-access/`, `app/api/user/mentor-registration/`
-- **サービス** (2): `lib/services/MentorDashboardService.ts`, `lib/services/ClientDetailService.ts`
-- **フック** (2): `hooks/useMentorDashboard.ts`, `hooks/useClientDetail.ts`
-- **コンポーネント** (6): `components/settings/MentorRegistration.tsx`, `components/settings/DataAccessControl.tsx`, `components/ui/` (Badge, Separator, Switch, Textarea)
-- **E2Eテスト** (3): `tests/e2e/mentor/` (mentor-invitation-flow, mentor-data-access-control), `tests/e2e/settings/settings-mentor-registration.spec.ts`
-- **既存ファイル修正** (3): `app/(protected)/settings/page.tsx`, `lib/mentor-access.ts`, `components/check-action/PeriodSelector.tsx`
-
----
-
-## 📊 Phase 2 数値サマリー
-
-| 指標 | 値 |
-|------|-----|
-| **実装期間** | 1日（2025-11-02、完全自律モード） |
-| **作成・修正ファイル数** | 29ファイル |
-| **新規APIエンドポイント** | 16エンドポイント |
-| **E2Eテスト** | 55テスト（3ファイル） |
-| **TypeScriptエラー** | 0件 |
-| **ビルド状態** | ✅ 成功 |
-| **総合完成度** | 100% |
+- **完了レポート**: `docs/PHASE2_COMPLETION_REPORT.md` - 実装詳細、セキュリティ、パフォーマンス、デプロイ手順
+- **要件定義**: `docs/requirements_mentor.md`
+- **API仕様**: `docs/api-specs/mentor-dashboard-api.md`, `client-detail-api.md`
 
 ---
