@@ -11,7 +11,7 @@ interface TodayTasksProps {
 
 export const TodayTasks: React.FC<TodayTasksProps> = ({ tasks, onToggleComplete }) => {
   return (
-    <section className="px-6 py-6">
+    <section className="mb-6">
       <h2 className="text-lg font-bold mb-4 text-[var(--text-primary)]" data-testid="today-tasks-title">
         今日のタスク
       </h2>

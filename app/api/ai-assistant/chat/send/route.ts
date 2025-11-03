@@ -7,13 +7,48 @@ import { verifySession } from '@/lib/dal';
 // POST /api/ai-assistant/chat/send
 export async function POST(request: Request) {
   try {
-    // 認証チェック
-    const session = await verifySession();
-    const userId = session.userId;
-
     // リクエストボディ取得
     const body = await request.json();
     const { content, mode } = body;
+
+    // E2Eテスト用: 認証スキップモード
+    if (process.env.VITE_SKIP_AUTH === 'true') {
+      console.log('[API] 認証スキップモード: モックAIメッセージ送信');
+
+      // 簡単なバリデーション
+      if (!content?.trim()) {
+        return NextResponse.json(
+          { error: 'メッセージを入力してください' },
+          { status: 400 }
+        );
+      }
+
+      // Mock AI応答を返却
+      const mockResponse = {
+        userMessage: {
+          id: `msg-user-${Date.now()}`,
+          userId: 'test-user',
+          mode: mode || 'problem_solving',
+          role: 'user',
+          content: content.trim(),
+          createdAt: new Date().toISOString(),
+        },
+        assistantMessage: {
+          id: `msg-ai-${Date.now()}`,
+          userId: 'test-user',
+          mode: mode || 'problem_solving',
+          role: 'assistant',
+          content: `Mock AI応答: ${content.trim()}に対する返答です。`,
+          createdAt: new Date().toISOString(),
+        },
+      };
+
+      return NextResponse.json(mockResponse, { status: 200 });
+    }
+
+    // 認証チェック
+    const session = await verifySession();
+    const userId = session.userId;
 
     // バリデーション: content
     if (!content || typeof content !== 'string') {

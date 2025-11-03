@@ -27,6 +27,7 @@ export default function CheckActionPage() {
 
   const [activeTab, setActiveTab] = useState<TabType>('check');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [pageError, setPageError] = useState<string | null>(null);
 
   // モックユーザー（将来的には認証から取得）
   const mockUser: UserDisplay = {
@@ -99,16 +100,17 @@ export default function CheckActionPage() {
 
   return (
     <MainLayout user={mockUser}>
-      {/* Page Title */}
-      <div className="px-6 pt-6 pb-4">
-        <h1 data-testid="page-title" className="text-2xl font-bold text-[var(--text-primary)]">
-          振り返り・改善
-        </h1>
-      </div>
+      <div data-testid="page-container">
+        {/* Page Title */}
+        <div className="px-6 pt-6 pb-4">
+          <h1 data-testid="page-title" className="text-2xl font-bold text-[var(--text-primary)]">
+            振り返り・改善
+          </h1>
+        </div>
 
-      {/* Tab Switcher */}
-      <div data-testid="tab-section" className="px-6 mb-6">
-        <div className="bg-[var(--bg-primary)] rounded-lg p-1 shadow-sm flex gap-1">
+        {/* Tab Switcher */}
+        <div data-testid="tab-section" className="px-6 mb-6">
+          <div data-testid="tabs-container" className="bg-[var(--bg-primary)] rounded-lg p-1 shadow-sm flex gap-1">
           <button
             data-testid="tab-check"
             data-active={activeTab === 'check'}
@@ -141,23 +143,27 @@ export default function CheckActionPage() {
             <span data-testid="action-tab-icon" className="material-icons text-lg">trending_up</span>
             <span>Action（改善）</span>
           </button>
+          </div>
         </div>
-      </div>
 
-      {/* Check Tab Content */}
-      {activeTab === 'check' && (
-        <div className="px-6">
-          {/* Period Selector */}
-          <PeriodSelector
-            currentPeriod={currentPeriod}
-            onPeriodChange={changePeriod}
-          />
+        {/* Check Tab Content */}
+        {activeTab === 'check' && (
+          <div className="px-6">
+            {/* Period Selector */}
+            <PeriodSelector
+              currentPeriod={currentPeriod}
+              onPeriodChange={changePeriod}
+            />
 
-          {/* Progress Statistics */}
-          <ProgressStats stats={data.stats} />
+            {/* Progress Statistics */}
+            <div data-testid="stats-container">
+              <ProgressStats stats={data.stats} />
+            </div>
 
-          {/* Progress Chart */}
-          <ProgressChart chartData={data.chartData} />
+            {/* Progress Chart */}
+            <div data-testid="chart-container">
+              <ProgressChart chartData={data.chartData} />
+            </div>
 
           {/* Reflection Form */}
           <ReflectionForm
@@ -207,7 +213,7 @@ export default function CheckActionPage() {
                 まずCheckタブで振り返りを記録し、AI分析を実行してください
               </p>
               <button
-                data-testid="btn-go-to-check"
+                data-testid="btn-go-to-check-tab"
                 onClick={() => setActiveTab('check')}
                 className="px-6 py-3 bg-[var(--check-color)] text-white rounded-lg font-medium hover:opacity-90 transition-opacity"
               >
@@ -217,6 +223,7 @@ export default function CheckActionPage() {
           )}
         </div>
       )}
+      </div>
     </MainLayout>
   );
 }

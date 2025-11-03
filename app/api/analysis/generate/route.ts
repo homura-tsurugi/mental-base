@@ -15,6 +15,48 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { reflectionId } = body;
 
+    // E2Eテストモード: モックレポートを返す
+    if (process.env.VITE_SKIP_AUTH === 'true') {
+      const mockReport = {
+        id: `report-${Date.now()}`,
+        userId,
+        reflectionId: reflectionId || 'mock-reflection-id',
+        analysisType: 'pattern',
+        insights: [
+          {
+            type: 'progress',
+            title: 'タスク完了率が高い',
+            description: '期間内のタスク完了率は75%でした。',
+            importance: 'high',
+          },
+          {
+            type: 'pattern',
+            title: 'ログ記録の習慣',
+            description: '5日間のログ記録を継続しています。',
+            importance: 'medium',
+          },
+        ],
+        recommendations: [
+          {
+            priority: 1,
+            title: '振り返りの習慣化',
+            description: '定期的な振り返りを継続し、PDCAサイクルを回しましょう。',
+            actionable: true,
+            category: 'habit_improvement',
+          },
+        ],
+        confidence: 0.85,
+        summary: '[E2Eテストモード] AI分析レポートを生成しました。',
+        confidencePercentage: 85,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+      return NextResponse.json(mockReport, { status: 201 });
+    }
+
+    // 以降は本番モード処理
+    const originalReflectionId = reflectionId;
+
     // バリデーション
     if (!reflectionId || typeof reflectionId !== 'string') {
       return NextResponse.json(

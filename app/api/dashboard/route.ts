@@ -5,6 +5,9 @@ import { prisma } from '@/lib/prisma';
 import { verifySession } from '@/lib/dal';
 import type { DashboardData, Activity, ActivityType, ActivityIcon, TaskWithGoal, Notification } from '@/types';
 
+// @E2E_MOCK: タスク状態管理（toggle APIと共有）
+export const mockTaskStates = new Map<string, 'pending' | 'completed'>();
+
 // アクティビティタイプ別のアイコンと色を返す
 function getActivityStyle(type: ActivityType): {
   icon: ActivityIcon;
@@ -199,7 +202,7 @@ export async function GET(request: Request) {
       {
         id: 'task1',
         title: '朝のストレッチを10分間行う',
-        status: 'pending',
+        status: mockTaskStates.get('task1') || 'pending',
         priority: 'high',
         goalName: '健康管理',
         scheduledTime: '09:00',
@@ -212,7 +215,7 @@ export async function GET(request: Request) {
       {
         id: 'task2',
         title: 'チーム会議準備',
-        status: 'pending',
+        status: mockTaskStates.get('task2') || 'pending',
         priority: 'high',
         goalName: 'プロジェクト成功',
         scheduledTime: '14:00',
@@ -225,7 +228,7 @@ export async function GET(request: Request) {
       {
         id: 'task3',
         title: 'レポート作成',
-        status: 'pending',
+        status: mockTaskStates.get('task3') || 'pending',
         priority: 'medium',
         goalName: 'スキルアップ',
         scheduledTime: '16:30',

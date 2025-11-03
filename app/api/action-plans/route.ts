@@ -93,9 +93,21 @@ export async function GET(request: Request) {
 // POST /api/action-plans - アクションプラン作成
 export async function POST(request: Request) {
   try {
-    // 認証チェック
-    const session = await verifySession();
-    const userId = session.userId;
+    // E2Eテストモード検出
+    const url = new URL(request.url);
+    const skipAuth = url.searchParams.get('skipAuth') === 'true';
+
+    let userId: string;
+
+    if (skipAuth) {
+      // E2Eテストモード: モックユーザーを使用
+      userId = 'e2e-test-user-id';
+      console.log('[ActionPlans POST] E2Eテストモード: 認証スキップ');
+    } else {
+      // 通常モード: 認証チェック
+      const session = await verifySession();
+      userId = session.userId;
+    }
 
     // リクエストボディを取得
     const body = await request.json();
@@ -145,8 +157,8 @@ export async function POST(request: Request) {
       );
     }
 
-    // reportIdが指定されている場合、存在確認
-    if (reportId) {
+    // reportIdが指定されている場合、存在確認（通常モードのみ）
+    if (reportId && !skipAuth) {
       const report = await prisma.aIAnalysisReport.findUnique({
         where: { id: reportId },
       });

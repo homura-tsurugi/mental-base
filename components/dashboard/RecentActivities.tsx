@@ -10,7 +10,7 @@ interface RecentActivitiesProps {
 
 export const RecentActivities: React.FC<RecentActivitiesProps> = ({ activities }) => {
   return (
-    <section className="px-6 py-6">
+    <section className="mb-6">
       <h2 className="text-lg font-bold mb-4 text-[var(--text-primary)]" data-testid="recent-activities-title">
         最近のアクティビティ
       </h2>

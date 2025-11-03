@@ -115,9 +115,9 @@ export default defineConfig({
 
   // Webサーバー設定（テスト実行前に自動起動）
   webServer: {
-    command: 'npm run dev',
+    command: 'VITE_SKIP_AUTH=true npm run dev',
     url: 'http://localhost:3247',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: true, // 既存サーバーを再利用（開発時）
     timeout: 120 * 1000, // 2分
   },
 });

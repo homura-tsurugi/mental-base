@@ -41,7 +41,7 @@ export const CompassProgress: React.FC<CompassProgressProps> = ({ progress }) =>
   ];
 
   return (
-    <section className="px-6 py-6">
+    <section className="mb-6">
       <h2 className="text-lg font-bold mb-4 text-[var(--text-primary)]" data-testid="compass-summary-title">
         COM:PASS進捗サマリー
       </h2>

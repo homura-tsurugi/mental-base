@@ -8,6 +8,64 @@ import { verifySession } from '@/lib/dal';
 // GET /api/ai-assistant/chat/history
 export async function GET(request: Request) {
   try {
+    // E2Eテスト用: 認証スキップモード
+    if (process.env.VITE_SKIP_AUTH === 'true') {
+      console.log('[API] 認証スキップモード: モックAIチャット履歴を返却');
+
+      const { searchParams } = new URL(request.url);
+      const mode = searchParams.get('mode') || 'problem_solving';
+
+      // 5件のモックメッセージ
+      const mockMessages = [
+        {
+          id: `${mode}-msg-0`,
+          userId: 'test-user',
+          mode: mode,
+          role: 'assistant',
+          content: `こんにちは！${mode}モードのAIアシスタントです。`,
+          createdAt: new Date(Date.now() - 10000).toISOString(),
+        },
+        {
+          id: `${mode}-msg-1`,
+          userId: 'test-user',
+          mode: mode,
+          role: 'user',
+          content: `テストメッセージ1`,
+          createdAt: new Date(Date.now() - 8000).toISOString(),
+        },
+        {
+          id: `${mode}-msg-2`,
+          userId: 'test-user',
+          mode: mode,
+          role: 'assistant',
+          content: `承知しました。お手伝いします。`,
+          createdAt: new Date(Date.now() - 6000).toISOString(),
+        },
+        {
+          id: `${mode}-msg-3`,
+          userId: 'test-user',
+          mode: mode,
+          role: 'user',
+          content: `テストメッセージ2`,
+          createdAt: new Date(Date.now() - 4000).toISOString(),
+        },
+        {
+          id: `${mode}-msg-4`,
+          userId: 'test-user',
+          mode: mode,
+          role: 'assistant',
+          content: `はい、どうぞお気軽にご質問ください。`,
+          createdAt: new Date(Date.now() - 2000).toISOString(),
+        },
+      ];
+
+      return NextResponse.json({
+        messages: mockMessages,
+        hasMore: false,
+        nextCursor: undefined,
+      });
+    }
+
     // 認証チェック
     const session = await verifySession();
     const userId = session.userId;

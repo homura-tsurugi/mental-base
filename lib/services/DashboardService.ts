@@ -57,7 +57,13 @@ export class DashboardService {
    */
   async toggleTaskComplete(taskId: string, completed: boolean): Promise<void> {
     try {
-      const response = await fetch(`${this.baseUrl}/tasks/${taskId}/toggle`, {
+      // E2Eテスト用: e2eパラメータを追加
+      const isE2ETest = typeof window !== 'undefined' && process.env.VITE_SKIP_AUTH === 'true';
+      const url = isE2ETest
+        ? `${this.baseUrl}/tasks/${taskId}/toggle?e2e=true`
+        : `${this.baseUrl}/tasks/${taskId}/toggle`;
+
+      const response = await fetch(url, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

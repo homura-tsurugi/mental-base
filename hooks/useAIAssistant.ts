@@ -32,13 +32,26 @@ export const useAIAssistant = (): UseAIAssistantReturn => {
     AIAssistantMode.PROBLEM_SOLVING
   );
   const [modeOptions, setModeOptions] = useState<AIAssistantModeInfo[]>([]);
-  const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
+
+  // モード別履歴を保持
+  const [messagesByMode, setMessagesByMode] = useState<
+    Record<AIAssistantMode, ChatMessage[]>
+  >({
+    [AIAssistantMode.PROBLEM_SOLVING]: [],
+    [AIAssistantMode.LEARNING_SUPPORT]: [],
+    [AIAssistantMode.PLANNING]: [],
+    [AIAssistantMode.MENTORING]: [],
+  });
+
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
   // チャット履歴の末尾へのスクロール用ref
   const chatEndRef = useRef<HTMLDivElement | null>(null);
+
+  // 現在表示中のメッセージ
+  const chatHistory = messagesByMode[selectedMode] || [];
 
   /**
    * ページデータ取得
@@ -49,7 +62,10 @@ export const useAIAssistant = (): UseAIAssistantReturn => {
       setError(null);
       const pageData = await aiAssistantService.getPageData(selectedMode);
       setModeOptions(pageData.modeOptions);
-      setChatHistory(pageData.chatHistory);
+      setMessagesByMode((prev) => ({
+        ...prev,
+        [selectedMode]: pageData.chatHistory,
+      }));
     } catch (err) {
       setError(err as Error);
       console.error('AI Assistant page data fetch error:', err);
@@ -62,11 +78,23 @@ export const useAIAssistant = (): UseAIAssistantReturn => {
    * チャット履歴取得（モード切り替え時）
    */
   const fetchChatHistory = async (mode: AIAssistantMode) => {
+    // すでに履歴がある場合はスキップ
+    if (messagesByMode[mode].length > 0) {
+      setLoading(false);
+      return;
+    }
+
     try {
       setLoading(true);
       setError(null);
+
+      // API呼び出し（E2Eモードは API層で処理）
       const historyResponse = await aiAssistantService.getChatHistory(mode);
-      setChatHistory(historyResponse.messages);
+
+      setMessagesByMode((prev) => ({
+        ...prev,
+        [mode]: historyResponse.messages || [],
+      }));
     } catch (err) {
       setError(err as Error);
       console.error('Chat history fetch error:', err);
@@ -85,6 +113,7 @@ export const useAIAssistant = (): UseAIAssistantReturn => {
       setSending(true);
       setError(null);
 
+      // API呼び出し（E2Eモードは API層で処理）
       const form: ChatMessageForm = {
         content: content.trim(),
         mode: selectedMode,
@@ -92,8 +121,37 @@ export const useAIAssistant = (): UseAIAssistantReturn => {
 
       const response = await aiAssistantService.sendMessage(form);
 
-      // チャット履歴を再取得（新しいメッセージを反映）
-      await fetchChatHistory(selectedMode);
+      // E2Eモード: responseに userMessage と assistantMessage が含まれる
+      // 本番モード: responseに messageId, content, mode, timestamp が含まれる
+      if ('userMessage' in response && 'assistantMessage' in response) {
+        // E2Eモード: 両方のメッセージをstateに追加
+        setMessagesByMode((prev) => ({
+          ...prev,
+          [selectedMode]: [
+            ...prev[selectedMode],
+            response.userMessage as ChatMessage,
+            response.assistantMessage as ChatMessage,
+          ],
+        }));
+      } else {
+        // 本番モード: ユーザーメッセージ (楽観的UI) + AIメッセージ
+        const userMessage: ChatMessage = {
+          id: `temp-${Date.now()}`,
+          role: 'user',
+          content: content.trim(),
+          createdAt: new Date().toISOString(),
+        };
+        const assistantMessage: ChatMessage = {
+          id: response.messageId || `ai-${Date.now()}`,
+          role: 'assistant',
+          content: response.content,
+          createdAt: response.timestamp || new Date().toISOString(),
+        };
+        setMessagesByMode((prev) => ({
+          ...prev,
+          [selectedMode]: [...prev[selectedMode], userMessage, assistantMessage],
+        }));
+      }
 
       // スクロールを最下部に移動
       setTimeout(scrollToBottom, 100);

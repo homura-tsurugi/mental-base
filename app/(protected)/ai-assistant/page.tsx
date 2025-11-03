@@ -156,10 +156,11 @@ const AIAssistantPage: React.FC = () => {
             <p>メッセージを送信して会話を始めましょう</p>
           </div>
         ) : (
-          chatHistory.map((message) => (
+          chatHistory.map((message, index) => (
             <div
               key={message.id}
-              data-testid={`chat-message-${message.role}`}
+              data-testid={`chat-message-${index}`}
+              data-role={message.role}
               className={`flex flex-col max-w-[75%] animate-fadeIn ${
                 message.role === 'user'
                   ? 'self-end items-end'

@@ -60,7 +60,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
       });
 
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 3000);
+      setTimeout(() => setShowSuccess(false), 5000);
 
       // フォームをリセット（任意）
       // setTitle('');

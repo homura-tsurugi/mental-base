@@ -38,6 +38,26 @@ export const useCheckActionData = (): UseCheckActionDataReturn => {
     try {
       setLoading(true);
       setError(null);
+
+      // E2E テストモード: URLパラメータからエラーMockを検出
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        const mockError = url.searchParams.get('mockError');
+
+        if (mockError === 'api') {
+          throw new Error('API接続エラーが発生しました');
+        }
+        if (mockError === 'network') {
+          throw new Error('ネットワーク接続に失敗しました');
+        }
+        if (mockError === 'timeout') {
+          throw new Error('リクエストがタイムアウトしました');
+        }
+        if (mockError === 'invalid_data') {
+          throw new Error('不正なデータ形式です');
+        }
+      }
+
       const result = await checkActionService.getCheckActionData(period);
       setData(result);
     } catch (err) {

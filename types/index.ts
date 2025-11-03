@@ -595,12 +595,22 @@ export interface ChatContext {
   recentReflections?: Reflection[]; // 最新の振り返り（最大5件）
 }
 
-export interface AIChatResponse {
+// Production API response (only assistant message)
+export interface AIChatResponseProduction {
   messageId: string;
   content: string;
   mode: AIAssistantMode;
-  timestamp: Date;
+  timestamp: string;
 }
+
+// E2E test mock response (both user and assistant messages)
+export interface AIChatResponseE2E {
+  userMessage: ChatMessage;
+  assistantMessage: ChatMessage;
+}
+
+// Union type for both response formats
+export type AIChatResponse = AIChatResponseProduction | AIChatResponseE2E;
 
 export interface ChatHistoryResponse {
   messages: ChatMessage[];

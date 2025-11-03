@@ -104,6 +104,17 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
           />
         </div>
 
+        {/* 保存ボタン */}
+        <button
+          data-testid="btn-save-reflection"
+          type="submit"
+          disabled={isSubmitting}
+          className="w-full px-4 py-3 bg-[var(--check-color)] text-white rounded-lg font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span className="material-icons">save</span>
+          {isSubmitting ? '保存中...' : '振り返りを保存'}
+        </button>
+
         {/* AI分析ボタン */}
         <button
           data-testid="btn-ai-analyze"

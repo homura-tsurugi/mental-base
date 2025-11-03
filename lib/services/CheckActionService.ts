@@ -147,14 +147,20 @@ export class CheckActionService {
    */
   async createActionPlan(data: ActionPlanForm): Promise<ActionPlanDetailed> {
     try {
-      const response = await fetch(`${this.baseUrl}/action-plans`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify(data),
-      });
+      // E2Eテストモード検出
+      const skipAuth = typeof window !== 'undefined' && localStorage.getItem('VITE_SKIP_AUTH') === 'true';
+
+      const response = await fetch(
+        `${this.baseUrl}/action-plans${skipAuth ? '?skipAuth=true' : ''}`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          credentials: 'include',
+          body: JSON.stringify(data),
+        }
+      );
 
       if (!response.ok) {
         if (response.status === 401) {

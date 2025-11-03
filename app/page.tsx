@@ -66,7 +66,7 @@ export default function Home() {
 
   return (
     <MainLayout user={mockUser}>
-      <div data-testid="dashboard-container">
+      <div className="px-6 py-6" data-testid="dashboard-container">
         {/* COM:PASS Progress Summary */}
         <CompassProgress progress={data.compassSummary} />
 

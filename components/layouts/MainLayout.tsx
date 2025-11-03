@@ -32,7 +32,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, user }) => {
     : baseNavigationItems;
 
   return (
-    <div className="min-h-screen bg-[var(--bg-secondary)] max-w-[600px] mx-auto">
+    <div className="min-h-screen bg-[var(--bg-secondary)] max-w-full sm:max-w-[600px] mx-auto">
       {/* Header */}
       <header className="sticky top-0 bg-[var(--bg-primary)] border-b border-[var(--border-color)] px-4 py-3 flex items-center justify-between shadow-sm z-[100]">
         <div className="flex items-center gap-2">
@@ -65,7 +65,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children, user }) => {
       </main>
 
       {/* Bottom Navigation */}
-      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[600px] bg-[var(--bg-primary)] border-t border-[var(--border-color)] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] flex justify-around py-2 z-[100]">
+      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full md:max-w-[600px] bg-[var(--bg-primary)] border-t border-[var(--border-color)] shadow-[0_-2px_10px_rgba(0,0,0,0.05)] flex justify-around py-2 z-[100]">
         {navigationItems.map((item) => {
           const isActive = pathname === item.href;
           return (

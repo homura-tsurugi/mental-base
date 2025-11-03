@@ -153,7 +153,7 @@ test.describe('E2E-PLDO-010: 目標作成モーダル起動', () => {
     }
 
     // /api/goals へのAPIリクエストが行われたことを確認
-    const goalsApiCall = networkRequests.find(req => req.url().includes('/api/goals'));
+    const goalsApiCall = networkRequests.find(req => req.url.includes('/api/goals'));
     if (!goalsApiCall) {
       console.warn('[警告] /api/goals へのAPIリクエストが検出されませんでした');
       console.log('検出されたAPIリクエスト:', networkRequests);
@@ -287,8 +287,9 @@ test.describe('E2E-PLDO-010: 目標作成モーダル起動', () => {
     console.log('[Test] Step 11: モーダルの基本構造を確認');
 
     // モーダル内にキャンセルボタンと作成ボタンが存在することを確認
-    const cancelButton = page.locator('button').filter({ hasText: /キャンセル/i });
-    const submitButton = page.locator('button').filter({ hasText: /作成/i });
+    const modal = page.locator('[data-testid="goal-modal"]');
+    const cancelButton = modal.locator('button').filter({ hasText: /キャンセル/i });
+    const submitButton = modal.locator('button').filter({ hasText: /^作成$/i }); // 完全一致で「作成」のみ
 
     await expect(cancelButton).toBeVisible({ timeout: 3000 });
     await expect(submitButton).toBeVisible({ timeout: 3000 });
