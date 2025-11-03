@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ActionPlanForm as ActionPlanFormType } from '@/types';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ActionPlanFormProps {
   reportId?: string;
@@ -63,7 +64,7 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
 
       console.log('[ActionPlanForm] onSubmit succeeded, showing success alert');
       setShowSuccess(true);
-      setTimeout(() => setShowSuccess(false), 5000);
+      setTimeout(() => setShowSuccess(false), 3000);
 
       // フォームをリセット（任意）
       // setTitle('');
@@ -82,12 +83,12 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
     <div className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
       {/* Success Alert */}
       {showSuccess && (
-        <div data-testid="alert-success" className="mb-4 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800">
-          <div className="flex items-center gap-2">
+        <Alert variant="success" data-testid="alert-success" className="mb-4">
+          <AlertDescription className="flex items-center gap-2">
             <span className="material-icons">check_circle</span>
             <span className="font-medium">改善計画を作成しました</span>
-          </div>
-        </div>
+          </AlertDescription>
+        </Alert>
       )}
 
       <div className="flex items-center gap-2 mb-4">

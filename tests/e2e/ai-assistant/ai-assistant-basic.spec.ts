@@ -104,18 +104,32 @@ test.describe('AIアシスタント - チャット表示', () => {
     const messageCount = await chatMessages.count();
     expect(messageCount).toBe(5);
 
-    // メッセージが assistant → user → assistant → user → assistant の順
+    // メッセージが user → assistant → user → assistant → user の順
     const firstMessage = page.locator('[data-testid="chat-message-0"]');
     const secondMessage = page.locator('[data-testid="chat-message-1"]');
     const thirdMessage = page.locator('[data-testid="chat-message-2"]');
     const fourthMessage = page.locator('[data-testid="chat-message-3"]');
     const fifthMessage = page.locator('[data-testid="chat-message-4"]');
 
-    // 最初がAIメッセージか確認
-    const firstIsAI = await firstMessage.evaluate((el) => {
-      return el.textContent?.includes('assistant') || el.className.includes('ai');
-    });
-    expect(firstIsAI).toBeTruthy();
+    // 最初がユーザーメッセージか確認
+    const firstRole = await firstMessage.getAttribute('data-role');
+    expect(firstRole).toBe('user');
+
+    // 2番目がアシスタントメッセージか確認
+    const secondRole = await secondMessage.getAttribute('data-role');
+    expect(secondRole).toBe('assistant');
+
+    // 3番目がユーザーメッセージか確認
+    const thirdRole = await thirdMessage.getAttribute('data-role');
+    expect(thirdRole).toBe('user');
+
+    // 4番目がアシスタントメッセージか確認
+    const fourthRole = await fourthMessage.getAttribute('data-role');
+    expect(fourthRole).toBe('assistant');
+
+    // 5番目がユーザーメッセージか確認
+    const fifthRole = await fifthMessage.getAttribute('data-role');
+    expect(fifthRole).toBe('user');
   });
 
   test('E2E-AIA-005: チャット履歴なし状態表示', async ({ page }) => {

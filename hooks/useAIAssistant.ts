@@ -189,6 +189,7 @@ export const useAIAssistant = (): UseAIAssistantReturn => {
    */
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   /**

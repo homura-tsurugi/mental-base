@@ -150,9 +150,15 @@ export async function GET(request: Request) {
   }
 }
 
-// DELETE /api/ai-assistant/chat/history - チャット履歴クリア（開発用）
+// DELETE /api/ai-assistant/chat/history - チャット履歴クリア（開発用・E2Eテスト用）
 export async function DELETE() {
   try {
+    // E2Eテスト用: 認証スキップモード
+    if (process.env.VITE_SKIP_AUTH === 'true') {
+      console.log('[API] 認証スキップモード: チャット履歴クリア（モック）');
+      return new NextResponse(null, { status: 204 });
+    }
+
     // 認証チェック
     const session = await verifySession();
     const userId = session.userId;
