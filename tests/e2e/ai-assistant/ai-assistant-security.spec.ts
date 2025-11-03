@@ -100,7 +100,7 @@ test.describe('AIアシスタント - XSS対策', () => {
     await sendButton.click();
 
     // AI応答待機
-    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]');
+    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]').last();
     await expect(aiMessage).toBeVisible({ timeout: 2000 });
 
     // スクリプトが実行されないことを確認
@@ -110,12 +110,12 @@ test.describe('AIアシスタント - XSS対策', () => {
     });
 
     // AI応答がエスケープされて表示される
-    const aiContent = await aiMessage.last().textContent();
+    const aiContent = await aiMessage.textContent();
     expect(aiContent).toBeTruthy();
 
     // HTMLタグが直接実行されないことを確認
     // (レンダリング結果の確認)
-    const hasScript = await aiMessage.last().evaluate((el) => {
+    const hasScript = await aiMessage.evaluate((el) => {
       // 直接childrenにscriptやimg onerrorがないか確認
       return el.innerHTML.includes('onerror=') && el.innerHTML.includes('alert');
     });

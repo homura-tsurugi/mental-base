@@ -90,8 +90,11 @@ test.describe('Plan-Do Page Do Tab Tests', () => {
 
   // E2E-PLDO-027: タスク完了チェック
   test('E2E-PLDO-027: タスクを完了状態にできる', async ({ page }) => {
+    // タスクリストが読み込まれるまで待機
+    await page.waitForSelector('[data-testid="task-list"], [data-testid="empty-tasks-message"]', { timeout: 10000 }).catch(() => {});
+
     const taskItem = page.locator('[data-testid="task-item"]').first();
-    const checkbox = taskItem.locator('input[type="checkbox"]');
+    const checkbox = taskItem.locator('[data-testid="task-checkbox"]');
 
     // チェックボックスが未チェック状態を確認
     const isChecked = await checkbox.isChecked();
@@ -112,8 +115,11 @@ test.describe('Plan-Do Page Do Tab Tests', () => {
 
   // E2E-PLDO-028: タスク完了解除
   test('E2E-PLDO-028: 完了タスクを未完了に戻せる', async ({ page }) => {
+    // タスクリストが読み込まれるまで待機
+    await page.waitForSelector('[data-testid="task-list"], [data-testid="empty-tasks-message"]', { timeout: 10000 }).catch(() => {});
+
     const taskItem = page.locator('[data-testid="task-item"]').first();
-    const checkbox = taskItem.locator('input[type="checkbox"]');
+    const checkbox = taskItem.locator('[data-testid="task-checkbox"]');
 
     // チェック状態に変更
     const isChecked = await checkbox.isChecked();
@@ -151,8 +157,8 @@ test.describe('Plan-Do Page Do Tab Tests', () => {
   test('E2E-PLDO-032: 4つの感情オプションが表示される', async ({ page }) => {
     const logForm = page.getByTestId('log-form');
 
-    // 4つの感情ボタンを確認
-    const emotionButtons = logForm.locator('[data-testid="emotion-button"]');
+    // 4つの感情ボタンを確認 (data-testid は "emotion-button-{value}" の形式)
+    const emotionButtons = logForm.locator('[data-testid^="emotion-button-"]');
     const count = await emotionButtons.count();
 
     // 少なくとも4つの感情オプションが存在することを確認
@@ -179,13 +185,13 @@ test.describe('Plan-Do Page Do Tab Tests', () => {
   test('E2E-PLDO-033: 初期状態で「普通」が選択されている', async ({ page }) => {
     const logForm = page.getByTestId('log-form');
 
-    // 普通のボタンを確認
-    const normalButton = logForm.locator('[data-testid="emotion-button"]').or(logForm.getByText(/普通|😐/));
+    // 普通のボタンを確認 (neutral emotion)
+    const normalButton = logForm.locator('[data-testid="emotion-button-neutral"]').or(logForm.getByText(/普通|😐/));
 
     // デフォルトで選択されている（青枠、薄青背景）
     const isActive = await normalButton.first().evaluate((el) => {
       const classList = el.className;
-      return classList.includes('bg-blue') || classList.includes('border-blue') || classList.includes('active');
+      return classList.includes('bg-blue') || classList.includes('border-blue') || classList.includes('active') || classList.includes('primary');
     });
 
     expect(isActive).toBeTruthy();
@@ -195,8 +201,8 @@ test.describe('Plan-Do Page Do Tab Tests', () => {
   test('E2E-PLDO-034: 感情を選択できる', async ({ page }) => {
     const logForm = page.getByTestId('log-form');
 
-    // 嬉しいボタンをクリック
-    const happyButton = logForm.locator('[data-testid="emotion-button"]').or(logForm.getByText(/嬉しい|😊/));
+    // 嬉しいボタンをクリック (happy emotion)
+    const happyButton = logForm.locator('[data-testid="emotion-button-happy"]').or(logForm.getByText(/嬉しい|😊/));
     await happyButton.first().click();
 
     // 嬉しいボタンがハイライト表示に変更

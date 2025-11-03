@@ -25,6 +25,8 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
   const [newActionItem, setNewActionItem] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleAddActionItem = () => {
     if (newActionItem.trim()) {
@@ -42,12 +44,16 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
     console.log('[ActionPlanForm] Submit started', { title, description, actionItems: actionItems.length });
 
     if (!title.trim()) {
-      alert('計画タイトルを入力してください');
+      setErrorMessage('計画タイトルを入力してください');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
       return;
     }
 
     if (actionItems.length === 0) {
-      alert('少なくとも1つのアクション項目を追加してください');
+      setErrorMessage('少なくとも1つのアクション項目を追加してください');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
       return;
     }
 
@@ -72,7 +78,9 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
       // setActionItems([]);
     } catch (error) {
       console.error('[ActionPlanForm] Submission error:', error);
-      alert('改善計画の作成に失敗しました');
+      setErrorMessage('改善計画の作成に失敗しました');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
     } finally {
       setIsSubmitting(false);
       console.log('[ActionPlanForm] Submit finished, showSuccess=', showSuccess);
@@ -87,6 +95,16 @@ export const ActionPlanForm: React.FC<ActionPlanFormProps> = ({
           <AlertDescription className="flex items-center gap-2">
             <span className="material-icons">check_circle</span>
             <span className="font-medium">改善計画を作成しました</span>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Error Alert */}
+      {showError && (
+        <Alert variant="error" data-testid="alert-error" className="mb-4">
+          <AlertDescription className="flex items-center gap-2">
+            <span className="material-icons">error</span>
+            <span className="font-medium">{errorMessage}</span>
           </AlertDescription>
         </Alert>
       )}

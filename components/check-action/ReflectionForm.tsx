@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { ReflectionForm as ReflectionFormType, PeriodOption } from '@/types';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 interface ReflectionFormProps {
   period: PeriodOption;
@@ -18,12 +19,16 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
   const [achievements, setAchievements] = useState('');
   const [challenges, setChallenges] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!content.trim()) {
-      alert('振り返り内容を入力してください');
+      setErrorMessage('振り返り内容を入力してください');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
       return;
     }
 
@@ -45,7 +50,9 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
       setChallenges('');
     } catch (error) {
       console.error('Reflection submission error:', error);
-      alert('振り返りの保存に失敗しました');
+      setErrorMessage('振り返りの保存に失敗しました');
+      setShowError(true);
+      setTimeout(() => setShowError(false), 3000);
     } finally {
       setIsSubmitting(false);
     }
@@ -53,6 +60,16 @@ export const ReflectionForm: React.FC<ReflectionFormProps> = ({
 
   return (
     <div data-testid="reflection-form" className="bg-[var(--bg-primary)] rounded-lg p-4 mb-6 shadow-sm">
+      {/* Error Alert */}
+      {showError && (
+        <Alert variant="error" data-testid="alert-error" className="mb-4">
+          <AlertDescription className="flex items-center gap-2">
+            <span className="material-icons">error</span>
+            <span className="font-medium">{errorMessage}</span>
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div className="flex items-center gap-2 mb-4">
         <span className="material-icons text-[var(--text-secondary)]">edit_note</span>
         <h3 className="text-base font-semibold text-[var(--text-primary)]">

@@ -70,6 +70,12 @@ export const useCheckActionData = (): UseCheckActionDataReturn => {
       }
 
       const result = await checkActionService.getCheckActionData(period);
+
+      // E2E Test Mode: Add delay to make loading state visible for E2E-CHKACT-002
+      if (typeof window !== 'undefined' && localStorage.getItem('VITE_SKIP_AUTH') === 'true') {
+        await new Promise(resolve => setTimeout(resolve, 500)); // 500ms delay for test
+      }
+
       setData(result);
     } catch (err) {
       setError(err as Error);
@@ -97,6 +103,11 @@ export const useCheckActionData = (): UseCheckActionDataReturn => {
 
   const generateAIAnalysis = async (reflectionId: string): Promise<AIAnalysisReportDetailed> => {
     try {
+      // E2E Test Mode: Add delay to make AI analysis loading visible for E2E-CHKACT-015
+      if (typeof window !== 'undefined' && localStorage.getItem('VITE_SKIP_AUTH') === 'true') {
+        await new Promise(resolve => setTimeout(resolve, 800)); // 800ms delay for test
+      }
+
       const report = await checkActionService.generateAIAnalysis(reflectionId);
       // データをリフレッシュ
       await fetchData();

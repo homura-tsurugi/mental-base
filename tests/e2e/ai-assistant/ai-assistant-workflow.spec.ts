@@ -199,7 +199,7 @@ test.describe('AIアシスタント - エッジケース', () => {
     await expect(lastUserMessage).toContainText('こんにちは');
 
     // AI応答待機
-    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]');
+    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]').last();
     await expect(aiMessage).toBeVisible({ timeout: 2000 });
 
     // 特殊記号を含むメッセージを送信

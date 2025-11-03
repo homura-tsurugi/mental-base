@@ -44,11 +44,11 @@ test.describe('AIアシスタント - メッセージ送受信', () => {
     await expect(inputField).toHaveValue('');
 
     // ユーザーメッセージがチャット履歴に追加される
-    const userMessage = page.locator('[data-testid^="chat-message-"][data-role="user"]');
+    const userMessage = page.locator('[data-testid^="chat-message-"][data-role="user"]').last();
     await expect(userMessage).toContainText('こんにちは', { timeout: 1000 });
 
     // 1秒後にAI応答が追加される
-    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]');
+    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]').last();
     await expect(aiMessage).toBeVisible({ timeout: 2000 });
   });
 
@@ -64,11 +64,11 @@ test.describe('AIアシスタント - メッセージ送受信', () => {
     await expect(inputField).toHaveValue('');
 
     // ユーザーメッセージがチャット履歴に追加される
-    const userMessage = page.locator('[data-testid^="chat-message-"][data-role="user"]');
+    const userMessage = page.locator('[data-testid^="chat-message-"][data-role="user"]').last();
     await expect(userMessage).toContainText('テストメッセージ', { timeout: 1000 });
 
     // AI応答が追加される
-    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]');
+    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]').last();
     await expect(aiMessage).toBeVisible({ timeout: 2000 });
   });
 
@@ -125,14 +125,13 @@ test.describe('AIアシスタント - メッセージ送受信', () => {
     await sendButton.click();
 
     // 1秒後のチャット履歴を確認
-    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]');
+    const aiMessage = page.locator('[data-testid^="chat-message-"][data-role="assistant"]').last();
 
     // AI応答メッセージがチャット履歴に左寄せで追加される
     await expect(aiMessage).toBeVisible({ timeout: 2000 });
 
     // 最後のAIメッセージを確認
-    const lastAIMessage = aiMessage.last();
-    await expect(lastAIMessage).toContainText(/.*/, { timeout: 2000 });
+    await expect(aiMessage).toContainText(/.*/, { timeout: 2000 });
   });
 
   test('E2E-AIA-016: チャット履歴の自動スクロール', async ({ page }) => {
