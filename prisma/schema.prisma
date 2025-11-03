@@ -1,6 +1,3 @@
-// Mental-Base Prisma Schema
-// Next.js 15 + Auth.js v5 + Supabase PostgreSQL
-
 generator client {
   provider = "prisma-client-js"
   output   = "../lib/generated/prisma"
@@ -12,46 +9,36 @@ datasource db {
   directUrl = env("DIRECT_DATABASE_URL")
 }
 
-// ============================================================================
-// 認証関連モデル
-// ============================================================================
-
 model User {
-  id            String    @id @default(uuid())
-  email         String    @unique
-  name          String
-  password      String    // bcryptハッシュ化済み
-  emailVerified DateTime?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-
-  // フェーズ2: メンター機能拡張
-  role       String   @default("client") // 'client' | 'mentor' | 'admin'
-  isMentor   Boolean  @default(false)
-  bio        String?  @db.Text
-  expertise  String[] @default([])
-
-  // リレーション（フェーズ1）
-  sessions            Session[]
-  passwordResetTokens PasswordResetToken[]
-  goals               Goal[]
-  tasks               Task[]
-  logs                Log[]
-  reflections         Reflection[]
-  aiAnalysisReports   AIAnalysisReport[]
-  actionPlans         ActionPlan[]
-  chatMessages        ChatMessage[]
-  userSettings        UserSettings?
-  notifications       Notification[]
-
-  // リレーション（フェーズ2: メンター機能）
-  mentorRelationshipsAsMentor  MentorClientRelationship[] @relation("MentorRelations")
-  mentorRelationshipsAsClient  MentorClientRelationship[] @relation("ClientRelations")
-  clientViewLogs               ClientDataViewLog[]        @relation("MentorViews")
-  accessPermissionsGiven       ClientDataAccessPermission[] @relation("ClientPermissions")
-  mentorNotes                  MentorNote[]               @relation("MentorCreatedNotes")
-  clientProgressReportsAsClient ClientProgressReport[]    @relation("ClientReports")
-  clientProgressReportsAsMentor ClientProgressReport[]    @relation("MentorReports")
+  id                            String                       @id @default(uuid())
+  email                         String                       @unique
+  name                          String
+  password                      String
+  emailVerified                 DateTime?
+  createdAt                     DateTime                     @default(now())
+  updatedAt                     DateTime                     @updatedAt
+  role                          String                       @default("client")
+  isMentor                      Boolean                      @default(false)
+  bio                           String?
+  expertise                     String[]                     @default([])
+  actionPlans                   ActionPlan[]
+  aiAnalysisReports             AIAnalysisReport[]
+  chatMessages                  ChatMessage[]
+  accessPermissionsGiven        ClientDataAccessPermission[] @relation("ClientPermissions")
+  clientViewLogs                ClientDataViewLog[]          @relation("MentorViews")
+  clientProgressReportsAsClient ClientProgressReport[]       @relation("ClientReports")
+  clientProgressReportsAsMentor ClientProgressReport[]       @relation("MentorReports")
+  goals                         Goal[]
+  logs                          Log[]
+  mentorRelationshipsAsClient   MentorClientRelationship[]   @relation("ClientRelations")
+  mentorRelationshipsAsMentor   MentorClientRelationship[]   @relation("MentorRelations")
+  mentorNotes                   MentorNote[]                 @relation("MentorCreatedNotes")
+  notifications                 Notification[]
+  passwordResetTokens           PasswordResetToken[]
+  reflections                   Reflection[]
+  sessions                      Session[]
+  tasks                         Task[]
+  userSettings                  UserSettings?
 
   @@map("users")
 }
@@ -84,28 +71,24 @@ model UserSettings {
   id                 String   @id @default(uuid())
   userId             String   @unique
   emailNotifications Boolean  @default(true)
-  reminderTime       String?  // HH:mm形式
-  theme              String   @default("professional") // 'professional' | 'warm' | 'modern' | 'calm'
+  reminderTime       String?
+  theme              String   @default("professional")
   updatedAt          DateTime @updatedAt
   user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_settings")
 }
 
-// ============================================================================
-// 目標・タスク・ログ関連モデル
-// ============================================================================
-
 model Goal {
-  id          String   @id @default(uuid())
+  id          String    @id @default(uuid())
   userId      String
-  title       String   @db.VarChar(200)
-  description String?  @db.Text
+  title       String    @db.VarChar(200)
+  description String?
   deadline    DateTime?
-  status      String   @default("active") // 'active' | 'completed' | 'archived'
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      String    @default("active")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks       Task[]
 
   @@index([userId])
@@ -118,17 +101,17 @@ model Task {
   userId        String
   goalId        String?
   title         String    @db.VarChar(200)
-  description   String?   @db.Text
+  description   String?
   dueDate       DateTime?
-  scheduledTime String?   // HH:mm形式
-  priority      String    @default("medium") // 'high' | 'medium' | 'low'
-  status        String    @default("pending") // 'pending' | 'in_progress' | 'completed'
+  scheduledTime String?
+  priority      String    @default("medium")
+  status        String    @default("pending")
   completedAt   DateTime?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
-  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  goal          Goal?     @relation(fields: [goalId], references: [id], onDelete: Cascade)
   logs          Log[]
+  goal          Goal?     @relation(fields: [goalId], references: [id], onDelete: Cascade)
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([goalId])
@@ -141,13 +124,13 @@ model Log {
   id        String   @id @default(uuid())
   userId    String
   taskId    String?
-  content   String   @db.Text
-  emotion   String?  // 'happy' | 'neutral' | 'sad' | 'anxious' | 'excited' | 'tired'
-  state     String?  // 'energetic' | 'tired' | 'focused' | 'distracted' | 'calm' | 'stressed'
-  type      String   @default("daily") // 'daily' | 'reflection' | 'insight'
+  content   String
+  emotion   String?
+  state     String?
+  type      String   @default("daily")
   createdAt DateTime @default(now())
+  task      Task?    @relation(fields: [taskId], references: [id])
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  task      Task?    @relation(fields: [taskId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([taskId])
@@ -155,22 +138,18 @@ model Log {
   @@map("logs")
 }
 
-// ============================================================================
-// 振り返り・AI分析・アクション関連モデル
-// ============================================================================
-
 model Reflection {
   id               String             @id @default(uuid())
   userId           String
-  period           String             // 'daily' | 'weekly' | 'monthly'
+  period           String
   startDate        DateTime
   endDate          DateTime
-  content          String             @db.Text
-  achievements     String?            @db.Text
-  challenges       String?            @db.Text
+  content          String
+  achievements     String?
+  challenges       String?
   createdAt        DateTime           @default(now())
-  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
   aiAnalysisReport AIAnalysisReport[]
+  user             User               @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([createdAt])
@@ -181,15 +160,15 @@ model AIAnalysisReport {
   id              String       @id @default(uuid())
   userId          String
   reflectionId    String?
-  analysisType    String       // 'progress' | 'pattern' | 'recommendation'
-  insights        Json         // AIInsight[]の配列
-  recommendations Json         // AIRecommendation[]の配列
-  summary         String?      @db.Text
-  confidence      Float        // 0-1
+  analysisType    String
+  insights        Json
+  recommendations Json
+  summary         String?
+  confidence      Float
   createdAt       DateTime     @default(now())
-  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
-  reflection      Reflection?  @relation(fields: [reflectionId], references: [id], onDelete: SetNull)
   actionPlans     ActionPlan[]
+  reflection      Reflection?  @relation(fields: [reflectionId], references: [id])
+  user            User         @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([reflectionId])
@@ -202,13 +181,13 @@ model ActionPlan {
   userId      String
   reportId    String?
   title       String            @db.VarChar(200)
-  description String            @db.Text
-  actionItems Json              // ActionItem[]の配列
-  status      String            @default("planned") // 'planned' | 'in_progress' | 'completed'
+  description String
+  actionItems Json
+  status      String            @default("planned")
   createdAt   DateTime          @default(now())
   updatedAt   DateTime          @updatedAt
+  report      AIAnalysisReport? @relation(fields: [reportId], references: [id])
   user        User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  report      AIAnalysisReport? @relation(fields: [reportId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([reportId])
@@ -216,17 +195,13 @@ model ActionPlan {
   @@map("action_plans")
 }
 
-// ============================================================================
-// AIアシスタント関連モデル
-// ============================================================================
-
 model ChatMessage {
   id        String   @id @default(uuid())
   userId    String
-  role      String   // 'user' | 'assistant'
-  content   String   @db.Text
-  mode      String   // 'problem_solving' | 'learning_support' | 'planning' | 'mentoring'
-  context   Json?    // オプション: コンテキスト情報
+  role      String
+  content   String
+  mode      String
+  context   Json?
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -236,16 +211,12 @@ model ChatMessage {
   @@map("chat_messages")
 }
 
-// ============================================================================
-// 通知関連モデル
-// ============================================================================
-
 model Notification {
   id        String   @id @default(uuid())
   userId    String
-  type      String   // 'reminder' | 'achievement' | 'suggestion'
+  type      String
   title     String   @db.VarChar(200)
-  message   String   @db.Text
+  message   String
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -256,28 +227,21 @@ model Notification {
   @@map("notifications")
 }
 
-// ============================================================================
-// フェーズ2: メンター機能関連モデル
-// ============================================================================
-
-// メンター-クライアント関係
 model MentorClientRelationship {
-  id               String    @id @default(uuid())
-  mentorId         String
-  clientId         String
-  status           String    @default("pending") // 'pending' | 'active' | 'terminated'
-  invitedBy        String    // メンターまたはクライアントのID
-  invitedAt        DateTime  @default(now())
-  acceptedAt       DateTime?
-  terminatedAt     DateTime?
-  terminationReason String?  @db.Text
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  // リレーション
-  mentor            User                        @relation("MentorRelations", fields: [mentorId], references: [id], onDelete: Cascade)
+  id                String                      @id @default(uuid())
+  mentorId          String
+  clientId          String
+  status            String                      @default("pending")
+  invitedBy         String
+  invitedAt         DateTime                    @default(now())
+  acceptedAt        DateTime?
+  terminatedAt      DateTime?
+  terminationReason String?
+  createdAt         DateTime                    @default(now())
+  updatedAt         DateTime                    @updatedAt
+  accessPermissions ClientDataAccessPermission?
   client            User                        @relation("ClientRelations", fields: [clientId], references: [id], onDelete: Cascade)
-  accessPermissions ClientDataAccessPermission[]
+  mentor            User                        @relation("MentorRelations", fields: [mentorId], references: [id], onDelete: Cascade)
 
   @@unique([mentorId, clientId])
   @@index([mentorId])
@@ -286,42 +250,35 @@ model MentorClientRelationship {
   @@map("mentor_client_relationships")
 }
 
-// データアクセス権限
 model ClientDataAccessPermission {
-  id              String   @id @default(uuid())
-  relationshipId  String
-  clientId        String
-  allowGoals      Boolean  @default(true)
-  allowTasks      Boolean  @default(true)
-  allowLogs       Boolean  @default(true)
-  allowReflections Boolean @default(true)
-  allowAiReports  Boolean  @default(true)
-  isActive        Boolean  @default(true)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String                   @id @default(uuid())
+  relationshipId   String                   @unique
+  clientId         String
+  allowGoals       Boolean                  @default(true)
+  allowTasks       Boolean                  @default(true)
+  allowLogs        Boolean                  @default(true)
+  allowReflections Boolean                  @default(true)
+  allowAiReports   Boolean                  @default(true)
+  isActive         Boolean                  @default(true)
+  createdAt        DateTime                 @default(now())
+  updatedAt        DateTime                 @updatedAt
+  client           User                     @relation("ClientPermissions", fields: [clientId], references: [id], onDelete: Cascade)
+  relationship     MentorClientRelationship @relation(fields: [relationshipId], references: [id], onDelete: Cascade)
 
-  // リレーション
-  relationship MentorClientRelationship @relation(fields: [relationshipId], references: [id], onDelete: Cascade)
-  client       User                     @relation("ClientPermissions", fields: [clientId], references: [id], onDelete: Cascade)
-
-  @@unique([relationshipId])
   @@index([clientId])
   @@index([isActive])
   @@map("client_data_access_permissions")
 }
 
-// データ閲覧監査ログ
 model ClientDataViewLog {
   id        String   @id @default(uuid())
   mentorId  String
   clientId  String
-  dataType  String   // 'goal' | 'task' | 'log' | 'reflection' | 'ai_report'
-  dataId    String   // 閲覧したデータのID
-  action    String   // 'view' | 'export'
+  dataType  String
+  dataId    String
+  action    String
   createdAt DateTime @default(now())
-
-  // リレーション
-  mentor User @relation("MentorViews", fields: [mentorId], references: [id], onDelete: Cascade)
+  mentor    User     @relation("MentorViews", fields: [mentorId], references: [id], onDelete: Cascade)
 
   @@index([mentorId])
   @@index([clientId])
@@ -330,23 +287,20 @@ model ClientDataViewLog {
   @@map("client_data_view_logs")
 }
 
-// メンターノート
 model MentorNote {
-  id             String   @id @default(uuid())
-  mentorId       String
-  clientId       String
-  title          String   @db.VarChar(200)
-  content        String   @db.Text
-  noteType       String   @default("general") // 'general' | 'observation' | 'concern' | 'achievement'
-  isSharedWithClient Boolean @default(false) // true: クライアントと共有、false: メンターのみ閲覧可能
-  tags           String[] @default([])
-  linkedDataType String?  // 'goal' | 'task' | 'log' | 'reflection'
-  linkedDataId   String?
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  // リレーション
-  mentor User @relation("MentorCreatedNotes", fields: [mentorId], references: [id], onDelete: Cascade)
+  id                 String   @id @default(uuid())
+  mentorId           String
+  clientId           String
+  title              String   @db.VarChar(200)
+  content            String
+  noteType           String   @default("general")
+  tags               String[] @default([])
+  linkedDataType     String?
+  linkedDataId       String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+  isSharedWithClient Boolean  @default(false)
+  mentor             User     @relation("MentorCreatedNotes", fields: [mentorId], references: [id], onDelete: Cascade)
 
   @@index([mentorId])
   @@index([clientId])
@@ -355,33 +309,30 @@ model MentorNote {
   @@map("mentor_notes")
 }
 
-// クライアント進捗レポート
 model ClientProgressReport {
-  id               String   @id @default(uuid())
-  clientId         String
-  mentorId         String
-  reportPeriod     String   // 'weekly' | 'monthly'
-  startDate        DateTime
-  endDate          DateTime
-  overallProgress  Float    // 0-100
-  completedGoals   Int      @default(0)
-  completedTasks   Int      @default(0)
-  logCount         Int      @default(0)
-  reflectionCount  Int      @default(0)
-  mentorComments   String?  @db.Text
-  mentorRating     Int?     // 1-5段階評価
-  areasOfImprovement String[] @default([])
-  strengths        String[] @default([])
-  nextSteps        String?  @db.Text
-  followUpDate     DateTime?
-  isSharedWithClient Boolean @default(false)
-  sharedAt         DateTime?
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-
-  // リレーション
-  client User @relation("ClientReports", fields: [clientId], references: [id], onDelete: Cascade)
-  mentor User @relation("MentorReports", fields: [mentorId], references: [id], onDelete: Cascade)
+  id                 String    @id @default(uuid())
+  clientId           String
+  mentorId           String
+  reportPeriod       String
+  startDate          DateTime
+  endDate            DateTime
+  overallProgress    Float
+  completedGoals     Int       @default(0)
+  completedTasks     Int       @default(0)
+  logCount           Int       @default(0)
+  reflectionCount    Int       @default(0)
+  mentorComments     String?
+  mentorRating       Int?
+  areasOfImprovement String[]  @default([])
+  strengths          String[]  @default([])
+  nextSteps          String?
+  followUpDate       DateTime?
+  isSharedWithClient Boolean   @default(false)
+  sharedAt           DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  client             User      @relation("ClientReports", fields: [clientId], references: [id], onDelete: Cascade)
+  mentor             User      @relation("MentorReports", fields: [mentorId], references: [id], onDelete: Cascade)
 
   @@index([clientId])
   @@index([mentorId])

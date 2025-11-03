@@ -39,11 +39,22 @@ export const useCheckActionData = (): UseCheckActionDataReturn => {
       setLoading(true);
       setError(null);
 
-      // E2E テストモード: URLパラメータからエラーMockを検出
+      // E2E テストモード: localStorageからエラーMockを検出
       if (typeof window !== 'undefined') {
+        const mockApiDisabled = localStorage.getItem('MOCK_API_DISABLED') === 'true';
+        const emptyTestData = localStorage.getItem('EMPTY_TEST_DATA') === 'true';
         const url = new URL(window.location.href);
         const mockError = url.searchParams.get('mockError');
 
+        if (mockApiDisabled) {
+          throw new Error('API接続エラーが発生しました');
+        }
+        if (emptyTestData) {
+          // 空データを返す（エラーではなく成功だがデータなし）
+          setData(null);
+          setLoading(false);
+          return;
+        }
         if (mockError === 'api') {
           throw new Error('API接続エラーが発生しました');
         }

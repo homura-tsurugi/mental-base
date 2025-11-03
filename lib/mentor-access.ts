@@ -69,14 +69,14 @@ export async function checkDataAccess(
     }
 
     // アクセス権限が設定されていない
-    if (!relationship.accessPermissions || relationship.accessPermissions.length === 0) {
+    if (!relationship.accessPermissions) {
       return {
         allowed: false,
         reason: 'No access permissions configured',
       };
     }
 
-    const permission = relationship.accessPermissions[0];
+    const permission = relationship.accessPermissions;
 
     // 2. データタイプごとの権限チェック
     let allowed = false;

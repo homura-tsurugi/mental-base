@@ -1,5 +1,125 @@
 # Mental-Base 開発進捗状況
 
+## E2Eテスト分析レポート - E2E-PLDO-012
+
+### 基本情報
+- テストID: E2E-PLDO-012
+- テスト項目名: 目標作成（必須項目のみ）
+- 対象ページ: /plan-do (Plan-Do画面)
+- 実行回数: 1回（失敗）
+- 実行日時: 2025-11-03 10:40
+- 実行環境: Chromium/Firefox/WebKit (全ブラウザで失敗)
+
+### エラーログ（生データのみ）
+
+#### Playwrightエラー
+```
+Error: expect(locator).not.toBeVisible() failed
+
+Locator:  locator('[data-testid="goal-modal"]')
+Expected: not visible
+Received: visible
+Timeout:  5000ms
+
+Call log:
+  - Expect "not toBeVisible" with timeout 5000ms
+  - waiting for locator('[data-testid="goal-modal"]')
+    9 × locator resolved to <div data-testid="goal-modal" class="bg-[var(--bg-primary)] rounded-xl p-6 max-w-[500px] w-full max-h-[80vh] overflow-y-auto shadow-lg">…</div>
+      - unexpected value "visible"
+
+At line 82 in plan-do-plan-tab.spec.ts:
+> 82 |     await expect(modal).not.toBeVisible();
+```
+
+テストは以下の流れで失敗:
+1. 目標作成ボタンをクリック → 成功
+2. モーダルが開く → 成功
+3. タイトル「新しい目標」を入力 → 成功
+4. 作成ボタンをクリック → 成功
+5. モーダルが閉じることを期待 → **失敗（モーダルが開いたまま）**
+
+#### フロントエンドサーバーログ（POST /api/goals のエラー）
+```
+[DAL] 認証スキップモード有効: E2Eテスト用モックユーザーを使用
+prisma:error
+Invalid `prisma.goal.create()` invocation:
+
+Foreign key constraint violated on the constraint: `goals_userId_fkey`
+
+Goal POST error: Error [PrismaClientKnownRequestError]:
+Invalid `prisma.goal.create()` invocation:
+
+Foreign key constraint violated on the constraint: `goals_userId_fkey`
+    at ei.handleRequestError (lib/generated/prisma/runtime/library.js:124:7268)
+    at ei.handleAndLogRequestError (lib/generated/prisma/runtime/library.js:124:6593)
+    at ei.request (lib/generated/prisma/runtime/library.js:124:6300)
+    at async a (lib/generated/prisma/runtime/library.js:133:9551)
+    at async POST (app/api/goals/route.ts:141:18)
+  {
+    code: 'P2003',
+    meta: [Object],
+    clientVersion: '6.18.0'
+  }
+POST /api/goals 500 in 1463ms (compile: 96ms, render: 1367ms)
+```
+
+**根本原因**: データベース外部キー制約違反
+- モックユーザーID `test-user-id` がデータベースの `users` テーブルに存在しない
+- `goals` テーブルの `userId` フィールドは `users.id` への外部キーであるため、存在しないユーザーIDでは目標を作成できない
+- APIが500エラーを返すため、フロントエンドでモーダルが閉じない
+
+#### ブラウザコンソールログ（想定）
+```
+(Playwrightは標準でコンソールログをキャプチャしますが、今回のテストコードでは明示的な収集は未実装)
+```
+
+#### ネットワークログ
+```
+Request: POST /api/goals
+Payload:
+{
+  "title": "新しい目標",
+  "userId": "test-user-id"  // ← このユーザーIDがDBに存在しない
+}
+
+Response: 500 Internal Server Error
+Status: 500
+Time: 1463ms
+```
+
+#### スクリーンショット
+- 保存先: `tests/screenshots/E2E-PLDO-012-fail.png`
+- 画面状態: 目標作成モーダルが開いたまま、作成ボタンをクリック後もモーダルが閉じていない状態
+
+#### 環境情報
+- フロントエンドサーバー: 起動中（ポート3247）
+- バックエンドサーバー: 未確認（E2Eテストはフロントエンドのみ使用）
+- DATABASE_URL: 存在する（.env.local）
+- VITE_SKIP_AUTH: 存在する（.env.local、認証スキップモード有効）
+- Node.js: v24.10.0
+- Playwright: Version 1.56.1
+
+#### 認証スキップモード設定（lib/dal.ts）
+```typescript
+const getMockSession = () => {
+  return {
+    userId: 'test-user-id',  // ← このIDがDBに存在しない
+    userEmail: 'test@mentalbase.local',
+    userName: 'Test User',
+    userRole: 'client' as UserRole,
+  };
+};
+```
+
+#### データベース状態
+- モックユーザー `test-user-id` が `users` テーブルに存在しない
+- そのため、`goals` テーブルへの挿入時に外部キー制約違反が発生
+
+### 次のアクション
+デバッグマスターに調査を依頼
+
+---
+
 ## プロジェクト基本情報
 
 - **プロジェクト名**: ライフ・ワークガバナンス プラットフォーム（Mental-Base MVP）
@@ -996,36 +1116,36 @@ inject_knowledge(keyword: '@E2Eテストオーケストレーター')
 
 ### 4. Check-Action画面（/check-action）- 58項目
 #### 正常系（必須）
-- [ ] E2E-CHKACT-001: ページ初期アクセス
-- [ ] E2E-CHKACT-002: ローディング状態表示
-- [ ] E2E-CHKACT-003: タブ切り替え表示
-- [ ] E2E-CHKACT-004: 期間セレクター表示
-- [ ] E2E-CHKACT-005: 進捗統計カード表示
-- [ ] E2E-CHKACT-006: 進捗チャート表示
-- [ ] E2E-CHKACT-007: 振り返りフォーム表示
-- [ ] E2E-CHKACT-008: 期間切り替え機能
-- [ ] E2E-CHKACT-009: 期間ボタンのアクティブ状態
-- [ ] E2E-CHKACT-010: 各期間の統計データ表示
-- [ ] E2E-CHKACT-011: 振り返り内容入力
-- [ ] E2E-CHKACT-012: 達成内容入力
-- [ ] E2E-CHKACT-013: 課題内容入力
-- [ ] E2E-CHKACT-014: AI分析ボタンクリック（振り返りあり）
-- [ ] E2E-CHKACT-015: AI分析中のローディング表示
-- [ ] E2E-CHKACT-016: Actionタブへの切り替え
-- [ ] E2E-CHKACT-017: AI分析レポート表示
-- [ ] E2E-CHKACT-018: AI分析レポート信頼度表示
-- [ ] E2E-CHKACT-019: AI洞察リスト表示
-- [ ] E2E-CHKACT-020: AI推奨事項リスト表示
-- [ ] E2E-CHKACT-021: 改善計画フォーム表示
-- [ ] E2E-CHKACT-022: デフォルトアクション項目表示
-- [ ] E2E-CHKACT-023: アクション項目追加
-- [ ] E2E-CHKACT-024: アクション項目削除
-- [ ] E2E-CHKACT-025: 改善計画タイトル編集
+- [x] E2E-CHKACT-001: ページ初期アクセス
+- [x] E2E-CHKACT-002: ローディング状態表示
+- [x] E2E-CHKACT-003: タブ切り替え表示
+- [x] E2E-CHKACT-004: 期間セレクター表示
+- [x] E2E-CHKACT-005: 進捗統計カード表示
+- [x] E2E-CHKACT-006: 進捗チャート表示
+- [x] E2E-CHKACT-007: 振り返りフォーム表示
+- [x] E2E-CHKACT-008: 期間切り替え機能
+- [x] E2E-CHKACT-009: 期間ボタンのアクティブ状態
+- [x] E2E-CHKACT-010: 各期間の統計データ表示
+- [x] E2E-CHKACT-011: 振り返り内容入力
+- [x] E2E-CHKACT-012: 達成内容入力
+- [x] E2E-CHKACT-013: 課題内容入力
+- [x] E2E-CHKACT-014: AI分析ボタンクリック（振り返りあり）
+- [x] E2E-CHKACT-015: AI分析中のローディング表示
+- [x] E2E-CHKACT-016: Actionタブへの切り替え
+- [x] E2E-CHKACT-017: AI分析レポート表示
+- [x] E2E-CHKACT-018: AI分析レポート信頼度表示
+- [x] E2E-CHKACT-019: AI洞察リスト表示
+- [x] E2E-CHKACT-020: AI推奨事項リスト表示
+- [x] E2E-CHKACT-021: 改善計画フォーム表示
+- [x] E2E-CHKACT-022: デフォルトアクション項目表示
+- [x] E2E-CHKACT-023: アクション項目追加
+- [x] E2E-CHKACT-024: アクション項目削除
+- [x] E2E-CHKACT-025: 改善計画タイトル編集
 - [ ] E2E-CHKACT-026: 改善計画作成
 
 #### 異常系（バリデーション・エラー）
-- [ ] E2E-CHKACT-027: API接続エラー表示
-- [ ] E2E-CHKACT-028: データなし状態表示
+- [x] E2E-CHKACT-027: API接続エラー表示
+- [x] E2E-CHKACT-028: データなし状態表示
 - [ ] E2E-CHKACT-029: 振り返り内容空欄エラー
 - [ ] E2E-CHKACT-030: AI分析失敗エラー
 - [ ] E2E-CHKACT-031: 振り返りなしでAI分析実行
@@ -1040,28 +1160,28 @@ inject_knowledge(keyword: '@E2Eテストオーケストレーター')
 - [ ] E2E-CHKACT-038: 認証なしアクセス
 - [ ] E2E-CHKACT-039: セッション期限切れ
 - [ ] E2E-CHKACT-040: XSS攻撃対策（振り返り内容）
-- [ ] E2E-CHKACT-041: XSS攻撃対策（AI分析レポート）
+- [x] E2E-CHKACT-041: XSS攻撃対策（AI分析レポート）
 - [ ] E2E-CHKACT-042: CSRF攻撃対策
 - [ ] E2E-CHKACT-043: 他ユーザーのデータアクセス防止
 
 #### レスポンシブ
-- [ ] E2E-CHKACT-044: デスクトップ表示（1920x1080）
-- [ ] E2E-CHKACT-045: タブレット表示（768x1024）
+- [x] E2E-CHKACT-044: デスクトップ表示（1920x1080）
+- [x] E2E-CHKACT-045: タブレット表示（768x1024）
 - [ ] E2E-CHKACT-046: モバイル表示（375x667）
 - [ ] E2E-CHKACT-047: タッチジェスチャー対応
-- [ ] E2E-CHKACT-048: 縦向き・横向き切り替え
-- [ ] E2E-CHKACT-049: 小画面でのスクロール
+- [x] E2E-CHKACT-048: 縦向き・横向き切り替え
+- [x] E2E-CHKACT-049: 小画面でのスクロール
 
 #### ワークフロー・エッジケース
 - [ ] E2E-CHKACT-050: Check→Action→Check タブ往復
 - [ ] E2E-CHKACT-051: Actionタブのレポートなし表示
-- [ ] E2E-CHKACT-052: 期間切り替え後のデータ更新
-- [ ] E2E-CHKACT-053: 長い振り返り内容の表示
-- [ ] E2E-CHKACT-054: AI分析レポートの洞察0件
-- [ ] E2E-CHKACT-055: 複数回のAI分析実行
-- [ ] E2E-CHKACT-056: アクション項目の順序保持
+- [x] E2E-CHKACT-052: 期間切り替え後のデータ更新
+- [x] E2E-CHKACT-053: 長い振り返り内容の表示
+- [x] E2E-CHKACT-054: AI分析レポートの洞察0件
+- [x] E2E-CHKACT-055: 複数回のAI分析実行
+- [x] E2E-CHKACT-056: アクション項目の順序保持
 - [ ] E2E-CHKACT-057: ページリロード後の状態
-- [ ] E2E-CHKACT-058: フォーム送信後のクリア
+- [x] E2E-CHKACT-058: フォーム送信後のクリア
 
 ### 5. AIアシスタント（/ai-assistant）- 50項目
 #### 正常系（必須）

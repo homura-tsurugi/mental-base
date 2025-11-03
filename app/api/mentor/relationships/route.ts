@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
       acceptedAt: rel.acceptedAt,
       terminatedAt: rel.terminatedAt,
       terminationReason: rel.terminationReason,
-      hasActivePermissions: rel.accessPermissions.length > 0,
+      hasActivePermissions: !!rel.accessPermissions,
       createdAt: rel.createdAt,
       updatedAt: rel.updatedAt,
     }));

@@ -83,16 +83,13 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     }
 
     // 2. データアクセス権限を取得
-    const permissions =
-      relationship.accessPermissions.length > 0
-        ? relationship.accessPermissions[0]
-        : {
-            allowGoals: false,
-            allowTasks: false,
-            allowLogs: false,
-            allowReflections: false,
-            allowAiReports: false,
-          };
+    const permissions = relationship.accessPermissions || {
+      allowGoals: false,
+      allowTasks: false,
+      allowLogs: false,
+      allowReflections: false,
+      allowAiReports: false,
+    };
 
     // 3. クライアント基本情報を取得
     const client = relationship.client;

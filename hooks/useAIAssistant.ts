@@ -137,15 +137,19 @@ export const useAIAssistant = (): UseAIAssistantReturn => {
         // 本番モード: ユーザーメッセージ (楽観的UI) + AIメッセージ
         const userMessage: ChatMessage = {
           id: `temp-${Date.now()}`,
+          userId: 'current-user', // TODO: 実際のuserIdを取得
           role: 'user',
           content: content.trim(),
-          createdAt: new Date().toISOString(),
+          mode: selectedMode,
+          createdAt: new Date(),
         };
         const assistantMessage: ChatMessage = {
           id: response.messageId || `ai-${Date.now()}`,
+          userId: 'current-user', // TODO: 実際のuserIdを取得
           role: 'assistant',
           content: response.content,
-          createdAt: response.timestamp || new Date().toISOString(),
+          mode: selectedMode,
+          createdAt: response.timestamp ? new Date(response.timestamp) : new Date(),
         };
         setMessagesByMode((prev) => ({
           ...prev,

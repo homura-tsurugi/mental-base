@@ -50,8 +50,7 @@ export async function GET(request: NextRequest) {
     });
 
     const result = relationships.map((rel) => {
-      const permission =
-        rel.accessPermissions.length > 0 ? rel.accessPermissions[0] : null;
+      const permission = rel.accessPermissions || null;
 
       return {
         relationshipId: rel.id,
